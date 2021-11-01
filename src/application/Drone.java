@@ -39,8 +39,8 @@ public class Drone {
 	 * display the drone on the canvas
 	 * @param c		the canvas in which the drones are shown
 	 */
-	public void displayDrone(ArenaCanvas arenaCanvas) {			
-		arenaCanvas.showIt(x, y, "D");
+	public void displayDrone(ArenaGrid arenaGrid) {			
+		arenaGrid.showIt(x, y, "D");
 	}
 	
 	/**

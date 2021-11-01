@@ -8,29 +8,31 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class DroneArena {
-	public static final int ARENA_WIDTH = 400;
-	public static final int ARENA_HEIGHT = 400;
 	
 	private ArrayList<Drone> manyDrones;
 	
 	DroneArena() {
-		manyDrones = new ArrayList<Drone>();	
-		
+		manyDrones = new ArrayList<Drone>();			
 	}
 	
-	public void doDisplay() {		
+	public void doDisplay(Canvas canvas) {		
+		
+		// Constructor will create 2D array representing arena 
+        ArenaGrid arenaGrid = new ArenaGrid(SimView.ARENA_WIDTH, SimView.ARENA_HEIGHT);
         
-        ArenaCanvas arenaCanvas = new ArenaCanvas(ARENA_WIDTH, ARENA_HEIGHT);
-        this.showDrones(arenaCanvas);
-        arenaCanvas.drawDrones(graphicsContext);
+        // Puts 'D' in arena for each drone
+        this.showDrones(arenaGrid);
+        
+        // Draw the drones to the canvas
+        arenaGrid.drawDrones(canvas);
 	}
 	
 	/**
 	 * show all the drones in the interface, cycle through arrayList of drones
 	 * @param c		the canvas in which the drones are shown
 	 */
-	public void showDrones(ArenaCanvas arenaCanvas) {
-		for (Drone d : manyDrones) d.displayDrone(arenaCanvas);
+	public void showDrones(ArenaGrid arenaGrid) {
+		for (Drone d : manyDrones) d.displayDrone(arenaGrid);
 	}
 	
 	/**
@@ -57,7 +59,7 @@ public class DroneArena {
 	 * @return		false: drone move here, true: drone can move here
 	 */
 	public boolean canMoveHere(int x, int y) {		
-		if (x < 0 || x >= ARENA_WIDTH || y < 0 || y >= ARENA_HEIGHT) return false;
+		if (x < 0 || x >= SimView.ARENA_WIDTH || y < 0 || y >= SimView.ARENA_HEIGHT) return false;
 		if (getDroneAt(x, y) != null) {			
 			return false;
 		}
@@ -74,9 +76,11 @@ public class DroneArena {
 		Direction d = Direction.EAST; // Initialise, but will be made random later
 		do {
 			Random ranGen = new Random();
-			x = ranGen.nextInt(ARENA_WIDTH);
-			y = ranGen.nextInt(ARENA_HEIGHT);
+			x = ranGen.nextInt(SimView.ARENA_WIDTH);
+			y = ranGen.nextInt(SimView.ARENA_HEIGHT);
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
+		
+		System.out.println("addDrone() x=" + x + " y=" + y);
 
 		manyDrones.add(new Drone(x, y, d.random()));
 	}
