@@ -17,12 +17,9 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        SimView simView = new SimView();
-        Scene scene = new Scene(simView, 640, 480);
-        stage.setTitle("Drone Simulator");
-        stage.setScene(scene);
+        SimView simView = new SimView();        
+        stage = simView.getSimStage();           
         stage.show();
-        simView.draw();
     }
 
     public static void main(String[] args) {

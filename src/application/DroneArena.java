@@ -13,19 +13,12 @@ public class DroneArena {
 	
 	private ArrayList<Drone> manyDrones;
 	
-	private Canvas canvas;
-	private GraphicsContext graphicsContext;
-	
 	DroneArena() {
-		manyDrones = new ArrayList<Drone>();		
+		manyDrones = new ArrayList<Drone>();	
+		
 	}
 	
-	public void doDisplay() {
-		this.canvas = new Canvas(400,400);
-		this.graphicsContext = this.canvas.getGraphicsContext2D();		
-        
-        graphicsContext.setFill(Color.LIGHTCORAL);
-        graphicsContext.fillRect(0, 0, DroneArena.ARENA_WIDTH, DroneArena.ARENA_HEIGHT);
+	public void doDisplay() {		
         
         ArenaCanvas arenaCanvas = new ArenaCanvas(ARENA_WIDTH, ARENA_HEIGHT);
         this.showDrones(arenaCanvas);
