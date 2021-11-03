@@ -36,6 +36,7 @@ public class DroneArena {
 	 * Draws arena and drones to canvas as graphics context
 	 */
 	public void drawArena() {	
+		System.out.println("drawArena()");
 		
 		GraphicsContext gc = arenaCanvas.getGraphicsContext2D();
         gc.setFill(Color.AQUA);
@@ -47,23 +48,10 @@ public class DroneArena {
         	int x = manyDrones.get(i).getXPos();
         	int y = manyDrones.get(i).getYPos();
         	
-        	System.out.println("drawArena() for loop : i=" + i + " x=" + 
-        									x + " y=" + y);
-        	
         	gc.fillRect(x, y, Drone.WIDTH, Drone.HEIGHT);
         }
        
 	}
-	
-	
-//	public void drawDrones() {
-//		simGc = simCanvas.getGraphicsContext2D();
-//		for (int i = 0; i < SimView.ARENA_WIDTH; i++) {
-//			for (int j = 0; j < SimView.ARENA_HEIGHT; j++) {				
-//				simGc.fillText(arenaGrid.getIndex(i, j), i + SimView.ARENA_LEFT_BORDER, j + SimView.ARENA_TOP_BOREDER);
-//			}
-//		}
-//	}	
 	
 	/**
 	 * Adds a drone to the arena in random area moving random direction,
@@ -87,38 +75,10 @@ public class DroneArena {
 	}
 	
 	/**
-	 * 
-	 * @return arenaCanvas
-	 */
-	public Canvas getArenaCanvas() {
-		
-		return arenaCanvas;
-		
-	}
-	
-	
-//	public void doDisplay(Canvas canvas) {		
-//        
-//        // Puts 'D' in arena for each drone
-//        this.showDrones(arenaGrid);
-//        
-//        // Draw the drones to the canvas
-//        arenaGrid.drawDrones(canvas);
-//        
-//	}
-//	
-//	/**
-//	 * show all the drones in the interface, cycle through arrayList of drones
-//	 * @param c		the canvas in which the drones are shown
-//	 */
-//	public void showDrones(ArenaGrid arenaGrid) {
-//		for (Drone d : manyDrones) d.displayDrone(arenaGrid);
-//	}
-//	
-	/**
 	 * Loop through all drones, moving them each once
 	 */
 	public void moveAllDrones() {
+		System.out.println("moveAllDrones()");
 		for (Drone d : manyDrones) d.tryToMove(this);
 	}
 	
@@ -138,14 +98,48 @@ public class DroneArena {
 	 * @param y		y co-ord
 	 * @return		false: drone move here, true: drone can move here
 	 */
-	public boolean canMoveHere(int x, int y) {		
-		if (x < 0 || x >= ARENA_WIDTH || y < 0 || y >= ARENA_HEIGHT) return false;
-		if (getDroneAt(x, y) != null) {			
+	public boolean canMoveHere(int id, int x, int y) {		
+		if (x <= 0 || x >= ARENA_RIGHT_BORDER - Drone.WIDTH || y <= 0 || 
+				y >= ARENA_HEIGHT - Drone.HEIGHT) {
+			System.out.println("border conditions");
+			return false;
+		}
+		if (getDroneAtId(id, x, y) != null) {		
+			System.out.println("getDroneAt != null");
 			return false;
 		}
 		return true;
-	}	
-
+	}
+	
+	/**
+	 * 
+	 * @return arenaCanvas
+	 */
+	public Canvas getArenaCanvas() {
+		
+		return arenaCanvas;
+		
+	}
+	
+	/**
+	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
+	 * @param id	id of a drone to ignore
+	 * @param x		drone x pos
+	 * @param y		drone y pos
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAtId(int id, int x, int y) {
+		
+		for (int i = 0; i < manyDrones.size(); i++) {
+			
+			if (manyDrones.get(i).getId() == id) {
+				continue;
+			}
+			
+			manyDrones.get(i).isHere(x, y);
+		}
+		return null;
+	}
 	
 	/**
 	 * Search arrayList of drones to see if there's one at x,y

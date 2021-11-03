@@ -1,5 +1,6 @@
 package application;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -21,6 +22,8 @@ public class SimView extends VBox{
 	private DroneArena droneArena;
 	private ArenaSimulation arenaSim;
 	private ArenaGrid arenaGrid;
+	
+	private AnimationTimer animationTimer;
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 750;
@@ -65,24 +68,18 @@ public class SimView extends VBox{
 		addButton.setPrefSize(100, 20);	
 		
 		addButton.setOnAction(e -> {
-			for (int i = 0; i < 200; i++) {
-				droneArena.addDrone();
-				droneArena.drawArena();	
-			}
-			
-				droneArena.addDrone();
-				droneArena.drawArena();	
-			
-			
+
+			droneArena.addDrone();
+			droneArena.drawArena();	
+						
 		});
 		
 		Button playButton = new Button();
 		playButton.setText("Move Drones");
 		playButton.setLayoutX(600);
 		playButton.setLayoutY(150);
-		playButton.setOnAction(e -> {		
-			
-			
+		playButton.setOnAction(e -> {
+			createAnimationTimer();
 		});
 		
 		Button stopButton = new Button();
@@ -91,11 +88,27 @@ public class SimView extends VBox{
 		stopButton.setLayoutY(100);
 		stopButton.setPrefSize(100, 20);	
 		stopButton.setOnAction(e -> {
-			
+			animationTimer.stop();
 		});
 		
 		simPane.getChildren().addAll(addButton, stopButton, playButton);		
 		
+	}
+	
+	private void createAnimationTimer() {
+		System.out.println("createAnimationTimer");
+		
+		animationTimer = new AnimationTimer()
+        {
+            @Override
+            public void handle(long now)
+            {
+            	System.out.println("createAnimaionTimer().handle()");
+            	droneArena.moveAllDrones();
+            	droneArena.drawArena();
+            }		
+        };
+        animationTimer.start();
 	}
 	
 	/**

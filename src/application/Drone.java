@@ -7,8 +7,6 @@ public class Drone {
 	private int x, y, id, dx, dy;
 	private static int count = 0;
 	private Direction direction;
-	private Polygon drone;
-	private Point2D movement;
 	
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 20;
@@ -55,9 +53,15 @@ public class Drone {
 	 * @return		true if drone is at x,y. False otherwise
 	 */
 	public boolean isHere(int x, int y) {
-		if (this.x == x && this.y == y) {			
+		
+		System.out.println("this.x=" + this.x + " this.y=" + this.y +
+				" x=" + x + " y=" + y);
+		
+		if (x >= this.x - WIDTH && x < this.x + (WIDTH * 2) && 
+				y >= this.y - WIDTH && y < this.y + (HEIGHT * 2)) {
 			return true;
-		}			
+		}
+		
 		return false;
 	}
 	
@@ -75,22 +79,27 @@ public class Drone {
 	 * @param arena
 	 */
 	public void tryToMove(DroneArena arena) {
+		System.out.println("tryToMove()");
 		int newx = x + dx;
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
-		
-		while (!arena.canMoveHere(newx, newy)) {
+		System.out.println("x=" + x + " y=" + y);
+		while (!arena.canMoveHere(this.id, newx, newy)) {
 			
-			// If the drone cant move anywhere, we move all drones again i
-			if (count > 8) { // 8 is amount of possible directions	
-				// If the drone still cant move anywhere, loop from higher id
-				if (droneMoveCount > 5) {
-					arena.moveAllDronesFromPoint(this.id);
-				}
-				droneMoveCount++;
-				arena.moveAllDrones();
-				count = 0;
-			}
+			System.out.println("tryToMove() -> while (!canMoveHere(" + newx + ", " + 
+					newy + ")");
+			
+			
+//			// If the drone cant move anywhere, we move all drones again i
+//			if (count > 8) { // 8 is amount of possible directions	
+//				// If the drone still cant move anywhere, loop from higher id
+//				if (droneMoveCount > 5) {
+//					arena.moveAllDronesFromPoint(this.id);
+//				}
+//				droneMoveCount++;
+//				arena.moveAllDrones();
+//				count = 0;
+//			}
 						
 			this.direction = direction.random();	// Move to next direction			
 			this.setDirection();	// Set dx,dy from direction
@@ -139,5 +148,9 @@ public class Drone {
 			dx = -1;
 			dy = -1;
 		}
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }
