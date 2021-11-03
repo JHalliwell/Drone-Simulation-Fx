@@ -14,7 +14,7 @@ public class DroneArena {
 	public static final int ARENA_HEIGHT = 400;
 	public static final int ARENA_LEFT_BORDER = 10;
 	public static final int ARENA_RIGHT_BORDER = 510;
-	public static final int ARENA_TOP_BOREDER = 10;
+	public static final int ARENA_TOP_BORDER = 10;
 	public static final int ARENA_BOTTOM_BORDER = 410;
 	
 	private Scene arenaScene;
@@ -31,17 +31,7 @@ public class DroneArena {
 		arenaCanvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
 		
 	}
-	
-	/**
-	 * 
-	 * @return arenaCanvas
-	 */
-	public Canvas getArenaCanvas() {
-		
-		return arenaCanvas;
-		
-	}
-	
+
 	/**
 	 * Draws arena and drones to canvas as graphics context
 	 */
@@ -49,7 +39,7 @@ public class DroneArena {
 		
 		GraphicsContext gc = arenaCanvas.getGraphicsContext2D();
         gc.setFill(Color.AQUA);
-        gc.fillRect(ARENA_LEFT_BORDER, ARENA_TOP_BOREDER, ARENA_WIDTH, ARENA_HEIGHT);   
+        gc.fillRect(ARENA_LEFT_BORDER, ARENA_TOP_BORDER, ARENA_WIDTH, ARENA_HEIGHT);   
         
 		gc.setFill(Color.BLACK);
         for (int i = 0; i < manyDrones.size(); i++) {
@@ -86,8 +76,8 @@ public class DroneArena {
 		Direction d = Direction.EAST; // Initialise, but will be made random later
 		do {
 			Random ranGen = new Random();
-			x = ranGen.nextInt(ARENA_WIDTH);
-			y = ranGen.nextInt(ARENA_HEIGHT);
+			x = ARENA_LEFT_BORDER + ranGen.nextInt(ARENA_RIGHT_BORDER - ARENA_LEFT_BORDER - (Drone.WIDTH * 2));
+			y = ARENA_TOP_BORDER + ranGen.nextInt(ARENA_BOTTOM_BORDER - ARENA_TOP_BORDER - (Drone.HEIGHT * 2));
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
 		
 		System.out.println("addDrone() x=" + x + " y=" + y);
@@ -95,6 +85,17 @@ public class DroneArena {
 		manyDrones.add(new Drone(x, y, d.random()));
 		
 	}
+	
+	/**
+	 * 
+	 * @return arenaCanvas
+	 */
+	public Canvas getArenaCanvas() {
+		
+		return arenaCanvas;
+		
+	}
+	
 	
 //	public void doDisplay(Canvas canvas) {		
 //        

@@ -10,8 +10,8 @@ public class Drone {
 	private Polygon drone;
 	private Point2D movement;
 	
-	public static final int HEIGHT = 6;
-	public static final int WIDTH = 6;
+	public static final int HEIGHT = 20;
+	public static final int WIDTH = 20;
 	
 	private static int droneMoveCount = 0;
 	

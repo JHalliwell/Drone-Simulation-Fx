@@ -65,18 +65,23 @@ public class SimView extends VBox{
 		addButton.setPrefSize(100, 20);	
 		
 		addButton.setOnAction(e -> {
-			droneArena.addDrone();
-			droneArena.drawArena();	
+			for (int i = 0; i < 200; i++) {
+				droneArena.addDrone();
+				droneArena.drawArena();	
+			}
+			
+				droneArena.addDrone();
+				droneArena.drawArena();	
+			
+			
 		});
 		
 		Button playButton = new Button();
 		playButton.setText("Move Drones");
 		playButton.setLayoutX(600);
 		playButton.setLayoutY(150);
-		playButton.setOnAction(e -> {
+		playButton.setOnAction(e -> {		
 			
-			arenaSim = new ArenaSimulation(droneArena, simCanvas);
-			arenaSim.play();
 			
 		});
 		
@@ -86,7 +91,7 @@ public class SimView extends VBox{
 		stopButton.setLayoutY(100);
 		stopButton.setPrefSize(100, 20);	
 		stopButton.setOnAction(e -> {
-			arenaSim.stop();
+			
 		});
 		
 		simPane.getChildren().addAll(addButton, stopButton, playButton);		
