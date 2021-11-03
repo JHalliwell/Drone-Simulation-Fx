@@ -1,9 +1,17 @@
 package application;
 
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Polygon;
+
 public class Drone {
 	private int x, y, id, dx, dy;
 	private static int count = 0;
 	private Direction direction;
+	private Polygon drone;
+	private Point2D movement;
+	
+	public static final int HEIGHT = 6;
+	public static final int WIDTH = 6;
 	
 	private static int droneMoveCount = 0;
 	
@@ -14,12 +22,30 @@ public class Drone {
 	 * @param d		direction of drone
 	 */
 	public Drone(int x, int y, Direction d) {
+		
 		this.x = x;
 		this.y = y;
+
 		direction = d;
 		id = count++;
 		dx = 0;		// set default direction of movement: North
 		dy = 1;
+	}
+	
+	public int getXSpeed() {
+		return this.dx;
+	}
+	
+	public int getYSpeed() {
+		return this.dy;
+	}
+	
+	public int getXPos() {
+		return this.x;
+	}
+	
+	public int getYPos() {
+		return this.y;
 	}
 	
 	/**
@@ -39,7 +65,7 @@ public class Drone {
 	 * display the drone on the canvas
 	 * @param c		the canvas in which the drones are shown
 	 */
-	public void displayDrone(ArenaGrid arenaGrid) {			
+	public void displayDrones(ArenaGrid arenaGrid) {			
 		arenaGrid.showIt(x, y, "D");
 	}
 	

@@ -19,45 +19,45 @@ public class SimView extends VBox{
 	private AnchorPane simPane;
 	
 	private DroneArena droneArena;
+	private ArenaSimulation arenaSim;
+	private ArenaGrid arenaGrid;
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 750;
-	public static final int ARENA_WIDTH = 500;
-	public static final int ARENA_HEIGHT = 400;
-	public static final int ARENA_LEFT_BORDER = 10;
-	public static final int ARENA_RIGHT_BORDER = 510;
-	public static final int ARENA_TOP_BOREDER = 10;
-	public static final int ARENA_BOTTOM_BORDER = 410;
 	
 	public SimView() {
+		
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR");
-		simStage.setResizable(false);
-//		simStage.setMinWidth(WINDOW_WIDTH);
-//		simStage.setMinHeight(WINDOW_HEIGHT);	
+		simStage.setResizable(false);	
 		
 		simPane = new AnchorPane();
-		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);				
+
+		createButtons();
+		createArena();			
 		
 		simScene = new Scene(simPane);
 		simStage.setScene(simScene);
 		
-		simCanvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);			
-		
-		drawArenaBorder();
-		createButtons();		
+	}	
+	
+	/**
+	 * Creates drone arena and adds to pane, then draws it
+	 */
+	public void createArena() {		
 		
 		droneArena = new DroneArena();
+		simPane.getChildren().add(droneArena.getArenaCanvas());
+		droneArena.drawArena();
+		
 	}
 	
-	public void drawArenaBorder() {	
-		simGc = simCanvas.getGraphicsContext2D();
-        simGc.setFill(Color.AQUA);
-        simGc.fillRect(ARENA_LEFT_BORDER, ARENA_TOP_BOREDER, ARENA_WIDTH, ARENA_HEIGHT);  
-        simPane.getChildren().addAll(simCanvas);
-	}
-	
+	/**
+	 * Creates buttons and adds to pane
+	 */
 	public void createButtons() {
+		
 		Button addButton = new Button();
 		addButton.setText("Add Drone");
 		addButton.setLayoutX(600);
@@ -66,7 +66,18 @@ public class SimView extends VBox{
 		
 		addButton.setOnAction(e -> {
 			droneArena.addDrone();
-			droneArena.doDisplay(simCanvas);			
+			droneArena.drawArena();	
+		});
+		
+		Button playButton = new Button();
+		playButton.setText("Move Drones");
+		playButton.setLayoutX(600);
+		playButton.setLayoutY(150);
+		playButton.setOnAction(e -> {
+			
+			arenaSim = new ArenaSimulation(droneArena, simCanvas);
+			arenaSim.play();
+			
 		});
 		
 		Button stopButton = new Button();
@@ -74,11 +85,21 @@ public class SimView extends VBox{
 		stopButton.setLayoutX(600);
 		stopButton.setLayoutY(100);
 		stopButton.setPrefSize(100, 20);	
+		stopButton.setOnAction(e -> {
+			arenaSim.stop();
+		});
 		
-		simPane.getChildren().addAll(addButton, stopButton);		
+		simPane.getChildren().addAll(addButton, stopButton, playButton);		
+		
 	}
 	
+	/**
+	 * 
+	 * @return SimStage
+	 */
 	public Stage getSimStage() {
+		
 		return simStage;
+		
 	}
 }

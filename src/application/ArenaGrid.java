@@ -15,6 +15,10 @@ public class ArenaGrid {
 		arenaGrid = new String[x][y];		
 	}
 	
+	ArenaGrid() {
+		
+	}
+	
 	/**
 	 * Adds a character 'c' to the canvas array, +1 to account for border
 	 * @param x 	x co-ord of c
@@ -28,10 +32,10 @@ public class ArenaGrid {
 	public void drawDrones(Canvas canvas) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLACK);
-		for (int i = 0; i < SimView.ARENA_WIDTH; i++) {
-			for (int j = 0; j < SimView.ARENA_HEIGHT; j++) {				
-				gc.fillText(arenaGrid[i][j], i + SimView.ARENA_LEFT_BORDER, j + SimView.ARENA_TOP_BOREDER);
-			}
-		}
+		
+	}
+	
+	public String getIndex(int i, int j) {
+		return arenaGrid[i][j];
 	}
 }
