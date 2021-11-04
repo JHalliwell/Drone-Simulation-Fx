@@ -41,10 +41,10 @@ public class Drone {
 //		System.out.println("this.x=" + this.x + " this.y=" + this.y +
 //				" x=" + x + " y=" + y);
 		
-		if (x >= this.x - WIDTH && x < this.x + (WIDTH * 2) && 
-				y >= this.y - WIDTH && y < this.y + (HEIGHT * 2)) {
-			return true;
-		}
+		if (this.x > (x - WIDTH - 2) && 
+				this.x < (x + WIDTH + 2) &&
+				this.y > (y - HEIGHT - 2) && 
+				this.y < (y + HEIGHT + 2)) return true;			
 		
 		return false;
 	}	

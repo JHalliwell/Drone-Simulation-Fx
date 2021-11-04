@@ -20,7 +20,6 @@ public class Main extends Application {
         SimView simView = new SimView();        
         stage = simView.getSimStage();           
         stage.show();
-
     }
 
     public static void main(String[] args) {
