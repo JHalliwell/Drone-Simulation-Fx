@@ -28,24 +28,8 @@ public class Drone {
 		id = count++;
 		dx = 0;		// set default direction of movement: North
 		dy = 1;
-	}
-	
-	public int getXSpeed() {
-		return this.dx;
-	}
-	
-	public int getYSpeed() {
-		return this.dy;
-	}
-	
-	public int getXPos() {
-		return this.x;
-	}
-	
-	public int getYPos() {
-		return this.y;
-	}
-	
+	}	
+
 	/**
 	 * Is the drone at this x,y position?
 	 * @param x		x position
@@ -54,8 +38,8 @@ public class Drone {
 	 */
 	public boolean isHere(int x, int y) {
 		
-		System.out.println("this.x=" + this.x + " this.y=" + this.y +
-				" x=" + x + " y=" + y);
+//		System.out.println("this.x=" + this.x + " this.y=" + this.y +
+//				" x=" + x + " y=" + y);
 		
 		if (x >= this.x - WIDTH && x < this.x + (WIDTH * 2) && 
 				y >= this.y - WIDTH && y < this.y + (HEIGHT * 2)) {
@@ -63,43 +47,35 @@ public class Drone {
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * display the drone on the canvas
-	 * @param c		the canvas in which the drones are shown
-	 */
-	public void displayDrones(ArenaGrid arenaGrid) {			
-		arenaGrid.showIt(x, y, "D");
-	}
-	
+	}	
+
 	/**
 	 * Try to move drone, check with canMoveHere, if cant, change direction
 	 * if can, change x and y
 	 * @param arena
 	 */
 	public void tryToMove(DroneArena arena) {
-		System.out.println("tryToMove()");
+//		System.out.println("tryToMove()");
 		int newx = x + dx;
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
-		System.out.println("x=" + x + " y=" + y);
+		
 		while (!arena.canMoveHere(this.id, newx, newy)) {
 			
-			System.out.println("tryToMove() -> while (!canMoveHere(" + newx + ", " + 
-					newy + ")");
+//			System.out.println("tryToMove() -> while (!canMoveHere(" + newx + ", " + 
+//					newy + ")");
 			
 			
-//			// If the drone cant move anywhere, we move all drones again i
-//			if (count > 8) { // 8 is amount of possible directions	
-//				// If the drone still cant move anywhere, loop from higher id
-//				if (droneMoveCount > 5) {
-//					arena.moveAllDronesFromPoint(this.id);
-//				}
-//				droneMoveCount++;
-//				arena.moveAllDrones();
-//				count = 0;
-//			}
+			// If the drone cant move anywhere, we move all drones again i
+			if (count > 8) { // 8 is amount of possible directions	
+				// If the drone still cant move anywhere, loop from higher id
+				if (droneMoveCount > 5) {
+					arena.moveAllDronesFromPoint(this.id);
+				}
+				droneMoveCount++;
+				arena.moveAllDrones();
+				count = 0;
+			}
 						
 			this.direction = direction.random();	// Move to next direction			
 			this.setDirection();	// Set dx,dy from direction
@@ -148,6 +124,22 @@ public class Drone {
 			dx = -1;
 			dy = -1;
 		}
+	}
+	
+	public int getXSpeed() {
+		return this.dx;
+	}
+	
+	public int getYSpeed() {
+		return this.dy;
+	}
+	
+	public int getXPos() {
+		return this.x;
+	}
+	
+	public int getYPos() {
+		return this.y;
 	}
 	
 	public int getId() {

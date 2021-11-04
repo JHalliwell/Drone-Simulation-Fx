@@ -1,10 +1,13 @@
 package application;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -38,12 +41,34 @@ public class SimView extends VBox{
 		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);				
 
 		createButtons();
-		createArena();			
+		createArena();
+		createCursorCoords();
 		
 		simScene = new Scene(simPane);
 		simStage.setScene(simScene);
 		
 	}	
+	
+	private void createCursorCoords() {		
+		
+		Label mouseCoords = new Label();
+		mouseCoords.setLayoutX(100);
+		mouseCoords.setLayoutY(425);
+		mouseCoords.setScaleX(1);
+		mouseCoords.setScaleY(1);
+		
+		simPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+			@Override public void handle(MouseEvent event) {
+		        String msg =
+		          ("x: " + event.getX() + ", y: " + event.getY());
+
+		        mouseCoords.setText(msg);
+		      }
+		});
+		
+		simPane.getChildren().add(mouseCoords);
+		
+	}
 	
 	/**
 	 * Creates drone arena and adds to pane, then draws it
@@ -68,7 +93,12 @@ public class SimView extends VBox{
 		addButton.setPrefSize(100, 20);	
 		
 		addButton.setOnAction(e -> {
-
+			
+//			for (int i = 0; i < 100; i++) {
+//				droneArena.addDrone();
+//				droneArena.drawArena();	
+//			}
+			
 			droneArena.addDrone();
 			droneArena.drawArena();	
 						
@@ -96,14 +126,14 @@ public class SimView extends VBox{
 	}
 	
 	private void createAnimationTimer() {
-		System.out.println("createAnimationTimer");
+//		System.out.println("createAnimationTimer");
 		
 		animationTimer = new AnimationTimer()
         {
             @Override
             public void handle(long now)
             {
-            	System.out.println("createAnimaionTimer().handle()");
+//            	System.out.println("createAnimaionTimer().handle()");
             	droneArena.moveAllDrones();
             	droneArena.drawArena();
             }		

@@ -29,6 +29,8 @@ public class DroneArena {
 		
 		manyDrones = new ArrayList<Drone>();		
 		arenaCanvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
+		arenaCanvas.setLayoutX(ARENA_LEFT_BORDER);
+		arenaCanvas.setLayoutY(ARENA_TOP_BORDER);
 		
 	}
 
@@ -36,11 +38,11 @@ public class DroneArena {
 	 * Draws arena and drones to canvas as graphics context
 	 */
 	public void drawArena() {	
-		System.out.println("drawArena()");
+//		System.out.println("drawArena()");
 		
 		GraphicsContext gc = arenaCanvas.getGraphicsContext2D();
         gc.setFill(Color.AQUA);
-        gc.fillRect(ARENA_LEFT_BORDER, ARENA_TOP_BORDER, ARENA_WIDTH, ARENA_HEIGHT);   
+        gc.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);   
         
 		gc.setFill(Color.BLACK);
         for (int i = 0; i < manyDrones.size(); i++) {
@@ -64,11 +66,11 @@ public class DroneArena {
 		Direction d = Direction.EAST; // Initialise, but will be made random later
 		do {
 			Random ranGen = new Random();
-			x = ARENA_LEFT_BORDER + ranGen.nextInt(ARENA_RIGHT_BORDER - ARENA_LEFT_BORDER - (Drone.WIDTH * 2));
-			y = ARENA_TOP_BORDER + ranGen.nextInt(ARENA_BOTTOM_BORDER - ARENA_TOP_BORDER - (Drone.HEIGHT * 2));
+			x = ranGen.nextInt(ARENA_WIDTH - Drone.WIDTH);
+			y = ranGen.nextInt(ARENA_HEIGHT - Drone.HEIGHT);
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
 		
-		System.out.println("addDrone() x=" + x + " y=" + y);
+//		System.out.println("addDrone() x=" + x + " y=" + y);
 
 		manyDrones.add(new Drone(x, y, d.random()));
 		
@@ -78,8 +80,10 @@ public class DroneArena {
 	 * Loop through all drones, moving them each once
 	 */
 	public void moveAllDrones() {
-		System.out.println("moveAllDrones()");
+		
+//		System.out.println("moveAllDrones()");
 		for (Drone d : manyDrones) d.tryToMove(this);
+		
 	}
 	
 	/**
@@ -99,11 +103,12 @@ public class DroneArena {
 	 * @return		false: drone move here, true: drone can move here
 	 */
 	public boolean canMoveHere(int id, int x, int y) {		
-		if (x <= 0 || x >= ARENA_RIGHT_BORDER - Drone.WIDTH || y <= 0 || 
+		if (x <= 0 || x >= ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
 				y >= ARENA_HEIGHT - Drone.HEIGHT) {
 			System.out.println("border conditions");
 			return false;
 		}
+		
 		if (getDroneAtId(id, x, y) != null) {		
 			System.out.println("getDroneAt != null");
 			return false;
@@ -136,7 +141,9 @@ public class DroneArena {
 				continue;
 			}
 			
-			manyDrones.get(i).isHere(x, y);
+			if (manyDrones.get(i).isHere(x, y)) {
+				return manyDrones.get(i);
+			}
 		}
 		return null;
 	}
