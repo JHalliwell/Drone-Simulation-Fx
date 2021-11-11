@@ -10,8 +10,8 @@ import javafx.scene.paint.Color;
 
 public class DroneArena {
 	
-	public static final int ARENA_WIDTH = 500;
-	public static final int ARENA_HEIGHT = 400;
+	public static final int ARENA_WIDTH = 700;
+	public static final int ARENA_HEIGHT = 700;
 	public static final int ARENA_LEFT_BORDER = 10;
 	public static final int ARENA_RIGHT_BORDER = 510;
 	public static final int ARENA_TOP_BORDER = 10;
@@ -29,8 +29,8 @@ public class DroneArena {
 		
 		manyDrones = new ArrayList<Drone>();		
 		arenaCanvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
-		arenaCanvas.setLayoutX(ARENA_LEFT_BORDER);
-		arenaCanvas.setLayoutY(ARENA_TOP_BORDER);
+//		arenaCanvas.setLayoutX(ARENA_LEFT_BORDER);
+//		arenaCanvas.setLayoutY(ARENA_TOP_BORDER);
 		
 	}
 

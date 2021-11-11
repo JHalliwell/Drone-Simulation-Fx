@@ -2,13 +2,19 @@ package application;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -20,10 +26,12 @@ public class SimView extends VBox{
 	private Scene simScene;
 	private Canvas simCanvas;
 	private GraphicsContext simGc;
-	private AnchorPane simPane;
+	private BorderPane simPane;
+	private HBox simHBox;
+	private MenuBar simMenu;
 	
 	private DroneArena droneArena;
-	private ArenaSimulation arenaSim;
+
 	private ArenaGrid arenaGrid;
 	
 	private AnimationTimer animationTimer;
@@ -32,22 +40,49 @@ public class SimView extends VBox{
 	private static final int WINDOW_HEIGHT = 750;
 	
 	public SimView() {
-		
+				
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR");
-		simStage.setResizable(false);	
+		simStage.setResizable(false);		
+				
+		simPane = new BorderPane();
+		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);	
 		
-		simPane = new AnchorPane();
-		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);				
-
 		createButtons();
 		createArena();
 		createCursorCoords();
+		createMenuBar();
 		
 		simScene = new Scene(simPane);
 		simStage.setScene(simScene);
 		
 	}	
+	
+	private void createMenuBar() {
+		
+		simMenu = new MenuBar();
+		
+		Menu menuFile = new Menu("File");
+		
+		MenuItem menuSave = new MenuItem("Save");
+		menuSave.setOnAction(e -> {
+			
+		});
+		
+		MenuItem menuLoad =  new MenuItem("Load");
+		menuLoad.setOnAction(e -> {
+			
+		});
+		
+		MenuItem menuExit = new MenuItem("Exit");
+		menuExit.setOnAction(e -> {
+			System.exit(0);
+		});
+		
+		menuFile.getItems().addAll(menuSave, menuLoad, menuExit);		
+		simMenu.getMenus().add(menuFile);
+		simPane.setTop(simMenu);
+	}
 	
 	private void createCursorCoords() {		
 		
@@ -76,8 +111,9 @@ public class SimView extends VBox{
 	public void createArena() {		
 		
 		droneArena = new DroneArena();
-		simPane.getChildren().add(droneArena.getArenaCanvas());
-		droneArena.drawArena();
+		//simPane.getChildren().add(droneArena.getArenaCanvas());
+		simPane.setCenter(droneArena.getArenaCanvas());
+		droneArena.drawArena();		
 		
 	}
 	
@@ -86,19 +122,13 @@ public class SimView extends VBox{
 	 */
 	public void createButtons() {
 		
-		Button addButton = new Button();
-		addButton.setText("Add Drone");
-		addButton.setLayoutX(600);
-		addButton.setLayoutY(50);
-		addButton.setPrefSize(100, 20);	
+		simHBox = new HBox();
 		
-		addButton.setOnAction(e -> {
-			
-//			for (int i = 0; i < 100; i++) {
-//				droneArena.addDrone();
-//				droneArena.drawArena();	
-//			}
-			
+		Button addButton = new Button();
+		addButton.setText("Add Drone");		
+		
+		addButton.setOnAction(e -> {			
+
 			droneArena.addDrone();
 			droneArena.drawArena();	
 						
@@ -106,27 +136,30 @@ public class SimView extends VBox{
 		
 		Button playButton = new Button();
 		playButton.setText("Move Drones");
-		playButton.setLayoutX(600);
-		playButton.setLayoutY(150);
 		playButton.setOnAction(e -> {
 			createAnimationTimer();
 		});
 		
 		Button stopButton = new Button();
-		stopButton.setText("Stop");
-		stopButton.setLayoutX(600);
-		stopButton.setLayoutY(100);
-		stopButton.setPrefSize(100, 20);	
+		stopButton.setText("Stop");	
 		stopButton.setOnAction(e -> {
 			animationTimer.stop();
-		});
+		});	
 		
-		simPane.getChildren().addAll(addButton, stopButton, playButton);		
+		simHBox.getChildren().addAll(addButton, stopButton, playButton);
+		simPane.setBottom(simHBox);
+		simHBox.setAlignment(Pos.CENTER);
+		simHBox.setSpacing(10);
 		
 	}
 	
 	private void createAnimationTimer() {
 //		System.out.println("createAnimationTimer");
+		
+		if (animationTimer != null) {
+			animationTimer.stop();
+		}
+		
 		
 		animationTimer = new AnimationTimer()
         {

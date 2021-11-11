@@ -27,7 +27,7 @@ public class Drone {
 		direction = d;
 		id = count++;
 		dx = 0;		// set default direction of movement: North
-		dy = 1;
+		dy = 3;
 	}	
 
 	/**
@@ -94,35 +94,35 @@ public class Drone {
 	public void setDirection() {		
 		if (this.direction == direction.NORTH) {
 			dx = 0;
-			dy = -1;
+			dy = -3;
 		}
 		if (this.direction == direction.NORTH_EAST) {
-			dx = 1;
-			dy = -1;
+			dx = 3;
+			dy = -3;
 		}
 		if (this.direction == direction.EAST) {
-			dx = 1;
+			dx = 3;
 			dy = 0;
 		}
 		if (this.direction == direction.SOUTH_EAST) {
-			dx = 1;
-			dy = 1;
+			dx = 3;
+			dy = 3;
 		}
 		if (this.direction == direction.SOUTH) {
 			dx = 0;
-			dy = 1;
+			dy = 3;
 		}
 		if (this.direction == direction.SOUTH_WEST) {
-			dx = -1;
-			dy = 1;
+			dx = -3;
+			dy = 3;
 		}
 		if (this.direction == direction.WEST) {
-			dx = -1;
+			dx = -3;
 			dy = 0;
 		}
 		if (this.direction == direction.NORTH_WEST) {
-			dx = -1;
-			dy = -1;
+			dx = -3;
+			dy = -3;
 		}
 	}
 	
