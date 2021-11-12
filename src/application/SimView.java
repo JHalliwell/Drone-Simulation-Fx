@@ -24,15 +24,15 @@ public class SimView extends VBox{
 	
 	private Stage simStage;
 	private Scene simScene;
-	private Canvas simCanvas;
-	private GraphicsContext simGc;
+
 	private BorderPane simPane;
 	private HBox simHBox;
-	private MenuBar simMenu;
-	
-	private DroneArena droneArena;
 
-	private ArenaGrid arenaGrid;
+	
+	private MyMenu simMenu;
+	private Buttons buttons;
+	
+	private DroneArena arena;
 	
 	private AnimationTimer animationTimer;
 
@@ -41,48 +41,32 @@ public class SimView extends VBox{
 	
 	public SimView() {
 				
+		// Initialise Stage 		
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR");
 		simStage.setResizable(false);		
-				
+		
+		
+		// Initialise Border Pane
 		simPane = new BorderPane();
 		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);	
 		
-		createButtons();
+		// Create drone arena
 		createArena();
-		createCursorCoords();
-		createMenuBar();
 		
+		// Initialise menu, buttons
+		simMenu = new MyMenu();
+		buttons = new Buttons(arena);
+		
+		// Add to border pane: menu, buttons
+		simPane.setTop(simMenu);
+		simPane.setBottom(buttons);		
+		
+		// Initialise scene and add pane, set scene to stage
 		simScene = new Scene(simPane);
 		simStage.setScene(simScene);
 		
-	}	
-	
-	private void createMenuBar() {
-		
-		simMenu = new MenuBar();
-		
-		Menu menuFile = new Menu("File");
-		
-		MenuItem menuSave = new MenuItem("Save");
-		menuSave.setOnAction(e -> {
-			
-		});
-		
-		MenuItem menuLoad =  new MenuItem("Load");
-		menuLoad.setOnAction(e -> {
-			
-		});
-		
-		MenuItem menuExit = new MenuItem("Exit");
-		menuExit.setOnAction(e -> {
-			System.exit(0);
-		});
-		
-		menuFile.getItems().addAll(menuSave, menuLoad, menuExit);		
-		simMenu.getMenus().add(menuFile);
-		simPane.setTop(simMenu);
-	}
+	}		
 	
 	private void createCursorCoords() {		
 		
@@ -110,70 +94,12 @@ public class SimView extends VBox{
 	 */
 	public void createArena() {		
 		
-		droneArena = new DroneArena();
-		//simPane.getChildren().add(droneArena.getArenaCanvas());
-		simPane.setCenter(droneArena.getArenaCanvas());
-		droneArena.drawArena();		
+		arena = new DroneArena();
+		simPane.setCenter(arena.getArenaCanvas());
+		arena.drawArena();		
 		
-	}
-	
-	/**
-	 * Creates buttons and adds to pane
-	 */
-	public void createButtons() {
-		
-		simHBox = new HBox();
-		
-		Button addButton = new Button();
-		addButton.setText("Add Drone");		
-		
-		addButton.setOnAction(e -> {			
+	}	
 
-			droneArena.addDrone();
-			droneArena.drawArena();	
-						
-		});
-		
-		Button playButton = new Button();
-		playButton.setText("Move Drones");
-		playButton.setOnAction(e -> {
-			createAnimationTimer();
-		});
-		
-		Button stopButton = new Button();
-		stopButton.setText("Stop");	
-		stopButton.setOnAction(e -> {
-			animationTimer.stop();
-		});	
-		
-		simHBox.getChildren().addAll(addButton, stopButton, playButton);
-		simPane.setBottom(simHBox);
-		simHBox.setAlignment(Pos.CENTER);
-		simHBox.setSpacing(10);
-		
-	}
-	
-	private void createAnimationTimer() {
-//		System.out.println("createAnimationTimer");
-		
-		if (animationTimer != null) {
-			animationTimer.stop();
-		}
-		
-		
-		animationTimer = new AnimationTimer()
-        {
-            @Override
-            public void handle(long now)
-            {
-//            	System.out.println("createAnimaionTimer().handle()");
-            	droneArena.moveAllDrones();
-            	droneArena.drawArena();
-            }		
-        };
-        animationTimer.start();
-	}
-	
 	/**
 	 * 
 	 * @return SimStage
