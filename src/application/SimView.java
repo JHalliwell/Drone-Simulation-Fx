@@ -74,11 +74,11 @@ public class SimView extends VBox{
 		arena = new DroneArena();
 		
 		// Initialise menu, buttons
-		//simMenu = new MyMenu(this, arena);
+		simMenu = new MyMenu(this, arena, simCanvas);
 		buttons = new Buttons(arena, simCanvas);
 		
 		// Add to border pane: menu, buttons
-		//simPane.setTop(simMenu);
+		simPane.setTop(simMenu);
 		simPane.setBottom(buttons);	
 		simPane.setCenter(root);
 		
