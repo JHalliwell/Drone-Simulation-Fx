@@ -1,5 +1,6 @@
 package application;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,12 +9,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class DroneArena {
+public class DroneArena implements Serializable {
 	
-	public static final int ARENA_WIDTH = 700;
-	public static final int ARENA_HEIGHT = 700;	
-
-	private Canvas arenaCanvas;
+	private int arenaWidth;
+	private int arenaHeight;
 	
 	private ArrayList<Drone> manyDrones;
 	
@@ -22,28 +21,20 @@ public class DroneArena {
 	 */
 	DroneArena() {
 		
-		manyDrones = new ArrayList<Drone>();		
-		arenaCanvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
+		manyDrones = new ArrayList<Drone>();	
 		
 	}
 
 	/**
 	 * Draws arena and drones to canvas as graphics context
 	 */
-	public void drawArena() {	
-//		System.out.println("drawArena()");
+	public void drawArena(MyCanvas canvas) {	  
 		
-		GraphicsContext gc = arenaCanvas.getGraphicsContext2D();
-        gc.setFill(Color.AQUA);
-        gc.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);   
-        
-		gc.setFill(Color.BLACK);
-        for (int i = 0; i < manyDrones.size(); i++) {
-        	
-        	int x = manyDrones.get(i).getXPos();
-        	int y = manyDrones.get(i).getYPos();
-        	
-        	gc.fillRect(x, y, Drone.WIDTH, Drone.HEIGHT);
+		canvas.clear();
+		
+        for (int i = 0; i < manyDrones.size(); i++) {        	
+        	canvas.drawDrone(manyDrones.get(i).getXPos(), manyDrones.get(i).getYPos(), 
+        			Drone.WIDTH, Drone.HEIGHT);      
         }
        
 	}
@@ -59,8 +50,8 @@ public class DroneArena {
 		Direction d = Direction.EAST; // Initialise, but will be made random later
 		do {
 			Random ranGen = new Random();
-			x = ranGen.nextInt(ARENA_WIDTH - Drone.WIDTH);
-			y = ranGen.nextInt(ARENA_HEIGHT - Drone.HEIGHT);
+			x = ranGen.nextInt(SimView.ARENA_WIDTH - Drone.WIDTH);
+			y = ranGen.nextInt(SimView.ARENA_HEIGHT - Drone.HEIGHT);
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
 		
 //		System.out.println("addDrone() x=" + x + " y=" + y);
@@ -96,8 +87,8 @@ public class DroneArena {
 	 * @return		false: drone move here, true: drone can move here
 	 */
 	public boolean canMoveHere(int id, int x, int y) {		
-		if (x <= 0 || x >= ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
-				y >= ARENA_HEIGHT - Drone.HEIGHT) {
+		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
+				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
 			System.out.println("border conditions");
 			return false;
 		}
@@ -107,16 +98,6 @@ public class DroneArena {
 			return false;
 		}
 		return true;
-	}
-	
-	/**
-	 * 
-	 * @return arenaCanvas
-	 */
-	public Canvas getArenaCanvas() {
-		
-		return arenaCanvas;
-		
 	}
 	
 	/**
@@ -155,5 +136,50 @@ public class DroneArena {
 		}
 		return null;
 	}
+	
+	public void printArenaInfo() {
+		
+		for (int i = 0; i < manyDrones.size(); i++) {
+			System.out.println(manyDrones.get(i).getId());
+		}
+		
+	}
+	
+	/**
+	 * Setter for arenaCanvas
+	 * @param canvas	canvas to set 
+	 */
+//	public void setCanvas(Canvas canvas) {
+//		
+//		this.arenaCanvas = canvas;
+//		
+//	}
+	
+	
+	public void setDrones(ArrayList<Drone> drones) {
+		
+		this.manyDrones = drones;
+		
+	}
+	
+	/**
+	 * Getter for list of drones
+	 * @return		list of drones
+	 */
+	public ArrayList<Drone> getDrones() {
+		
+		return this.manyDrones;
+		
+	}
+	
+	/**	 
+	 * @return this arena
+	 */
+	public DroneArena getArena() {
+		
+		return this;
+		
+	}
+	
 
 }

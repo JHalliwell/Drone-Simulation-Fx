@@ -1,5 +1,16 @@
 package application;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -10,10 +21,16 @@ public class MyMenu extends MenuBar {
 	
 	MenuItem save, load, exit;
 	
-	public MyMenu() {		
+	DroneArena arena;
+	SimView simView;
+	
+	public MyMenu(SimView simView, DroneArena arena) {		
 		
-		createSave();
-		createLoad();
+		this.arena = arena;
+		this.simView = simView;
+		
+//		createSave();
+//		createLoad();
 		createExit();
 		createFile();
 		
@@ -34,12 +51,58 @@ public class MyMenu extends MenuBar {
 	 * Create save option, to save drone arena
 	 */
 	private void createSave() {
-		
-		save = new MenuItem("Save");
-		
-		save.setOnAction(e -> {
-			
-		});
+//		
+//		
+//		save = new MenuItem("Save");
+//		
+//		save.setOnAction(e -> {
+//			
+//			// Set a filter of a file type to save
+//			FileFilter filter = new FileFilter() {
+//				@Override
+//				public boolean accept(File f) {
+//					if (f.getAbsolutePath().endsWith(".bin")) return true;
+//					if (f.isDirectory()) return true;
+//					return false;
+//				}
+//
+//				@Override
+//				public String getDescription() {
+//					return "bin";
+//				}
+//			};
+//
+//			// Saves arena state
+//			try {
+//				JFileChooser chooser = new JFileChooser("droneSaves"); // Instantiate, open at designated folder
+//				chooser.setFileFilter(filter); // Assign filter
+//				int returnVal = chooser.showSaveDialog(null); // returns what is chosen
+//				if (returnVal == JFileChooser.APPROVE_OPTION) {
+//					File selFile = chooser.getSelectedFile();
+//					ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(selFile));
+//					os.writeObject(arena.getArena());
+//					os.close();
+//				}
+////			} catch (IOException f) {
+////				f.printStackTrace();
+////			}
+//			
+//			try {
+//				
+//				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("droneSaves/saving.bin"));
+//				
+//				out.writeObject(arena);
+//				out.close();
+//				
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			
+//		});	
 		
 	}
 	
@@ -48,11 +111,71 @@ public class MyMenu extends MenuBar {
 	 */
 	private void createLoad() {
 		
-		load = new MenuItem("Load");
-		
-		load.setOnAction(e -> {
-			
-		});
+//		load = new MenuItem("Load");
+//		
+//		load.setOnAction(e -> {
+//			
+//			// Set a filter of a file type to save
+//			FileFilter filter = new FileFilter() {
+//				@Override
+//				public boolean accept(File f) {
+//					if (f.getAbsolutePath().endsWith(".bin")) return true;
+//					if (f.isDirectory()) return true;
+//					return false;
+//				}
+//				@Override
+//				public String getDescription() {
+//					return "bin";
+//				}
+//			};
+//
+//			try {
+//				JFileChooser chooser = new JFileChooser("droneSaves");
+//				chooser.setFileFilter(filter);
+//				int returnVal = chooser.showOpenDialog(null);
+//				if (returnVal == JFileChooser.APPROVE_OPTION) {
+//					File selFile = chooser.getSelectedFile();
+//					if(selFile.isFile()){
+//						ObjectInputStream is = new ObjectInputStream(new FileInputStream(selFile));
+//						DroneArena temp = (DroneArena)is.readObject();
+//						is.close();						
+//						
+//						// Transfer from loaded object
+//						arena.setCanvas(temp.getCanvas());
+//						arena.setDrones(temp.getDrones());
+//						arena.drawArena();
+//						
+//					}
+//				}
+//			} catch (IOException err) {
+//				err.printStackTrace();
+//			} catch (ClassNotFoundException err) {
+//				err.printStackTrace();
+//			}
+//			
+//			try {
+//				
+//				ObjectInputStream in = new ObjectInputStream(new FileInputStream("droneSaves/saving.bin"));
+//				
+//				try {
+//					
+//					DroneArena loadedArena = (DroneArena) in.readObject();
+//					loadedArena.printArenaInfo();
+//					simView.addArenaToPane(loadedArena);
+//										
+//				} catch (ClassNotFoundException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		});
 		
 	}
 	

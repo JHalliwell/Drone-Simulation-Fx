@@ -5,16 +5,18 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
-public class Buttons extends HBox{
+public class Buttons extends HBox {
 
 	private Button addDrone, play, stop;
 	
+	MyCanvas canvas;
 	DroneArena arena;
 	private AnimationTimer animationTimer;
 	
-	public Buttons(DroneArena arena) {
+	public Buttons(DroneArena arena, MyCanvas canvas) {
 		
 		this.arena = arena;
+		this.canvas = canvas;
 		
 		createAddDrone();
 		createPlay();
@@ -77,7 +79,7 @@ public class Buttons extends HBox{
 	            public void handle(long now)
 	            {
 	            	arena.moveAllDrones();
-	            	arena.drawArena();
+	            	arena.drawArena(canvas);
 	            }		
 	        };
 	        animationTimer.start();
@@ -96,7 +98,7 @@ public class Buttons extends HBox{
 		addDrone.setOnAction(e -> {
 			
 			arena.addDrone();
-			arena.drawArena();
+			arena.drawArena(canvas);
 			
 		});
 		

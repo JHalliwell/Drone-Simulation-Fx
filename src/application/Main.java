@@ -17,12 +17,15 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+    	
         SimView simView = new SimView();        
         stage = simView.getSimStage();           
         stage.show();
+        
     }
 
     public static void main(String[] args) {
         launch();
     }
+    
 }

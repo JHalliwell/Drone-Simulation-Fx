@@ -1,9 +1,12 @@
 package application;
 
+import java.io.Serializable;
+
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
-public class Drone {
+public class Drone implements Serializable {
+	
 	private int x, y, id, dx, dy;
 	private static int count = 0;
 	private Direction direction;
@@ -28,6 +31,7 @@ public class Drone {
 		id = count++;
 		dx = 0;		// set default direction of movement: North
 		dy = 3;
+		
 	}	
 
 	/**
@@ -38,15 +42,13 @@ public class Drone {
 	 */
 	public boolean isHere(int x, int y) {
 		
-//		System.out.println("this.x=" + this.x + " this.y=" + this.y +
-//				" x=" + x + " y=" + y);
-		
 		if (this.x > (x - WIDTH - 2) && 
 				this.x < (x + WIDTH + 2) &&
 				this.y > (y - HEIGHT - 2) && 
 				this.y < (y + HEIGHT + 2)) return true;			
 		
 		return false;
+		
 	}	
 
 	/**
@@ -55,18 +57,14 @@ public class Drone {
 	 * @param arena
 	 */
 	public void tryToMove(DroneArena arena) {
-//		System.out.println("tryToMove()");
+
 		int newx = x + dx;
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
 		
-		while (!arena.canMoveHere(this.id, newx, newy)) {
+		while (!arena.canMoveHere(this.id, newx, newy)) {			
 			
-//			System.out.println("tryToMove() -> while (!canMoveHere(" + newx + ", " + 
-//					newy + ")");
-			
-			
-			// If the drone cant move anywhere, we move all drones again i
+			// If the drone cant move anywhere, we move all drones again 
 			if (count > 8) { // 8 is amount of possible directions	
 				// If the drone still cant move anywhere, loop from higher id
 				if (droneMoveCount > 5) {
@@ -145,4 +143,5 @@ public class Drone {
 	public int getId() {
 		return this.id;
 	}
+	
 }
