@@ -31,10 +31,9 @@ public class DroneArena implements Serializable {
 	public void drawArena(MyCanvas canvas) {	  
 		
 		canvas.clear();
-		
-        for (int i = 0; i < manyDrones.size(); i++) {        	
-        	canvas.drawDrone(manyDrones.get(i).getXPos(), manyDrones.get(i).getYPos(), 
-        			Drone.WIDTH, Drone.HEIGHT);      
+        
+        for (Drone d : manyDrones) {
+        	canvas.drawDrone(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
         }
        
 	}
@@ -42,8 +41,9 @@ public class DroneArena implements Serializable {
 	/**
 	 * Adds a drone to the arena in random area moving random direction,
 	 * adds to arrayList of drones, ensuring no other drone at location
+	 * @param	type of drone to add 
 	 */
-	public void addDrone() {
+	public void addDrone(int type) {
 		
 		int x;
 		int y;
@@ -54,9 +54,8 @@ public class DroneArena implements Serializable {
 			y = ranGen.nextInt(SimView.ARENA_HEIGHT - Drone.HEIGHT);
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
 		
-//		System.out.println("addDrone() x=" + x + " y=" + y);
-
-		manyDrones.add(new Drone(x, y, d.random()));
+		if (type == 0) manyDrones.add(new Drone(x, y, d.random()));
+		if (type == 1) manyDrones.add(new AttackDrone(x, y, d.random()));		
 		
 	}
 	
@@ -69,16 +68,7 @@ public class DroneArena implements Serializable {
 		for (Drone d : manyDrones) d.tryToMove(this);
 		
 	}
-	
-	/**
-	 * Loop through drones from a certain id, moving each once
-	 * @param i
-	 */
-	public void moveAllDronesFromPoint(int i) {
-		for (i += 1; i < manyDrones.size(); i++) {
-			manyDrones.get(i).tryToMove(this);
-		}
-	}
+
 	/**
 	 * Determines whether a drone can be moved to x,y pos, checked if
 	 * x,y is in arena and if there's a drone there already
@@ -86,18 +76,61 @@ public class DroneArena implements Serializable {
 	 * @param y		y co-ord
 	 * @return		false: drone move here, true: drone can move here
 	 */
-	public boolean canMoveHere(int id, int x, int y) {		
+	public boolean canMoveHere(int id, int x, int y) {	
+		
 		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
 				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
 			System.out.println("border conditions");
 			return false;
 		}
 		
-		if (getDroneAtId(id, x, y) != null) {		
-			System.out.println("getDroneAt != null");
+		if (getDroneAt(id, x, y) != null) {		
 			return false;
 		}
+		
 		return true;
+		
+	}
+
+	/**
+	 * Checks if the drone is within the border, and if other attack drone is at x,y
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean killerCanMoveHere(int id, int x, int y) {
+		
+		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
+				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
+			System.out.println("border conditions");
+			return false;
+		}
+		
+		for (Drone d : manyDrones) {
+			if (d.getId() == id) continue;
+			if (d instanceof AttackDrone && d.isHere(x, y)) return false;
+			if (!(d instanceof AttackDrone) && d.isHere(x, y)) manyDrones.remove(d);
+		}		
+		
+		return true;
+		
+	}
+	
+	public boolean isDroneNear(int id, int x, int y, int distance) {
+		
+		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
+				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
+			System.out.println("border conditions");
+			return false;
+		}
+		
+		if (getDroneAt(id, x, y) != null) {		
+			return false;
+		}
+		
+		return true;
+		
 	}
 	
 	/**
@@ -107,19 +140,15 @@ public class DroneArena implements Serializable {
 	 * @param y		drone y pos
 	 * @return null if no Drone there, or Drone if there is
 	 */
-	public Drone getDroneAtId(int id, int x, int y) {
+	public Drone getDroneAt(int id, int x, int y) {
 		
-		for (int i = 0; i < manyDrones.size(); i++) {
-			
-			if (manyDrones.get(i).getId() == id) {
-				continue;
-			}
-			
-			if (manyDrones.get(i).isHere(x, y)) {
-				return manyDrones.get(i);
-			}
+		for (Drone d : manyDrones) {
+			if (d.getId() == id) continue;
+			if (d.isHere(x, y)) return d;			
 		}
-		return null;
+		
+		return null;		
+
 	}
 	
 	/**
@@ -129,33 +158,14 @@ public class DroneArena implements Serializable {
 	 * @return null if no Drone there, or Drone if there is
 	 */
 	public Drone getDroneAt(int x, int y) {
+		
 		for (Drone d : manyDrones) {
-			if (d.isHere(x, y)) {
-				return d;
-			}
+			if (d.isHere(x, y)) return d;
 		}
+		
 		return null;
 	}
-	
-	public void printArenaInfo() {
 		
-		for (int i = 0; i < manyDrones.size(); i++) {
-			System.out.println(manyDrones.get(i).getId());
-		}
-		
-	}
-	
-	/**
-	 * Setter for arenaCanvas
-	 * @param canvas	canvas to set 
-	 */
-//	public void setCanvas(Canvas canvas) {
-//		
-//		this.arenaCanvas = canvas;
-//		
-//	}
-	
-	
 	public void setDrones(ArrayList<Drone> drones) {
 		
 		this.manyDrones = drones;
@@ -170,16 +180,15 @@ public class DroneArena implements Serializable {
 		
 		return this.manyDrones;
 		
-	}
+	}	
 	
-	/**	 
-	 * @return this arena
+	/**	 * 
+	 * @return		this arena
 	 */
 	public DroneArena getArena() {
 		
 		return this;
 		
 	}
-	
 
 }

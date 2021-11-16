@@ -7,14 +7,13 @@ import javafx.scene.shape.Polygon;
 
 public class Drone implements Serializable {
 	
-	private int x, y, id, dx, dy;
-	private static int count = 0;
-	private Direction direction;
+	protected int x, y, id, dx, dy;
+	protected static int count = 0;
+	protected Direction direction;
+	protected String colour;
 	
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 20;
-	
-	private static int droneMoveCount = 0;
 	
 	/**
 	 * Construct drone at position x,y
@@ -26,12 +25,11 @@ public class Drone implements Serializable {
 		
 		this.x = x;
 		this.y = y;
+		colour = "black";		
 
-		direction = d;
+		direction = d.random();
 		id = count++;
-		dx = 0;		// set default direction of movement: North
-		dy = 3;
-		
+		this.setDirection();
 	}	
 
 	/**
@@ -63,17 +61,7 @@ public class Drone implements Serializable {
 		int count = 0; // To see if all directions have been tried		
 		
 		while (!arena.canMoveHere(this.id, newx, newy)) {			
-			
-			// If the drone cant move anywhere, we move all drones again 
-			if (count > 8) { // 8 is amount of possible directions	
-				// If the drone still cant move anywhere, loop from higher id
-				if (droneMoveCount > 5) {
-					arena.moveAllDronesFromPoint(this.id);
-				}
-				droneMoveCount++;
-				arena.moveAllDrones();
-				count = 0;
-			}
+			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
 						
 			this.direction = direction.random();	// Move to next direction			
 			this.setDirection();	// Set dx,dy from direction
@@ -82,46 +70,64 @@ public class Drone implements Serializable {
 			count++;
 		};
 		
-		x = newx;
-		y = newy;
+		// Only move if drone can move to 'empty' location
+		if (count <= 8) {			
+			x = newx;
+			y = newy;
+		}
+		
 	}	
 	
 	/**
 	 * Change dx and dy to correspond to Direction enum
 	 */
-	public void setDirection() {		
+	public void setDirection() {	
+		
 		if (this.direction == direction.NORTH) {
 			dx = 0;
-			dy = -3;
+			dy = -2;
 		}
 		if (this.direction == direction.NORTH_EAST) {
-			dx = 3;
-			dy = -3;
+			dx = 2;
+			dy = -2;
 		}
 		if (this.direction == direction.EAST) {
-			dx = 3;
+			dx = 2;
 			dy = 0;
 		}
 		if (this.direction == direction.SOUTH_EAST) {
-			dx = 3;
-			dy = 3;
+			dx = 2;
+			dy = 2;
 		}
 		if (this.direction == direction.SOUTH) {
 			dx = 0;
-			dy = 3;
+			dy = 2;
 		}
 		if (this.direction == direction.SOUTH_WEST) {
-			dx = -3;
-			dy = 3;
+			dx = -2;
+			dy = 2;
 		}
 		if (this.direction == direction.WEST) {
-			dx = -3;
+			dx = -2;
 			dy = 0;
 		}
 		if (this.direction == direction.NORTH_WEST) {
-			dx = -3;
-			dy = -3;
+			dx = -2;
+			dy = -2;
 		}
+		
+	}
+	
+	public int getHeight() {
+		return HEIGHT;
+	}
+	
+	public int getWidth() {
+		return WIDTH;
+	}
+	
+	public String getColour() {
+		return colour;
 	}
 	
 	public int getXSpeed() {

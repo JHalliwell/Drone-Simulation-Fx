@@ -28,10 +28,18 @@ public class MyCanvas {
 	 * @param width		drone width
 	 * @param height	drone height
 	 */
-	public void drawDrone(int x, int y, int width, int height) {
+	public void drawDrone(int x, int y, int width, int height, String colour) {
 		
-		graphicsContext.setFill(Color.BLACK);
-		graphicsContext.fillRect(x, y, Drone.WIDTH, Drone.HEIGHT);
+		if (colour == "black") {
+			graphicsContext.setFill(Color.BLACK);
+			graphicsContext.fillRect(x, y, width, height);
+		}
+		
+		if (colour == "red") {
+			graphicsContext.setFill(Color.RED);
+			graphicsContext.fillRect(x, y, width, height);
+		}
+		
 		
 	}
 	

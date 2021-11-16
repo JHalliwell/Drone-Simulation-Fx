@@ -46,8 +46,7 @@ public class SimView extends VBox{
 		// Initialise Stage 		
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR 29020945");
-		simStage.setResizable(false);		
-		
+		simStage.setResizable(false);				
 		
 		// Initialise Border Pane
 		simPane = new BorderPane();
@@ -98,24 +97,5 @@ public class SimView extends VBox{
 		
 	}
 	
-//	private void createCursorCoords() {		
-//		
-//		Label mouseCoords = new Label();
-//		mouseCoords.setLayoutX(100);
-//		mouseCoords.setLayoutY(425);
-//		mouseCoords.setScaleX(1);
-//		mouseCoords.setScaleY(1);
-//		
-//		simPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-//			@Override public void handle(MouseEvent event) {
-//		        String msg =
-//		          ("x: " + event.getX() + ", y: " + event.getY());
-//
-//		        mouseCoords.setText(msg);
-//		      }
-//		});
-//		
-//		simPane.getChildren().add(mouseCoords);
-//		
-//	}
 }
+	
