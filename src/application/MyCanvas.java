@@ -40,6 +40,10 @@ public class MyCanvas {
 			graphicsContext.fillRect(x, y, width, height);
 		}
 		
+		if (colour == "orange") {
+			graphicsContext.setFill(Color.ORANGE);
+			graphicsContext.fillRect(x, y, width, height);	
+		}
 		
 	}
 	

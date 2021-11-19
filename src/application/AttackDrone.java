@@ -21,7 +21,7 @@ public class AttackDrone extends Drone {
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
 		
-		while (!arena.killerCanMoveHere(this.id, newx, newy)) {			
+		while (!arena.killerCanMoveHere(this.id, newx, newy, allowedDistance)) {			
 			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
 						
 			this.direction = direction.random();	// Move to next direction			

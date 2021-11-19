@@ -7,7 +7,7 @@ import javafx.scene.shape.Polygon;
 
 public class Drone implements Serializable {
 	
-	protected int x, y, id, dx, dy;
+	protected int x, y, id, dx, dy, allowedDistance;
 	protected static int count = 0;
 	protected Direction direction;
 	protected String colour;
@@ -21,10 +21,11 @@ public class Drone implements Serializable {
 	 * @param y		drones y position
 	 * @param d		direction of drone
 	 */
-	public Drone(int x, int y, Direction d) {
+public Drone(int x, int y, Direction d) {
 		
 		this.x = x;
 		this.y = y;
+		this.allowedDistance = 2;
 		colour = "black";		
 
 		direction = d.random();
@@ -32,6 +33,23 @@ public class Drone implements Serializable {
 		this.setDirection();
 	}	
 
+	/**
+	 * Is the drone at this x,y position?
+	 * @param x		x position
+	 * @param y		y position
+	 * @return		true if drone is at x,y. False otherwise
+	 */
+	public boolean isHere(int x, int y, int distance) {
+		
+		if (this.x > (x - WIDTH - distance) && 
+				this.x < (x + WIDTH + distance) &&
+				this.y > (y - HEIGHT - distance) && 
+				this.y < (y + HEIGHT + distance)) return true;			
+		
+		return false;
+		
+	}	
+	
 	/**
 	 * Is the drone at this x,y position?
 	 * @param x		x position

@@ -55,7 +55,8 @@ public class DroneArena implements Serializable {
 		} while (getDroneAt(x, y) != null); // Check for another drone at location (null if no drone)
 		
 		if (type == 0) manyDrones.add(new Drone(x, y, d.random()));
-		if (type == 1) manyDrones.add(new AttackDrone(x, y, d.random()));		
+		if (type == 1) manyDrones.add(new AttackDrone(x, y, d.random()));	
+		if (type == 2) manyDrones.add(new CautiousDrone(x, y, d.random()));
 		
 	}
 	
@@ -64,8 +65,9 @@ public class DroneArena implements Serializable {
 	 */
 	public void moveAllDrones() {
 		
-//		System.out.println("moveAllDrones()");
-		for (Drone d : manyDrones) d.tryToMove(this);
+		for (Drone d : manyDrones) {			
+			d.tryToMove(this);
+		}
 		
 	}
 
@@ -79,8 +81,7 @@ public class DroneArena implements Serializable {
 	public boolean canMoveHere(int id, int x, int y) {	
 		
 		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
-				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
-			System.out.println("border conditions");
+				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {			
 			return false;
 		}
 		
@@ -99,37 +100,33 @@ public class DroneArena implements Serializable {
 	 * @param y
 	 * @return
 	 */
-	public boolean killerCanMoveHere(int id, int x, int y) {
+	public boolean killerCanMoveHere(int id, int x, int y, int distance) {
 		
 		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
 				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
-			System.out.println("border conditions");
 			return false;
 		}
 		
 		for (Drone d : manyDrones) {
 			if (d.getId() == id) continue;
-			if (d instanceof AttackDrone && d.isHere(x, y)) return false;
-			if (!(d instanceof AttackDrone) && d.isHere(x, y)) manyDrones.remove(d);
+			if (d instanceof AttackDrone && d.isHere(x, y, distance)) return false;
+			if (!(d instanceof AttackDrone) && d.isHere(x, y, distance)) manyDrones.remove(d);
 		}		
 		
 		return true;
 		
 	}
 	
-	public boolean isDroneNear(int id, int x, int y, int distance) {
+	public Drone isDroneNear(int id, int x, int y, int distance) {
+			
+		Drone nearbyDrone;
 		
-		if (x <= 0 || x >= SimView.ARENA_WIDTH - Drone.WIDTH || y <= 0 || 
-				y >= SimView.ARENA_HEIGHT - Drone.HEIGHT) {
-			System.out.println("border conditions");
-			return false;
+		if ((nearbyDrone = getDroneAtDistance(id, x, y, distance)) != null) {	
+			System.out.println("Drone is near");			
+			return nearbyDrone;
 		}
 		
-		if (getDroneAt(id, x, y) != null) {		
-			return false;
-		}
-		
-		return true;
+		return null;
 		
 	}
 	
@@ -145,6 +142,24 @@ public class DroneArena implements Serializable {
 		for (Drone d : manyDrones) {
 			if (d.getId() == id) continue;
 			if (d.isHere(x, y)) return d;			
+		}
+		
+		return null;		
+
+	}
+	
+	/**
+	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
+	 * @param id	id of a drone to ignore
+	 * @param x		drone x pos
+	 * @param y		drone y pos
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAtDistance(int id, int x, int y, int distance) {
+		
+		for (Drone d : manyDrones) {
+			if (d.getId() == id) continue;
+			if (d.isHere(x, y, distance)) return d;			
 		}
 		
 		return null;		

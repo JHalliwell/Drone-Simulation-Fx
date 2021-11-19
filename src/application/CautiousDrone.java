@@ -6,27 +6,84 @@ public class CautiousDrone extends Drone {
 		
 		super(x, y, d);
 		
+		allowedDistance = 50;
 		colour = "orange";
 		dy = 3;
 		dx = 3;
 		
 	}
 	
-public void tryToMove(DroneArena arena) {
+	public void tryToMove(DroneArena arena) {
+		
+		int newx = x;
+		int newy = y;
+		
+		Drone nearbyDrone;
+		
+		if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance)) != null) {			
+			if (nearbyDrone.getXPos() < x) {
+				if (arena.canMoveHere(id, newx + dx, newy)) newx += dx;
+			}
+			
+			if (nearbyDrone.getXPos() > x) {
+				if (arena.canMoveHere(id, newx - dx, newy)) newx -= dx;
+			}
+			
+			if (nearbyDrone.getYPos() < y) {
+				if (arena.canMoveHere(id, newx, newy + dy)) newy += dy;
+			}
+			
+			if (nearbyDrone.getYPos() > y) {
+				if (arena.canMoveHere(id, newx, newy - dy)) newy -= dy;
+			}				
+		}		
+		
+		x = newx;
+		y = newy;
 
-	    int count = 0; // To see if all directions have been tried		
-		
-		while (arena.isDroneNear(this.id, x, y, 10)) {			
-			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
-						
-			this.direction = direction.next();	// Move to next direction			
-			this.setDirection();	// Set dx,dy from direction
-						
-			count++;
-		};		
-		
-		
 	}
+	
+//	public void tryToMove(DroneArena arena) {
+//		
+//		int newx = x;
+//		int newy = y;
+//		
+//		System.out.println("newx :" + newx + " newy: " + newy);
+//		
+//		Drone nearbyDrone;
+//		
+//		if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance)) != null) {
+//			
+//			if (nearbyDrone.getXPos() < x) {
+//				System.out.println("1x < 2x");
+//				
+//				x += dx;
+//			}
+//			
+//			if (nearbyDrone.getXPos() > x) {
+//				System.out.println("1x < 2x");
+//				
+//				x -= dx;
+//			}
+//			
+//			if (nearbyDrone.getYPos() < y) {
+//				System.out.println("1x < 2x");
+//				
+//				y += dy;
+//			}
+//			
+//			if (nearbyDrone.getYPos() > y) {
+//				System.out.println("1x < 2x");
+//				
+//				y -= dy;
+//			}
+//			
+//		}		
+//
+//	}
+	
+	
+	
 
 /**
  * Change dx and dy to correspond to Direction enum

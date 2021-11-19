@@ -23,9 +23,14 @@ public class Test extends Application {
 	private int shapeOneY = 10;
 	private int shapeTwoX = 210;
 	private int shapeTwoY = 210;
+
+	private int shapeOneDx = 2;
+	private int shapeOneDy = 2;
+	private int shapeTwoDy = 2;
+	private int shapeTwoDx = 2;
 	
-	private static int SHAPE_WIDTH = 40;
-	private static int SHAPE_HEIGHT = 40;
+	private static int SHAPE_WIDTH = 30;
+	private static int SHAPE_HEIGHT = 30;
 	
 	private Canvas canvas;
 	private Pane pane;
@@ -42,15 +47,17 @@ public class Test extends Application {
     public void start(Stage stage) throws IOException {        
        
         stage.setResizable(false);
-        stage.setMinWidth(500);
-        stage.setMinHeight(500);
+        stage.setMinWidth(800);
+        stage.setMinHeight(800);
         
         pane = new Pane();
-        canvas = new Canvas(500,500);        
+        canvas = new Canvas(800,800);        
         
         pane.getChildren().add(canvas);
+        pane.setMinSize(800, 800);
         
         scene = new Scene(pane);
+        
         stage.setScene(scene);
         stage.show();
         
@@ -61,6 +68,7 @@ public class Test extends Application {
             {
             	moveShapes();
                 drawShapes();
+                drawInfo();
             }		
         };
         animationTimer.start();        
@@ -70,22 +78,103 @@ public class Test extends Application {
     }
     
     private void moveShapes() {
-    	if (wKeyPressed) shapeOneY--;
-    	if (aKeyPressed) shapeOneX--;
-    	if (sKeyPressed) shapeOneY++;
-    	if (dKeyPressed) shapeOneX++;
+    	
+    	if (wKeyPressed) shapeOneY -= shapeOneDy;
+    	if (aKeyPressed) shapeOneX -= shapeOneDx;
+    	if (sKeyPressed) shapeOneY += shapeOneDy;
+    	if (dKeyPressed) shapeOneX += shapeOneDx;
+    	
+    	int newx = shapeTwoX;
+    	int newy = shapeTwoY;
+    	
+    	
+    	if (shapeIsNear()) {
+    		
+    		System.out.println("0  " + newx + ", " + newy);
+    		
+    		if (shapeOneX < shapeTwoX) {
+    			System.out.println("1x < 2x");
+    			if(canGoHere(newx - shapeTwoDx, newy)) { 
+    				newx += shapeTwoDx;
+        			System.out.println("1  " + newx + ", " + newy);
+    			}
+    				
+    		}
+    		
+    		if (shapeOneX > shapeTwoX) {
+    			System.out.println("1x > 2x");
+    			if(canGoHere(newx - shapeTwoDx, newy)) {
+    				newx -= shapeTwoDx;
+        			System.out.println("2  " + newx + ", " + newy);
+    			}
+    				
+    		}
+    		
+    		if (shapeOneY < shapeTwoY) {
+    			System.out.println("1y < 2y");
+    			if(canGoHere(newx, newy + shapeTwoDy)) {
+    				newy += shapeTwoDy;
+        			System.out.println("3  " + newx + ", " + newy);
+    			}
+    				
+    		}
+    		
+    		if (shapeOneY > shapeTwoY) {
+    			System.out.println("1y > 2y");
+    			if(canGoHere(newx, newy - shapeTwoDy)) {
+    				newy -= shapeTwoDy;
+        			System.out.println("4  " + newx + ", " + newy);
+    			}
+    				
+    		}
+    		
+    		shapeTwoX = newx;
+    		shapeTwoY = newy;
+    	}
+    	
     }
     
-    private void drawShapes() {
+    private boolean canGoHere(int x, int y) {
+    	if (x <= 0 || x > 800 || y <= 0 || 
+				y >= 800 - Drone.HEIGHT) {
+    		return false;
+    	}
     	
-    	GraphicsContext area = canvas.getGraphicsContext2D();
-    	area.setFill(Color.ALICEBLUE);
-    	area.fillRect(0, 0, 500, 500);
+    	return true;
+    }
+    
+    private boolean shapeIsNear() {
+    	
+    	if (shapeOneX > (shapeTwoX - SHAPE_WIDTH - 30) && 
+    			shapeOneX < (shapeTwoX + SHAPE_WIDTH + 30) &&
+    			shapeOneY > (shapeTwoY - SHAPE_HEIGHT - 30) &&
+    			shapeOneY < (shapeTwoY + SHAPE_HEIGHT + 30)) {
+    		return true;
+    	}
+    	
+    	return false;
+    	
+    }
+    
+    private boolean shapesCollided() {
     	
     	if (shapeOneX > (shapeTwoX - SHAPE_WIDTH) && 
     			shapeOneX < (shapeTwoX + SHAPE_WIDTH) &&
     			shapeOneY > (shapeTwoY - SHAPE_HEIGHT) &&
     			shapeOneY < (shapeTwoY + SHAPE_HEIGHT)) {
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    private void drawShapes() {
+    	
+    	GraphicsContext area = canvas.getGraphicsContext2D();
+    	area.setFill(Color.BEIGE);
+    	area.fillRect(0, 0, 800, 800);
+    	
+    	if (shapesCollided()) {
     		
     		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
         	shapeOne.setFill(Color.RED);
@@ -103,6 +192,19 @@ public class Test extends Application {
     	shapeTwo.setFill(Color.BLUE);
     	shapeTwo.fillRect(shapeTwoX, shapeTwoY, SHAPE_WIDTH, SHAPE_HEIGHT);
     	
+    }
+    
+    private void drawInfo() {
+    	
+    	String s = "ShapeOne: " + shapeOneX + "," + shapeOneY + "\n";
+    	s += "ShapeTwo: " + shapeTwoX + ", " + shapeTwoY + "\n";
+    	s += "ShapeOne dx: " + shapeOneDx + ", shapeOne dy: " + shapeOneDy + "\n";
+    	s += "ShapeTwo dx: " + shapeTwoDx + ", shapeTwo dy: " + shapeTwoDy + "\n"; 
+    	
+    	GraphicsContext text = canvas.getGraphicsContext2D();
+    	text.setFill(Color.BLACK);
+    	text.fillText(s, 2, 10);
+    	    	
     }
     
     private void keyHandlers() {
