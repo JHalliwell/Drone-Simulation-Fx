@@ -15,6 +15,7 @@ public class DroneArena implements Serializable {
 	private int arenaHeight;
 	
 	private ArrayList<Drone> manyDrones;
+	private ArrayList<Wall> environment;
 	
 	/**
 	 *  Creates arrayList of drones and a canvas on which to draw arena
@@ -22,6 +23,15 @@ public class DroneArena implements Serializable {
 	DroneArena() {
 		
 		manyDrones = new ArrayList<Drone>();	
+		environment = new ArrayList<Wall>();
+		
+		addWalls();
+		
+	}
+	
+	public void addWalls() {
+		
+		environment.add(new Wall(300, 50, 0, 30));
 		
 	}
 
@@ -33,8 +43,14 @@ public class DroneArena implements Serializable {
 		canvas.clear();
         
         for (Drone d : manyDrones) {
-        	canvas.drawDrone(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
+        	canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
         }
+        
+        for (Wall w : environment) {
+        	canvas.drawObject(w.getXPos(), w.getYPos(), w.getWidth(), w.getHeight(), w.getColour());
+        }
+        
+        
        
 	}
 	
