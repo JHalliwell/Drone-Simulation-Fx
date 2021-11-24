@@ -20,21 +20,21 @@ public class CautiousDrone extends Drone {
 		
 		Drone nearbyDrone;
 		
-		if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance)) != null) {			
+		if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance, width, height)) != null) {			
 			if (nearbyDrone.getXPos() < x) {
-				if (arena.canMoveHere(id, newx + dx, newy)) newx += dx;
+				if (arena.canMoveHere(id, newx + dx, newy, width, height)) newx += dx;
 			}
 			
 			if (nearbyDrone.getXPos() > x) {
-				if (arena.canMoveHere(id, newx - dx, newy)) newx -= dx;
+				if (arena.canMoveHere(id, newx - dx, newy, width, height)) newx -= dx;
 			}
 			
 			if (nearbyDrone.getYPos() < y) {
-				if (arena.canMoveHere(id, newx, newy + dy)) newy += dy;
+				if (arena.canMoveHere(id, newx, newy + dy, width, height)) newy += dy;
 			}
 			
 			if (nearbyDrone.getYPos() > y) {
-				if (arena.canMoveHere(id, newx, newy - dy)) newy -= dy;
+				if (arena.canMoveHere(id, newx, newy - dy, width, height)) newy -= dy;
 			}				
 		}		
 		

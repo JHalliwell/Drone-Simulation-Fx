@@ -45,6 +45,18 @@ public class MyCanvas {
 			graphicsContext.fillRect(x, y, width, height);	
 		}
 		
+		if (colour == "grey_tran") {
+			graphicsContext.setFill(Color.MEDIUMPURPLE);
+			graphicsContext.fillRect(x, y, width, height);
+		}
+		
+	}
+	
+	public void drawText(String s, int x, int y) {
+		
+		graphicsContext.setFill(Color.BLACK);
+		graphicsContext.fillText(s, x, y);
+		
 	}
 	
 	/**

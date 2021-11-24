@@ -12,8 +12,8 @@ public class Drone implements Serializable {
 	protected Direction direction;
 	protected String colour;
 	
-	public static final int HEIGHT = 20;
-	public static final int WIDTH = 20;
+	protected int height = 30;
+	protected int width = 30;
 	
 	/**
 	 * Construct drone at position x,y
@@ -31,6 +31,7 @@ public Drone(int x, int y, Direction d) {
 		direction = d.random();
 		id = count++;
 		this.setDirection();
+		
 	}	
 
 	/**
@@ -39,29 +40,31 @@ public Drone(int x, int y, Direction d) {
 	 * @param y		y position
 	 * @return		true if drone is at x,y. False otherwise
 	 */
-	public boolean isHere(int x, int y, int distance) {
+	public boolean isHere(int otherX, int otherY, int distance, int otherWidth, int otherHeight) {
 		
-		if (this.x > (x - WIDTH - distance) && 
-				this.x < (x + WIDTH + distance) &&
-				this.y > (y - HEIGHT - distance) && 
-				this.y < (y + HEIGHT + distance)) return true;			
+		if (otherX > (this.x - otherWidth - distance) && 
+				otherX < (this.x + otherWidth + distance) &&
+				otherY > (this.y - otherHeight - distance) && 
+				otherY < (this.y + otherHeight + distance)) return true;			
 		
 		return false;
 		
 	}	
 	
 	/**
-	 * Is the drone at this x,y position?
-	 * @param x		x position
-	 * @param y		y position
-	 * @return		true if drone is at x,y. False otherwise
+	 * 
+	 * @param otherX
+	 * @param otherY
+	 * @param otherWidth
+	 * @param otherHeight
+	 * @return True if both drones overlap
 	 */
-	public boolean isHere(int x, int y) {
+	public boolean isHere(int otherX, int otherY, int otherWidth, int otherHeight) {
 		
-		if (this.x > (x - WIDTH - 2) && 
-				this.x < (x + WIDTH + 2) &&
-				this.y > (y - HEIGHT - 2) && 
-				this.y < (y + HEIGHT + 2)) return true;			
+		if (otherX > (this.x - otherWidth - 2) && 
+				otherX < (this.x + otherWidth + 2) &&
+				otherY > (this.y - otherHeight - 2) && 
+				otherY < (this.y + otherHeight + 2)) return true;			
 		
 		return false;
 		
@@ -78,7 +81,7 @@ public Drone(int x, int y, Direction d) {
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
 		
-		while (!arena.canMoveHere(this.id, newx, newy)) {			
+		while (!arena.canMoveHere(this.id, newx, newy, width, height)) {			
 			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
 						
 			this.direction = direction.random();	// Move to next direction			
@@ -137,11 +140,11 @@ public Drone(int x, int y, Direction d) {
 	}
 	
 	public int getHeight() {
-		return HEIGHT;
+		return height;
 	}
 	
 	public int getWidth() {
-		return WIDTH;
+		return width;
 	}
 	
 	public String getColour() {
@@ -166,6 +169,24 @@ public Drone(int x, int y, Direction d) {
 	
 	public int getId() {
 		return this.id;
+	}
+	
+	public void setXPos(int x) {
+		this.x = x;
+	}
+	
+	public void setYPos(int y) {
+		this.y = y;		
+	}
+	
+	public String toString() {
+		
+		String info = "";
+		
+		info += id + " -- Position: (" + x + ", " + y + ")" + "\n";
+		
+		return info;
+		
 	}
 	
 }

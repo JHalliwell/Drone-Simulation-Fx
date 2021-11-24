@@ -30,11 +30,14 @@ public class SimView extends VBox{
 	private StackPane simStackPane;	
 	private Canvas canvas;
 	private MyCanvas simCanvas;
+	private VBox rightPane;
 	
 	private MyMenu simMenu;
 	private Buttons buttons;
+	private Label label;
 	
 	private DroneArena arena;
+	private AnimationTimer mainAnimation;
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 750;
@@ -70,22 +73,56 @@ public class SimView extends VBox{
 		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), ARENA_WIDTH, ARENA_HEIGHT);
 		
 		// Create drone arena
-		arena = new DroneArena();
+		arena = new DroneArena();		
+		
+		simPane.setOnKeyPressed(e -> {
+			
+			switch (e.getCode()) {
+			case A: arena.translatePlacementWall(0); break;
+			case D : arena.translatePlacementWall(1); break;
+			case W : arena.translatePlacementWall(2); break;
+			case S : arena.translatePlacementWall(3); 
+			}
+			
+		});
+		
+//		startAnimationTimer();
+		
+		rightPane = new VBox();
+		rightPane.setAlignment(Pos.TOP_LEFT);		
 		
 		// Initialise menu, buttons
 		simMenu = new MyMenu(this, arena, simCanvas);
-		buttons = new Buttons(arena, simCanvas);
-		
+		buttons = new Buttons(arena, simCanvas, canvas);
+			
 		// Add to border pane: menu, buttons
 		simPane.setTop(simMenu);
 		simPane.setBottom(buttons);	
-		simPane.setCenter(root);
+		simPane.setCenter(root);	
+		//simPane.setRight(rightPane);
 		
 		// Initialise scene and add pane, set scene to stage
 		simScene = new Scene(simPane);
 		simStage.setScene(simScene);
 		
 	}	
+	
+//	private void startAnimationTimer() {
+//		
+//		mainAnimation = new AnimationTimer()
+//		{
+//			@Override
+//            public void handle(long now)
+//            {
+//				label = new Label();
+//				label.setText(arena.drawStatus());
+//				rightPane.getChildren().add(label);
+//            	
+//            }	
+//		};
+//		mainAnimation.start();
+//		
+//	}
 
 	/**
 	 * 

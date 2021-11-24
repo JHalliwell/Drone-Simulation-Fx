@@ -2,8 +2,8 @@ package application;
 
 public class AttackDrone extends Drone {
 
-	private static int height = 20;
-	private static int width = 20;
+	private static int height = 30;
+	private static int width = 30;
 	
 	public AttackDrone(int x, int y, Direction d) {
 		
@@ -21,7 +21,7 @@ public class AttackDrone extends Drone {
 		int newy = y + dy;
 		int count = 0; // To see if all directions have been tried		
 		
-		while (!arena.killerCanMoveHere(this.id, newx, newy, allowedDistance)) {			
+		while (!arena.killerCanMoveHere(this.id, newx, newy, allowedDistance, width, height)) {			
 			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
 						
 			this.direction = direction.random();	// Move to next direction			
