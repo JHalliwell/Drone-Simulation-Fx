@@ -39,15 +39,11 @@ public class DroneArena implements Serializable {
         
         for (Drone d : manyDrones) {
         	canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
-        	String s = "" + d.getId();
-        	canvas.drawText(s, d.getXPos() + (d.getWidth() / 2), d.getYPos() + (d.getHeight() / 2));
         }
        
         for (Wall w : environment) {
        	    canvas.drawObject(w.getXPos(), w.getYPos(), w.getWidth(), w.getHeight(), w.getColour());
-        }
-        
-        canvas.drawText(this.drawStatus(), 10, 10);
+        }       
        
             
 	}
@@ -304,6 +300,14 @@ public class DroneArena implements Serializable {
 	public void setDrones(ArrayList<Drone> drones) {
 		
 		this.manyDrones = drones;
+		
+	}
+	
+	public ArrayList<String> describeAll() {
+		
+		ArrayList<String> info = new ArrayList<String>();
+		for (Drone d : manyDrones) info.add(d.toString());
+		return info;
 		
 	}
 	

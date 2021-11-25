@@ -2,8 +2,8 @@ package application;
 
 public class AttackDrone extends Drone {
 
-	private static int height = 30;
-	private static int width = 30;
+	private static int height = 25;
+	private static int width = 25;
 	
 	public AttackDrone(int x, int y, Direction d) {
 		

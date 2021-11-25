@@ -12,8 +12,8 @@ public class Drone implements Serializable {
 	protected Direction direction;
 	protected String colour;
 	
-	protected int height = 30;
-	protected int width = 30;
+	protected int height = 25;
+	protected int width = 25;
 	
 	/**
 	 * Construct drone at position x,y
