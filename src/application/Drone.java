@@ -1,8 +1,11 @@
 package application;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 import javafx.scene.shape.Polygon;
 
 public class Drone implements Serializable {
@@ -11,17 +14,20 @@ public class Drone implements Serializable {
 	protected static int count = 0;
 	protected Direction direction;
 	protected String colour;
+	protected Image droneImage;
+	String imageFile = "graphics/reg_drone.png";
 	
-	protected int height = 25;
-	protected int width = 25;
+	protected int height = 40;
+	protected int width = 40;
 	
 	/**
 	 * Construct drone at position x,y
 	 * @param x		drones x position
 	 * @param y		drones y position
 	 * @param d		direction of drone
+	 * @throws FileNotFoundException 
 	 */
-public Drone(int x, int y, Direction d) {
+public Drone(int x, int y, Direction d) throws FileNotFoundException {
 		
 		this.x = x;
 		this.y = y;
@@ -31,6 +37,8 @@ public Drone(int x, int y, Direction d) {
 		direction = d.random();
 		id = count++;
 		this.setDirection();
+		
+		droneImage = new Image(new FileInputStream(imageFile));
 		
 	}	
 
@@ -137,6 +145,10 @@ public Drone(int x, int y, Direction d) {
 			dy = -2;
 		}
 		
+	}
+	
+	public Image getImage() {
+		return droneImage;
 	}
 	
 	public int getHeight() {

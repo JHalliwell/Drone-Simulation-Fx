@@ -1,5 +1,6 @@
 package application;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -38,7 +39,11 @@ public class DroneArena implements Serializable {
 		canvas.clear();
         
         for (Drone d : manyDrones) {
-        	canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
+        	if (d instanceof AttackDrone || d instanceof CautiousDrone) {        		
+        		canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
+        	} else {
+        		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getHeight());
+        	}
         }
        
         for (Wall w : environment) {
@@ -83,8 +88,9 @@ public class DroneArena implements Serializable {
 	 * Adds a drone to the arena in random area moving random direction,
 	 * adds to arrayList of drones, ensuring no other drone at location
 	 * @param	type of drone to add 
+	 * @throws FileNotFoundException 
 	 */
-	public void addDrone(int type) {
+	public void addDrone(int type) throws FileNotFoundException {
 		
 		int x;
 		int y;

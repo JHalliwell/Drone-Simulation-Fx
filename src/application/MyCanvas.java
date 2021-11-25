@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class MyCanvas {
@@ -18,6 +19,14 @@ public class MyCanvas {
 		this.width = width;
 		this.height = height;
 		this.graphicsContext = graphicsContext;
+		
+	}
+	
+public void drawImage (Image i, double x, double y, double sz) {
+		
+		// to draw centred at x,y, give top left position and x,y size
+		// sizes/position in range 0.. canvassize 
+		graphicsContext.drawImage(i, x - sz/2, y - sz/2, sz, sz);
 		
 	}
 	

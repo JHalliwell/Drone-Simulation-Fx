@@ -1,8 +1,10 @@
 package application;
 
+import java.io.FileNotFoundException;
+
 public class CautiousDrone extends Drone {
 
-	CautiousDrone(int x, int y, Direction d) {
+	CautiousDrone(int x, int y, Direction d) throws FileNotFoundException {
 		
 		super(x, y, d);
 		
@@ -42,50 +44,8 @@ public class CautiousDrone extends Drone {
 		y = newy;
 
 	}
-	
-//	public void tryToMove(DroneArena arena) {
-//		
-//		int newx = x;
-//		int newy = y;
-//		
-//		System.out.println("newx :" + newx + " newy: " + newy);
-//		
-//		Drone nearbyDrone;
-//		
-//		if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance)) != null) {
-//			
-//			if (nearbyDrone.getXPos() < x) {
-//				System.out.println("1x < 2x");
-//				
-//				x += dx;
-//			}
-//			
-//			if (nearbyDrone.getXPos() > x) {
-//				System.out.println("1x < 2x");
-//				
-//				x -= dx;
-//			}
-//			
-//			if (nearbyDrone.getYPos() < y) {
-//				System.out.println("1x < 2x");
-//				
-//				y += dy;
-//			}
-//			
-//			if (nearbyDrone.getYPos() > y) {
-//				System.out.println("1x < 2x");
-//				
-//				y -= dy;
-//			}
-//			
-//		}		
-//
-//	}
-	
-	
-	
 
-/**
+ /**
  * Change dx and dy to correspond to Direction enum
  */
 public void setDirection() {	

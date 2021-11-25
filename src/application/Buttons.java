@@ -1,13 +1,19 @@
 package application;
 
+import java.io.FileNotFoundException;
+
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 
 public class Buttons extends HBox {
 
@@ -34,46 +40,16 @@ public class Buttons extends HBox {
 		addButtons();
 		setButtonLayout();
 		
-		canvas.setFocusTraversable(true);
-		
-		
-		
-				
-									
+		canvas.setFocusTraversable(true);								
 			
 	}
 		
-//		canvas.setOnKeyPressed(e -> {
-//			
-//			if (e.getCode() == KeyCode.LEFT) {
-//				arena.translatePlacementWall(0);
-//				System.out.println("left");
-//			}
-//			if (e.getCode() == KeyCode.RIGHT) {
-//				arena.translatePlacementWall(1);
-//				System.out.println("right");
-//			}
-//			if (e.getCode() == KeyCode.UP) {
-//				arena.translatePlacementWall(2);
-//				System.out.println("up");
-//			}
-//			if (e.getCode() == KeyCode.DOWN) {
-//				arena.translatePlacementWall(3);
-//				System.out.println("down");
-//			}
-//			
-//		});
-		
-		
-						
-	
-	
 	/**
 	 * Set the layout of the buttons
 	 */
 	private void setButtonLayout() {
 		
-		this.setAlignment(Pos.CENTER);
+		this.setAlignment(Pos.CENTER_LEFT);
 		this.setSpacing(10);
 		
 	}
@@ -83,7 +59,18 @@ public class Buttons extends HBox {
 	 */
 	private void addButtons() {
 		
-		this.getChildren().addAll(addDrone, addAttackDrone, addCautiousDrone, play, stop, addWall);
+		Text animation, drones, environment;
+
+		animation = new Text("Animation");
+		drones = new Text("Drones");
+		environment = new Text("Environment");
+		
+		Separator one, two;
+		one = new Separator(Orientation.VERTICAL);
+		two = new Separator(Orientation.VERTICAL);
+		
+		this.getChildren().addAll(animation, play, stop, one, drones, addDrone, addCautiousDrone, 
+									addAttackDrone, two, environment, addWall);
 		
 	}
 
@@ -144,7 +131,12 @@ public class Buttons extends HBox {
 		
 		addDrone.setOnAction(e -> {
 			
-			arena.addDrone(0);
+			try {
+				arena.addDrone(0);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			arena.drawArena(myCanvas);
 			
 		});
@@ -157,7 +149,12 @@ public class Buttons extends HBox {
 		
 		addAttackDrone.setOnAction(e -> {
 			
-			arena.addDrone(1);
+			try {
+				arena.addDrone(1);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			arena.drawArena(myCanvas);
 			
 		});
@@ -170,7 +167,12 @@ public class Buttons extends HBox {
 		
 		addCautiousDrone.setOnAction(e -> {
 			
-			arena.addDrone(2);
+			try {
+				arena.addDrone(2);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			arena.drawArena(myCanvas);
 			
 		});

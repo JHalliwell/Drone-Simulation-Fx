@@ -1,11 +1,13 @@
 package application;
 
+import java.io.FileNotFoundException;
+
 public class AttackDrone extends Drone {
 
-	private static int height = 25;
-	private static int width = 25;
+	private static int height = 50;
+	private static int width = 50;
 	
-	public AttackDrone(int x, int y, Direction d) {
+	public AttackDrone(int x, int y, Direction d) throws FileNotFoundException {
 		
 		super(x, y, d);
 		

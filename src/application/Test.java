@@ -13,8 +13,11 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Test extends Application {
@@ -29,8 +32,10 @@ public class Test extends Application {
 	private int shapeTwoDy = 2;
 	private int shapeTwoDx = 2;
 	
-	private static int SHAPE_WIDTH = 30;
-	private static int SHAPE_HEIGHT = 30;
+	Image droneImage;
+	
+	private static int SHAPE_WIDTH = 60;
+	private static int SHAPE_HEIGHT = 60;
 	
 	private Canvas canvas;
 	private Pane pane;
@@ -44,7 +49,9 @@ public class Test extends Application {
 	private AnimationTimer animationTimer;
 	
     @Override
-    public void start(Stage stage) throws IOException {        
+    public void start(Stage stage) throws IOException {  
+    	
+    	droneImage = new Image(new FileInputStream("graphics/reg_drone.png"));
        
         stage.setResizable(false);
         stage.setMinWidth(800);
@@ -67,7 +74,12 @@ public class Test extends Application {
             public void handle(long now)
             {
             	moveShapes();
-                drawShapes();
+                try {
+					drawShapes();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 drawInfo();
             }		
         };
@@ -136,7 +148,7 @@ public class Test extends Application {
     
     private boolean canGoHere(int x, int y) {
     	if (x <= 0 || x > 800 || y <= 0 || 
-				y >= 800 - Drone.HEIGHT) {
+				y >= 800 - SHAPE_HEIGHT) {
     		return false;
     	}
     	
@@ -168,7 +180,7 @@ public class Test extends Application {
     	return false;
     }
     
-    private void drawShapes() {
+    private void drawShapes() throws FileNotFoundException {
     	
     	GraphicsContext area = canvas.getGraphicsContext2D();
     	area.setFill(Color.BEIGE);
@@ -183,14 +195,12 @@ public class Test extends Application {
     	} else {
     		
     		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
-        	shapeOne.setFill(Color.BLUE);
-        	shapeOne.fillRect(shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
+    		shapeOne.drawImage(droneImage, shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
         	
     	}   	
     	
     	GraphicsContext shapeTwo = canvas.getGraphicsContext2D();
-    	shapeTwo.setFill(Color.BLUE);
-    	shapeTwo.fillRect(shapeTwoX, shapeTwoY, SHAPE_WIDTH, SHAPE_HEIGHT);
+    	shapeTwo.drawImage(droneImage, shapeTwoX, shapeTwoY, SHAPE_WIDTH, SHAPE_HEIGHT);
     	
     }
     
