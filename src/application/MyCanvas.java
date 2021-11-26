@@ -2,23 +2,26 @@ package application;
 
 import java.io.Serializable;
 
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class MyCanvas {
 
+	private Canvas canvas;
 	private GraphicsContext graphicsContext;
-	private int height;
-	
+	private int height;	
 	private int width;
 	
-	public MyCanvas(GraphicsContext graphicsContext, int width, int height) {
+	public MyCanvas(GraphicsContext graphicsContext, Canvas canvas, int width, int height) {
 		
 		this.width = width;
 		this.height = height;
 		this.graphicsContext = graphicsContext;
+		this.canvas = canvas;
 		
 	}
 	

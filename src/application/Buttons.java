@@ -25,6 +25,22 @@ public class Buttons extends HBox {
 	MyCanvas myCanvas;
 	private boolean wallSelected, animationPlay;
 	
+	String buttonStyle = "-fx-background-color: \n"
+			+ "        linear-gradient(#f2f2f2, #d6d6d6),\n"
+			+ "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),\n"
+			+ "        linear-gradient(#dddddd 0%, #f6f6f6 50%);\n"
+			+ "    -fx-background-radius: 8,7,6;\n"
+			+ "    -fx-background-insets: 0,1,2;\n"
+			+ "    -fx-text-fill: black;\n"
+			+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
+	String buttonHoverStyle = "-fx-background: darken(red 1.5%);\n"
+			+ "  -fx-border: 1px solid rgba(#000, .05);\n"
+			+ "  -fx-box-shadow: 1px 1px 2px rgba(#fff, .2);\n"
+			+ "  -fx-color: lighten(red, 18%); \n"
+			+ "  -fx-text-decoration: none;\n"
+			+ "  -fx-text-shadow: -1px -1px 0 darken(red, 9.5%);\n"
+			+ "  -fx-transition: all 250ms linear;";
+	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas) {
 		
 		this.arena = arena;
@@ -67,6 +83,7 @@ public class Buttons extends HBox {
 	private void createAddAttackDrone() {
 		
 		addAttackDrone = new Button("Add Attack Drone");
+		addAttackDrone.setStyle(buttonStyle);
 		
 		addAttackDrone.setOnAction(e -> {
 			
@@ -86,6 +103,7 @@ public class Buttons extends HBox {
 	private void createAddCautiousDrone() {
 		
 		addCautiousDrone = new Button("Add Cautious Drone");
+		addCautiousDrone.setStyle(buttonStyle);
 		
 		addCautiousDrone.setOnAction(e -> {
 			
@@ -107,6 +125,7 @@ public class Buttons extends HBox {
 	private void createAddDrone() {
 		
 		addDrone = new Button("Add Drone");
+		addDrone.setStyle(buttonStyle);
 		
 		addDrone.setOnAction(e -> {
 			
@@ -125,8 +144,7 @@ public class Buttons extends HBox {
 	private void createAddWall() {
 		
 		addWall = new Button("Add Wall");
-		
-		
+		addWall.setStyle(buttonStyle);	
 		
 		int[] mouse = new int[2];
 		
@@ -169,6 +187,7 @@ public class Buttons extends HBox {
 	private void createPlay() {
 		
 		play = new Button("Play");
+		play.setStyle(buttonStyle);
 		
 		play.setOnAction(e -> {
 			
@@ -183,7 +202,12 @@ public class Buttons extends HBox {
 	            @Override
 	            public void handle(long now)
 	            {
-	            	arena.moveAllDrones();
+	            	try {
+						arena.moveAllDrones();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	            	arena.drawArena(myCanvas);
 	            }		
 	        };
@@ -199,6 +223,7 @@ public class Buttons extends HBox {
 	private void createStop() {
 		
 		stop = new Button("Stop");
+		stop.setStyle(buttonStyle);
 		
 		stop.setOnAction(e -> {
 			

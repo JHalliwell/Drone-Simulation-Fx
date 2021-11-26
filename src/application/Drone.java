@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 
 public class Drone implements Serializable {
@@ -13,11 +14,12 @@ public class Drone implements Serializable {
 	protected static int count = 0;
 	protected String colour;
 	protected Direction direction;
-	protected Image droneImage;
-	protected int height = 70;
-	String imageFile = "graphics/drone2.png";
 	
-	protected int width = 70;
+	protected ImageView droneImageView;
+	protected Image droneImage;
+	protected MyCanvas myCanvas;
+	protected int height = 50;
+	protected int width = 50;
 	protected int x, y, id, dx, dy, allowedDistance;
 	
 	/**
@@ -27,22 +29,23 @@ public class Drone implements Serializable {
 	 * @param d		direction of drone
 	 * @throws FileNotFoundException 
 	 */
-public Drone(int x, int y, Direction d) throws FileNotFoundException {
+public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		
+		this.myCanvas = myCanvas;
 		this.x = x;
 		this.y = y;
 		this.allowedDistance = 2;
-		colour = "black";		
-
+		colour = "black";			
+		
 		direction = d.random();
 		id = count++;
 		this.setDirection();
 		
-		droneImage = new Image(new FileInputStream(imageFile));
+
 		
 	}	
 
-	public String getColour() {
+    public String getColour() {
 		return colour;
 	}	
 	
@@ -116,38 +119,47 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 	
 	/**
 	 * Change dx and dy to correspond to Direction enum
+	 * @throws FileNotFoundException 
 	 */
-	public void setDirection() {	
+	public void setDirection() throws FileNotFoundException {	
 		
 		if (this.direction == direction.NORTH) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneN.png"));
 			dx = 0;
 			dy = -2;
 		}
 		if (this.direction == direction.NORTH_EAST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneNE.png"));
 			dx = 2;
 			dy = -2;
 		}
 		if (this.direction == direction.EAST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneE.png"));
 			dx = 2;
 			dy = 0;
 		}
 		if (this.direction == direction.SOUTH_EAST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneSE.png"));
 			dx = 2;
 			dy = 2;
 		}
 		if (this.direction == direction.SOUTH) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneS.png"));
 			dx = 0;
 			dy = 2;
 		}
 		if (this.direction == direction.SOUTH_WEST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneSW.png"));
 			dx = -2;
 			dy = 2;
 		}
 		if (this.direction == direction.WEST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneW.png"));
 			dx = -2;
 			dy = 0;
 		}
 		if (this.direction == direction.NORTH_WEST) {
+			droneImage = new Image(new FileInputStream("graphics/regDroneNW.png"));
 			dx = -2;
 			dy = -2;
 		}
@@ -176,8 +188,9 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 	 * Try to move drone, check with canMoveHere, if cant, change direction
 	 * if can, change x and y
 	 * @param arena
+	 * @throws FileNotFoundException 
 	 */
-	public void tryToMove(DroneArena arena) {
+	public void tryToMove(DroneArena arena) throws FileNotFoundException {
 
 		int newx = x + dx;
 		int newy = y + dy;

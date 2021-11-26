@@ -8,9 +8,9 @@ import javafx.scene.image.Image;
 public class AttackDrone extends Drone {
 
 	
-	public AttackDrone(int x, int y, Direction d) throws FileNotFoundException {
+	public AttackDrone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		
-		super(x, y, d);
+		super(x, y, d, myCanvas);
 		
 		direction = d.random();
 		this.setDirection();

@@ -14,6 +14,7 @@ public class DroneArena implements Serializable {
 	
 	private int arenaHeight;
 	private int arenaWidth;
+	private MyCanvas myCanvas;
 	
 	private ArrayList<Wall> environment;
 	private ArrayList<Drone> manyDrones;
@@ -22,7 +23,9 @@ public class DroneArena implements Serializable {
 	/**
 	 *  Creates arrayList of drones and a canvas on which to draw arena
 	 */
-	DroneArena() {
+	DroneArena(MyCanvas myCanvas) {
+		
+		this.myCanvas = myCanvas;
 		
 		manyDrones = new ArrayList<Drone>();	
 		environment = new ArrayList<Wall>();		
@@ -45,7 +48,7 @@ public class DroneArena implements Serializable {
 		switch (type) {
 		
 		case 0 : 	// Add RandomMover at random location
-			Drone drone = new Drone(0, 0, d.random());
+			Drone drone = new Drone(0, 0, d.random(), myCanvas);
 			do {
 				Random ranGen = new Random();
 				x = ranGen.nextInt(SimView.ARENA_WIDTH - drone.getWidth());
@@ -59,7 +62,7 @@ public class DroneArena implements Serializable {
 			break;
 			
 		case 1 :	// Add AttackDrone at random location
-			AttackDrone aDrone = new AttackDrone(0, 0, d.random());
+			AttackDrone aDrone = new AttackDrone(0, 0, d.random(), myCanvas);
 			do {
 				Random ranGen = new Random();
 				x = ranGen.nextInt(SimView.ARENA_WIDTH - aDrone.getWidth());
@@ -72,7 +75,7 @@ public class DroneArena implements Serializable {
 			break;
 			
 		case 2 :	// Add CautiousDrone at random location
-			CautiousDrone cDrone = new CautiousDrone(0, 0, d.random());
+			CautiousDrone cDrone = new CautiousDrone(0, 0, d.random(), myCanvas);
 			do {
 				Random ranGen = new Random();
 				x = ranGen.nextInt(SimView.ARENA_WIDTH - cDrone.getWidth());
@@ -308,8 +311,9 @@ public class DroneArena implements Serializable {
 	
 	/**
 	 * Loop through all drones, moving them each once
+	 * @throws FileNotFoundException 
 	 */
-	public void moveAllDrones() {
+	public void moveAllDrones() throws FileNotFoundException {
 		
 		for (Drone d : manyDrones) {			
 			d.tryToMove(this);

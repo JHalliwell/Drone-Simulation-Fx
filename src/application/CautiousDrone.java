@@ -7,9 +7,9 @@ import javafx.scene.image.Image;
 
 public class CautiousDrone extends Drone {
 
-	CautiousDrone(int x, int y, Direction d) throws FileNotFoundException {
+	CautiousDrone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		
-		super(x, y, d);
+		super(x, y, d, myCanvas);
 		
 		allowedDistance = 50;
 		colour = "orange";

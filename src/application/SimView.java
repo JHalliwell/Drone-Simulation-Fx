@@ -42,8 +42,8 @@ import javafx.stage.Stage;
 
 public class SimView extends VBox{	
 	
-	public static final int ARENA_HEIGHT = 1080;
-	public static final int ARENA_WIDTH = 1920;
+	public static final int ARENA_HEIGHT = 850;
+	public static final int ARENA_WIDTH = 1220;
 	private static final int WINDOW_HEIGHT = 900;
 	private static final int WINDOW_WIDTH = 1400;	
 	private DroneArena arena;
@@ -114,14 +114,15 @@ public class SimView extends VBox{
 		backgrounds[10] = frame10;
 		backgrounds[11] = frame11;	
 		
-		Image test = new Image(new FileInputStream("graphics/frame0.png"));
+		Image test = new Image(new FileInputStream("graphics/spaceBackground.bmp"));
 		image = new ImageView(test);
-		image.maxWidth(ARENA_WIDTH);
-		image.maxHeight(ARENA_HEIGHT);
+		image.setFitWidth(ARENA_WIDTH);
+		image.setFitHeight(ARENA_HEIGHT);
+		
 		simStackPane.getChildren().add(image);
 		
 		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
-		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), ARENA_WIDTH, ARENA_HEIGHT);
+		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), canvas, ARENA_WIDTH, ARENA_HEIGHT);
 		simStackPane.getChildren().add(canvas);		
 		
 		Timer timer = new Timer();
@@ -146,7 +147,7 @@ public class SimView extends VBox{
     	scrollPaneDrone.setContent(statusBox);
     	
 		// Create drone arena
-		arena = new DroneArena();	
+		arena = new DroneArena(simCanvas);	
 		
 		// Add key event handlers
 		createKeyEvents();
@@ -227,10 +228,10 @@ public class SimView extends VBox{
             public void handle(long now)
             {				
             	drawStatus();
-				image.setImage(backgrounds[backgroundNo]);
-				simStackPane.getChildren().clear();
-				simStackPane.getChildren().add(image);
-				simStackPane.getChildren().add(canvas);
+//				image.setImage(backgrounds[backgroundNo]);
+//				simStackPane.getChildren().clear();
+//				simStackPane.getChildren().add(image);
+//				simStackPane.getChildren().add(canvas);
             }	
 			
 		};
