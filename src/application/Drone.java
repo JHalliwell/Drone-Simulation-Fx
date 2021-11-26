@@ -14,10 +14,10 @@ public class Drone implements Serializable {
 	protected String colour;
 	protected Direction direction;
 	protected Image droneImage;
-	protected int height = 50;
+	protected int height = 70;
 	String imageFile = "graphics/drone2.png";
 	
-	protected int width = 50;
+	protected int width = 70;
 	protected int x, y, id, dx, dy, allowedDistance;
 	
 	/**

@@ -25,8 +25,7 @@ public class DroneArena implements Serializable {
 	DroneArena() {
 		
 		manyDrones = new ArrayList<Drone>();	
-		environment = new ArrayList<Wall>();
-		
+		environment = new ArrayList<Wall>();		
 		placementWall = new Wall(300, 50);
 		
 	}

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -41,8 +42,8 @@ import javafx.stage.Stage;
 
 public class SimView extends VBox{	
 	
-	public static final int ARENA_HEIGHT = 818;
-	public static final int ARENA_WIDTH = 1220;
+	public static final int ARENA_HEIGHT = 1080;
+	public static final int ARENA_WIDTH = 1920;
 	private static final int WINDOW_HEIGHT = 900;
 	private static final int WINDOW_WIDTH = 1400;	
 	private DroneArena arena;
@@ -63,7 +64,11 @@ public class SimView extends VBox{
 	private VBox statusBox;
 	
 	private String currentBackground;
-	private String[] backgrounds;
+	private Image[] backgrounds;
+	private ImageView image;
+	private int backgroundNo = 0;
+	private Image frame0, frame1, frame2, frame3, frame4;
+	private Image frame5, frame6, frame7, frame8, frame9, frame10, frame11;
 	
 	
 	public SimView() throws FileNotFoundException {
@@ -76,56 +81,61 @@ public class SimView extends VBox{
 		// Initialise Border Pane
 		simPane = new BorderPane();
 		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);		
-	
-		Image background = new Image(new FileInputStream("graphics/dayCycle.gif"));
-		ImageView image = new ImageView(background);
-
-		
-		
+			
 		// Creating Canvas
 		canvasRoot = new Group();		
-		simStackPane = new StackPane();
-		simStackPane.setStyle("-fx-background-color: #7fb5d4");	
-		simStackPane.getChildren().add(image);
-		image.fitWidthProperty().bind(simStackPane.widthProperty());
-		image.fitHeightProperty().bind(simStackPane.heightProperty());
-			
+		simStackPane = new StackPane();				
 		
 		// Creating background
-		backgrounds = new String[12];
-		backgrounds[0] = "graphics/frame0.gif";
-		backgrounds[1] = "graphics/frame1.gif";
-		backgrounds[2] = "graphics/frame2.gif";
-		backgrounds[3] = "graphics/frame3.gif";
-		backgrounds[4] = "graphics/frame4.gif";
-		backgrounds[5] = "graphics/frame5.gif";
-		backgrounds[6] = "graphics/frame6.gif";
-		backgrounds[7] = "graphics/frame7.gif";
-		backgrounds[8] = "graphics/frame8.gif";
-		backgrounds[9] = "graphics/frame9.gif";
-		backgrounds[10] = "graphics/frame10.gif";
-		backgrounds[11] = "graphics/frame11.gif";
+		frame0 = new Image(new FileInputStream("graphics/frame0.png"));
+		frame1 = new Image(new FileInputStream("graphics/frame1.gif"));
+		frame2 = new Image(new FileInputStream("graphics/frame2.gif"));
+		frame3 = new Image(new FileInputStream("graphics/frame3.gif"));
+		frame4 = new Image(new FileInputStream("graphics/frame4.gif"));
+		frame5 = new Image(new FileInputStream("graphics/frame5.gif"));
+		frame6 = new Image(new FileInputStream("graphics/frame6.gif"));
+		frame7 = new Image(new FileInputStream("graphics/frame7.gif"));
+		frame8 = new Image(new FileInputStream("graphics/frame8.gif"));
+		frame9 = new Image(new FileInputStream("graphics/frame9.gif"));
+		frame10 = new Image(new FileInputStream("graphics/frame10.gif"));
+		frame11 = new Image(new FileInputStream("graphics/frame11.gif"));
 		
+		backgrounds = new Image[12];
+		backgrounds[0] = frame0;
+		backgrounds[1] = frame1;
+		backgrounds[2] = frame2;
+		backgrounds[3] = frame3;
+		backgrounds[4] = frame4;
+		backgrounds[5] = frame5;
+		backgrounds[6] = frame6;
+		backgrounds[7] = frame7;
+		backgrounds[8] = frame8;
+		backgrounds[9] = frame9;
+		backgrounds[10] = frame10;
+		backgrounds[11] = frame11;	
 		
+		Image test = new Image(new FileInputStream("graphics/frame0.png"));
+		image = new ImageView(test);
+		image.maxWidth(ARENA_WIDTH);
+		image.maxHeight(ARENA_HEIGHT);
+		simStackPane.getChildren().add(image);
 		
-		
-		currentBackground = backgrounds[0];
-		
-		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);		
-		simStackPane.getChildren().add(canvas);
-		canvasRoot.getChildren().add(simStackPane);
-		
-		Timer backTimer = new Timer() {
-			public void run() {
-				
-				
-				//currentBackground 
-				
-			}
-		};
-		
-		// Create custom canvas object
+		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
 		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), ARENA_WIDTH, ARENA_HEIGHT);
+		simStackPane.getChildren().add(canvas);		
+		
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+		        @Override
+		        public void run() {
+		        	if (backgroundNo == 11)
+						backgroundNo = 0;
+					else backgroundNo++;				
+
+		        }
+		    }, 0, 5000);				
+		
+		canvasRoot.getChildren().add(simStackPane);				
 		
 		// Create status area
 		scrollPaneDrone = new ScrollPane();
@@ -215,9 +225,12 @@ public class SimView extends VBox{
 			
 			@Override
             public void handle(long now)
-            {
-				
+            {				
             	drawStatus();
+				image.setImage(backgrounds[backgroundNo]);
+				simStackPane.getChildren().clear();
+				simStackPane.getChildren().add(image);
+				simStackPane.getChildren().add(canvas);
             }	
 			
 		};
