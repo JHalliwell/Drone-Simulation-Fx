@@ -22,71 +22,102 @@ import java.io.IOException;
 
 public class Test extends Application {
 	
-	private int shapeOneX = 10;
-	private int shapeOneY = 10;
-	private int shapeTwoX = 210;
-	private int shapeTwoY = 210;
+	private static int SHAPE_HEIGHT = 60;
+	private static int SHAPE_WIDTH = 60;
+	public static void main(String[] args) {
+        launch();
+    }
+	private boolean aKeyPressed;
 
-	private int shapeOneDx = 2;
-	private int shapeOneDy = 2;
-	private int shapeTwoDy = 2;
-	private int shapeTwoDx = 2;
-	
+	private AnimationTimer animationTimer;
+	private Canvas canvas;
+	private boolean dKeyPressed;
 	Image droneImage;
 	
-	private static int SHAPE_WIDTH = 60;
-	private static int SHAPE_HEIGHT = 60;
-	
-	private Canvas canvas;
 	private Pane pane;
+	
 	private Scene scene;
+	private int shapeOneDx = 2;
 	
-	private boolean wKeyPressed;
-	private boolean aKeyPressed;
+	private int shapeOneDy = 2;
+	private int shapeOneX = 10;
+	private int shapeOneY = 10;
+	
+	private int shapeTwoDx = 2;
+	private int shapeTwoDy = 2;
+	private int shapeTwoX = 210;
+	private int shapeTwoY = 210;
+	
 	private boolean sKeyPressed;
-	private boolean dKeyPressed;
 	
-	private AnimationTimer animationTimer;
-	
-    @Override
-    public void start(Stage stage) throws IOException {  
+    private boolean wKeyPressed;
+    
+    private boolean canGoHere(int x, int y) {
+    	if (x <= 0 || x > 800 || y <= 0 || 
+				y >= 800 - SHAPE_HEIGHT) {
+    		return false;
+    	}
     	
-    	droneImage = new Image(new FileInputStream("graphics/reg_drone.png"));
-       
-        stage.setResizable(false);
-        stage.setMinWidth(800);
-        stage.setMinHeight(800);
-        
-        pane = new Pane();
-        canvas = new Canvas(800,800);        
-        
-        pane.getChildren().add(canvas);
-        pane.setMinSize(800, 800);
-        
-        scene = new Scene(pane);
-        
-        stage.setScene(scene);
-        stage.show();
-        
-        animationTimer = new AnimationTimer()
-        {
-            @Override
-            public void handle(long now)
-            {
-            	moveShapes();
-                try {
-					drawShapes();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                drawInfo();
-            }		
-        };
-        animationTimer.start();        
-       
-        keyHandlers();        
-        
+    	return true;
+    }
+    
+    private void drawInfo() {
+    	
+    	String s = "ShapeOne: " + shapeOneX + "," + shapeOneY + "\n";
+    	s += "ShapeTwo: " + shapeTwoX + ", " + shapeTwoY + "\n";
+    	s += "ShapeOne dx: " + shapeOneDx + ", shapeOne dy: " + shapeOneDy + "\n";
+    	s += "ShapeTwo dx: " + shapeTwoDx + ", shapeTwo dy: " + shapeTwoDy + "\n"; 
+    	
+    	GraphicsContext text = canvas.getGraphicsContext2D();
+    	text.setFill(Color.BLACK);
+    	text.fillText(s, 2, 10);
+    	    	
+    }
+    
+    private void drawShapes() throws FileNotFoundException {
+    	
+    	GraphicsContext area = canvas.getGraphicsContext2D();
+    	area.setFill(Color.BEIGE);
+    	area.fillRect(0, 0, 800, 800);
+    	
+    	if (shapesCollided()) {
+    		
+    		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
+        	shapeOne.setFill(Color.RED);
+        	shapeOne.fillRect(shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
+        	
+    	} else {
+    		
+    		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
+    		shapeOne.drawImage(droneImage, shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
+        	
+    	}   	
+    	
+    	GraphicsContext shapeTwo = canvas.getGraphicsContext2D();
+    	shapeTwo.drawImage(droneImage, shapeTwoX, shapeTwoY, SHAPE_WIDTH, SHAPE_HEIGHT);
+    	
+    }
+    
+    private void keyHandlers() {
+    	
+    	scene.setOnKeyPressed(e -> {
+    		switch(e.getCode()) {
+    		case W : wKeyPressed = true; break; 
+    		case A : aKeyPressed = true; break; 
+    		case S : sKeyPressed = true; break; 
+    		case D : dKeyPressed = true; break; 
+    		}
+    	});
+    	
+    	scene.setOnKeyReleased(e -> {
+    		switch(e.getCode()) {
+    		case W : wKeyPressed = false; break;
+    		case A : aKeyPressed = false; break;
+    		case S : sKeyPressed = false; break;
+    		case D : dKeyPressed = false; break;
+    		}
+    	});
+    	
     }
     
     private void moveShapes() {
@@ -146,15 +177,6 @@ public class Test extends Application {
     	
     }
     
-    private boolean canGoHere(int x, int y) {
-    	if (x <= 0 || x > 800 || y <= 0 || 
-				y >= 800 - SHAPE_HEIGHT) {
-    		return false;
-    	}
-    	
-    	return true;
-    }
-    
     private boolean shapeIsNear() {
     	
     	if (shapeOneX > (shapeTwoX - SHAPE_WIDTH - 30) && 
@@ -179,67 +201,45 @@ public class Test extends Application {
     	
     	return false;
     }
-    
-    private void drawShapes() throws FileNotFoundException {
-    	
-    	GraphicsContext area = canvas.getGraphicsContext2D();
-    	area.setFill(Color.BEIGE);
-    	area.fillRect(0, 0, 800, 800);
-    	
-    	if (shapesCollided()) {
-    		
-    		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
-        	shapeOne.setFill(Color.RED);
-        	shapeOne.fillRect(shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
-        	
-    	} else {
-    		
-    		GraphicsContext shapeOne = canvas.getGraphicsContext2D();
-    		shapeOne.drawImage(droneImage, shapeOneX, shapeOneY, SHAPE_WIDTH, SHAPE_HEIGHT);
-        	
-    	}   	
-    	
-    	GraphicsContext shapeTwo = canvas.getGraphicsContext2D();
-    	shapeTwo.drawImage(droneImage, shapeTwoX, shapeTwoY, SHAPE_WIDTH, SHAPE_HEIGHT);
-    	
-    }
-    
-    private void drawInfo() {
-    	
-    	String s = "ShapeOne: " + shapeOneX + "," + shapeOneY + "\n";
-    	s += "ShapeTwo: " + shapeTwoX + ", " + shapeTwoY + "\n";
-    	s += "ShapeOne dx: " + shapeOneDx + ", shapeOne dy: " + shapeOneDy + "\n";
-    	s += "ShapeTwo dx: " + shapeTwoDx + ", shapeTwo dy: " + shapeTwoDy + "\n"; 
-    	
-    	GraphicsContext text = canvas.getGraphicsContext2D();
-    	text.setFill(Color.BLACK);
-    	text.fillText(s, 2, 10);
-    	    	
-    }
-    
-    private void keyHandlers() {
-    	
-    	scene.setOnKeyPressed(e -> {
-    		switch(e.getCode()) {
-    		case W : wKeyPressed = true; break; 
-    		case A : aKeyPressed = true; break; 
-    		case S : sKeyPressed = true; break; 
-    		case D : dKeyPressed = true; break; 
-    		}
-    	});
-    	
-    	scene.setOnKeyReleased(e -> {
-    		switch(e.getCode()) {
-    		case W : wKeyPressed = false; break;
-    		case A : aKeyPressed = false; break;
-    		case S : sKeyPressed = false; break;
-    		case D : dKeyPressed = false; break;
-    		}
-    	});
-    	
-    }
 
-    public static void main(String[] args) {
-        launch();
+    @Override
+    public void start(Stage stage) throws IOException {  
+    	
+    	droneImage = new Image(new FileInputStream("graphics/reg_drone.png"));
+       
+        stage.setResizable(false);
+        stage.setMinWidth(800);
+        stage.setMinHeight(800);
+        
+        pane = new Pane();
+        canvas = new Canvas(800,800);        
+        
+        pane.getChildren().add(canvas);
+        pane.setMinSize(800, 800);
+        
+        scene = new Scene(pane);
+        
+        stage.setScene(scene);
+        stage.show();
+        
+        animationTimer = new AnimationTimer()
+        {
+            @Override
+            public void handle(long now)
+            {
+            	moveShapes();
+                try {
+					drawShapes();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                drawInfo();
+            }		
+        };
+        animationTimer.start();        
+       
+        keyHandlers();        
+        
     }
 }

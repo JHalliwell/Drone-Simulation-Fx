@@ -4,9 +4,16 @@ import javafx.scene.shape.Rectangle;
 
 public class Wall{
 	
+	String colour;
 	private int height, width;
 	private int xPos, yPos;
-	String colour;
+	
+	public Wall(int width, int height) {
+		
+		this.width = width;
+		this.height = height;
+		
+	}
 	
 	public Wall(int width, int height, int xPos, int yPos) {
 		
@@ -19,11 +26,24 @@ public class Wall{
 		
 	}
 	
-	public Wall(int width, int height) {
-		
-		this.width = width;
-		this.height = height;
-		
+	public String getColour() {
+		return colour;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getXPos() {
+		return xPos;
+	}
+	
+	public int getYPos() {
+		return yPos;
 	}
 	
 	/**
@@ -45,16 +65,6 @@ public class Wall{
 		
 	}
 	
-	public String toString() {
-		
-		String info = "";
-		
-		info += "Wall: (" + xPos + ", " + yPos + ")";
-		
-		return info;
-		
-	}
-	
 	public void rotateLeft() {
 		int temp;
 		temp = width;
@@ -69,36 +79,16 @@ public class Wall{
 		height = temp;
 	}
 	
-	public void scaleUp() {
-		width *= 1.25;
-		height *= 1.25;
-		System.out.println("" + width + ", " + height);
-	}
-	
 	public void scaleDown() {
 		width *= 0.75;
 		height *= 0.75;
 		System.out.println("" + width + ", " + height);
 	}
 	
-	public int getHeight() {
-		return height;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public String getColour() {
-		return colour;
-	}
-	
-	public int getXPos() {
-		return xPos;
-	}
-	
-	public int getYPos() {
-		return yPos;
+	public void scaleUp() {
+		width *= 1.25;
+		height *= 1.25;
+		System.out.println("" + width + ", " + height);
 	}
 	
 	public void setXPos(int x) {
@@ -107,6 +97,16 @@ public class Wall{
 	
 	public void setYPos(int y) {
 		this.yPos = y;
+	}
+	
+	public String toString() {
+		
+		String info = "";
+		
+		info += "Wall: (" + xPos + ", " + yPos + ")";
+		
+		return info;
+		
 	}
 	
 }

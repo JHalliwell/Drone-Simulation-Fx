@@ -19,10 +19,10 @@ public class Buttons extends HBox {
 
 	private Button addDrone, addAttackDrone, addCautiousDrone, play, stop, addWall;
 	
+	private AnimationTimer animationTimer, wallAnimation;
+	DroneArena arena;
 	Canvas canvas;
 	MyCanvas myCanvas;
-	DroneArena arena;
-	private AnimationTimer animationTimer, wallAnimation;
 	private boolean wallSelected, animationPlay;
 	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas) {
@@ -45,16 +45,6 @@ public class Buttons extends HBox {
 	}
 		
 	/**
-	 * Set the layout of the buttons
-	 */
-	private void setButtonLayout() {
-		
-		this.setAlignment(Pos.CENTER_LEFT);
-		this.setSpacing(10);
-		
-	}
-	
-	/**
 	 * Add buttons to the HBox
 	 */
 	private void addButtons() {
@@ -73,50 +63,39 @@ public class Buttons extends HBox {
 									addAttackDrone, two, environment, addWall);
 		
 	}
-
 	
-	/**
-	 * Create button to stop animation
-	 */
-	private void createStop() {
+	private void createAddAttackDrone() {
 		
-		stop = new Button("Stop");
+		addAttackDrone = new Button("Add Attack Drone");
 		
-		stop.setOnAction(e -> {
+		addAttackDrone.setOnAction(e -> {
 			
-			animationPlay = false;
-			
-			animationTimer.stop();
+			try {
+				arena.addDrone(1);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			arena.drawArena(myCanvas);
 			
 		});
 		
 	}
 
-	/**
-	 * Create button to start animation
-	 */
-	private void createPlay() {
+	
+	private void createAddCautiousDrone() {
 		
-		play = new Button("Play");
+		addCautiousDrone = new Button("Add Cautious Drone");
 		
-		play.setOnAction(e -> {
+		addCautiousDrone.setOnAction(e -> {
 			
-			animationPlay = true;
-			
-			if (animationTimer != null) {
-				animationTimer.stop();
-			}			
-			
-			animationTimer = new AnimationTimer()
-	        {
-	            @Override
-	            public void handle(long now)
-	            {
-	            	arena.moveAllDrones();
-	            	arena.drawArena(myCanvas);
-	            }		
-	        };
-	        animationTimer.start();
+			try {
+				arena.addDrone(2);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			arena.drawArena(myCanvas);
 			
 		});
 		
@@ -142,43 +121,7 @@ public class Buttons extends HBox {
 		});
 		
 	}
-	
-	private void createAddAttackDrone() {
-		
-		addAttackDrone = new Button("Add Attack Drone");
-		
-		addAttackDrone.setOnAction(e -> {
-			
-			try {
-				arena.addDrone(1);
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			arena.drawArena(myCanvas);
-			
-		});
-		
-	}
-	
-	private void createAddCautiousDrone() {
-		
-		addCautiousDrone = new Button("Add Cautious Drone");
-		
-		addCautiousDrone.setOnAction(e -> {
-			
-			try {
-				arena.addDrone(2);
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			arena.drawArena(myCanvas);
-			
-		});
-		
-	}
-	
+
 	private void createAddWall() {
 		
 		addWall = new Button("Add Wall");
@@ -218,6 +161,63 @@ public class Buttons extends HBox {
 			
 		
 	     });
+	}
+	
+	/**
+	 * Create button to start animation
+	 */
+	private void createPlay() {
+		
+		play = new Button("Play");
+		
+		play.setOnAction(e -> {
+			
+			animationPlay = true;
+			
+			if (animationTimer != null) {
+				animationTimer.stop();
+			}			
+			
+			animationTimer = new AnimationTimer()
+	        {
+	            @Override
+	            public void handle(long now)
+	            {
+	            	arena.moveAllDrones();
+	            	arena.drawArena(myCanvas);
+	            }		
+	        };
+	        animationTimer.start();
+			
+		});
+		
+	}
+	
+	/**
+	 * Create button to stop animation
+	 */
+	private void createStop() {
+		
+		stop = new Button("Stop");
+		
+		stop.setOnAction(e -> {
+			
+			animationPlay = false;
+			
+			animationTimer.stop();
+			
+		});
+		
+	}
+	
+	/**
+	 * Set the layout of the buttons
+	 */
+	private void setButtonLayout() {
+		
+		this.setAlignment(Pos.CENTER_LEFT);
+		this.setSpacing(10);
+		
 	}
 }
 	

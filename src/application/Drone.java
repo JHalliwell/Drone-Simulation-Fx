@@ -10,15 +10,15 @@ import javafx.scene.shape.Polygon;
 
 public class Drone implements Serializable {
 	
-	protected int x, y, id, dx, dy, allowedDistance;
 	protected static int count = 0;
-	protected Direction direction;
 	protected String colour;
+	protected Direction direction;
 	protected Image droneImage;
-	String imageFile = "graphics/reg_drone.png";
+	protected int height = 50;
+	String imageFile = "graphics/drone2.png";
 	
-	protected int height = 40;
-	protected int width = 40;
+	protected int width = 50;
+	protected int x, y, id, dx, dy, allowedDistance;
 	
 	/**
 	 * Construct drone at position x,y
@@ -42,22 +42,41 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 		
 	}	
 
-	/**
-	 * Is the drone at this x,y position?
-	 * @param x		x position
-	 * @param y		y position
-	 * @return		true if drone is at x,y. False otherwise
-	 */
-	public boolean isHere(int otherX, int otherY, int distance, int otherWidth, int otherHeight) {
-		
-		if (otherX > (this.x - otherWidth - distance) && 
-				otherX < (this.x + otherWidth + distance) &&
-				otherY > (this.y - otherHeight - distance) && 
-				otherY < (this.y + otherHeight + distance)) return true;			
-		
-		return false;
-		
+	public String getColour() {
+		return colour;
 	}	
+	
+	public int getHeight() {
+		return height;
+	}	
+
+	public int getId() {
+		return this.id;
+	}	
+	
+	public Image getImage() {
+		return droneImage;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getXPos() {
+		return this.x;
+	}
+	
+	public int getXSpeed() {
+		return this.dx;
+	}
+	
+	public int getYPos() {
+		return this.y;
+	}
+	
+	public int getYSpeed() {
+		return this.dy;
+	}
 	
 	/**
 	 * 
@@ -76,36 +95,24 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 		
 		return false;
 		
-	}	
-
+	}
+	
 	/**
-	 * Try to move drone, check with canMoveHere, if cant, change direction
-	 * if can, change x and y
-	 * @param arena
+	 * Is the drone at this x,y position?
+	 * @param x		x position
+	 * @param y		y position
+	 * @return		true if drone is at x,y. False otherwise
 	 */
-	public void tryToMove(DroneArena arena) {
-
-		int newx = x + dx;
-		int newy = y + dy;
-		int count = 0; // To see if all directions have been tried		
+	public boolean isHere(int otherX, int otherY, int distance, int otherWidth, int otherHeight) {
 		
-		while (!arena.canMoveHere(this.id, newx, newy, width, height)) {			
-			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
-						
-			this.direction = direction.random();	// Move to next direction			
-			this.setDirection();	// Set dx,dy from direction
-			newx = x + dx;
-			newy = y + dy;			
-			count++;
-		};
+		if (otherX > (this.x - otherWidth - distance) && 
+				otherX < (this.x + otherWidth + distance) &&
+				otherY > (this.y - otherHeight - distance) && 
+				otherY < (this.y + otherHeight + distance)) return true;			
 		
-		// Only move if drone can move to 'empty' location
-		if (count <= 8) {			
-			x = newx;
-			y = newy;
-		}
+		return false;
 		
-	}	
+	}
 	
 	/**
 	 * Change dx and dy to correspond to Direction enum
@@ -147,42 +154,6 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 		
 	}
 	
-	public Image getImage() {
-		return droneImage;
-	}
-	
-	public int getHeight() {
-		return height;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public String getColour() {
-		return colour;
-	}
-	
-	public int getXSpeed() {
-		return this.dx;
-	}
-	
-	public int getYSpeed() {
-		return this.dy;
-	}
-	
-	public int getXPos() {
-		return this.x;
-	}
-	
-	public int getYPos() {
-		return this.y;
-	}
-	
-	public int getId() {
-		return this.id;
-	}
-	
 	public void setXPos(int x) {
 		this.x = x;
 	}
@@ -198,6 +169,35 @@ public Drone(int x, int y, Direction d) throws FileNotFoundException {
 		info += id + " -- Position: (" + x + ", " + y + ")" + "\n";
 		
 		return info;
+		
+	}
+	
+	/**
+	 * Try to move drone, check with canMoveHere, if cant, change direction
+	 * if can, change x and y
+	 * @param arena
+	 */
+	public void tryToMove(DroneArena arena) {
+
+		int newx = x + dx;
+		int newy = y + dy;
+		int count = 0; // To see if all directions have been tried		
+		
+		while (!arena.canMoveHere(this.id, newx, newy, width, height)) {			
+			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
+						
+			this.direction = direction.random();	// Move to next direction			
+			this.setDirection();	// Set dx,dy from direction
+			newx = x + dx;
+			newy = y + dy;			
+			count++;
+		};
+		
+		// Only move if drone can move to 'empty' location
+		if (count <= 8) {			
+			x = newx;
+			y = newy;
+		}
 		
 	}
 	

@@ -12,11 +12,11 @@ import javafx.scene.paint.Color;
 
 public class DroneArena implements Serializable {
 	
-	private int arenaWidth;
 	private int arenaHeight;
+	private int arenaWidth;
 	
-	private ArrayList<Drone> manyDrones;
 	private ArrayList<Wall> environment;
+	private ArrayList<Drone> manyDrones;
 	private Wall placementWall;
 	
 	/**
@@ -31,59 +31,6 @@ public class DroneArena implements Serializable {
 		
 	}
 
-	/**
-	 * Draws arena and drones to canvas as graphics context
-	 */
-	public void drawArena(MyCanvas canvas) {	  
-		
-		canvas.clear();
-        
-        for (Drone d : manyDrones) {
-        	if (d instanceof AttackDrone || d instanceof CautiousDrone) {        		
-        		canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
-        	} else {
-        		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getHeight());
-        	}
-        }
-       
-        for (Wall w : environment) {
-       	    canvas.drawObject(w.getXPos(), w.getYPos(), w.getWidth(), w.getHeight(), w.getColour());
-        }       
-       
-            
-	}
-	
-	public void drawWallPlacement(MyCanvas canvas, int x, int y) {
-		
-		canvas.clear();
-		
-		drawArena(canvas);
-				
-		canvas.drawObject(x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2), 
-				placementWall.getWidth(), placementWall.getHeight(), "grey_tran");
-		
-	}
-	
-	public void translatePlacementWall(int type) {
-		
-		switch (type) {
-		case 0 : placementWall.rotateLeft();System.out.println("left"); break;
-		case 1 : placementWall.rotateRight();System.out.println("right"); break;
-		case 2 : placementWall.scaleUp();System.out.println("up"); break;
-		case 3 : placementWall.scaleDown();System.out.println("down"); 
-		}
-		
-	}
-	
-	public void addEnvironment(MyCanvas canvas, int x, int y) {
-		
-		environment.add(new Wall(placementWall.getWidth(), placementWall.getHeight(),
-							x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2)));
-		
-		drawArena(canvas);
-		
-	}
-	
 	/**
 	 * Adds a drone to the arena in random area moving random direction,
 	 * adds to arrayList of drones, ensuring no other drone at location
@@ -142,17 +89,15 @@ public class DroneArena implements Serializable {
 		
 	}
 	
-	/**
-	 * Loop through all drones, moving them each once
-	 */
-	public void moveAllDrones() {
+	public void addEnvironment(MyCanvas canvas, int x, int y) {
 		
-		for (Drone d : manyDrones) {			
-			d.tryToMove(this);
-		}
+		environment.add(new Wall(placementWall.getWidth(), placementWall.getHeight(),
+							x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2)));
+		
+		drawArena(canvas);
 		
 	}
-
+	
 	/**
 	 * Determines whether a drone can be moved to x,y pos, checked if
 	 * x,y is in arena and if there's a drone there already
@@ -178,7 +123,162 @@ public class DroneArena implements Serializable {
 		return true;
 		
 	}
+	
+	public ArrayList<String> describeAll() {
+		
+		ArrayList<String> info = new ArrayList<String>();
+		for (Drone d : manyDrones) info.add(d.toString());
+		return info;
+		
+	}
+	
+	/**
+	 * Draws arena and drones to canvas as graphics context
+	 */
+	public void drawArena(MyCanvas canvas) {	  
+		
+		canvas.clear();
+        
+        for (Drone d : manyDrones) {
+        	
+    		//canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), d.getColour());
+    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getHeight());
+        	
+        }
+       
+        for (Wall w : environment) {
+       	    canvas.drawObject(w.getXPos(), w.getYPos(), w.getWidth(), w.getHeight(), w.getColour());
+        }       
+       
+            
+	}
+	
+	public String drawStatus() {
+		
+		String info = "";
+		
+		for (Drone d : manyDrones) 
+			info += d.toString();
+		
+		for  (Wall e : environment) {
+			info += e.toString();
+		}
+		
+		return info;
+	}
 
+	public void drawWallPlacement(MyCanvas canvas, int x, int y) {
+		
+		canvas.clear();
+		
+		drawArena(canvas);
+				
+		canvas.drawObject(x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2), 
+				placementWall.getWidth(), placementWall.getHeight(), "grey_tran");
+		
+	}
+
+	/**	 * 
+	 * @return		this arena
+	 */
+	public DroneArena getArena() {
+		
+		return this;
+		
+	}
+	
+	/**
+	 * Search arrayList of drones to see if there's one at x,y
+	 * @param x		drone x pos
+	 * @param y		drone y pos
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAt(int x, int y, int width, int height) {
+		
+		for (Drone d : manyDrones) {
+			if (d.isHere(x, y, width, height)) return d;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
+	 * @param id	id of a drone to ignore
+	 * @param x		drone x pos
+	 * @param y		drone y pos
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAt(int id, int x, int y, int width, int height) {
+		
+		for (Drone d : manyDrones) {
+			if (d.getId() == id) continue;
+			if (d.isHere(x, y, width, height)) return d;			
+		}
+		
+		return null;		
+
+	}
+	
+	/**
+	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
+	 * @param id	id of a drone to ignore
+	 * @param x		drone x pos
+	 * @param y		drone y pos
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAtDistance(int id, int x, int y, int distance, int width, int height) {
+		
+		for (Drone d : manyDrones) {
+			if (d.getId() == id) continue;
+			if (d.isHere(x, y, distance, width, height)) return d;			
+		}
+		
+		return null;		
+
+	}
+	
+	/**
+	 * Getter for list of drones
+	 * @return		list of drones
+	 */
+	public ArrayList<Drone> getDrones() {
+		
+		return this.manyDrones;
+		
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public Wall getObstacleAt(int x, int y, int width, int height) {
+		
+		for (Wall w : environment) {
+			if (w.isHere(x, y, width, height)) return w;
+		}
+		
+		return null;
+		
+	}
+	
+	public Drone isDroneNear(int id, int x, int y, int distance, int width, int height) {
+			
+		Drone nearbyDrone;
+		
+		if ((nearbyDrone = getDroneAtDistance(id, x, y, distance, width, height)) != null) {	
+			System.out.println("Drone is near");			
+			return nearbyDrone;
+		}
+		
+		return null;
+		
+	}
+		
 	/**
 	 * Checks if the drone is within the border, and if other attack drone is at x,y
 	 * @param id
@@ -207,132 +307,31 @@ public class DroneArena implements Serializable {
 		
 	}
 	
-	public Drone isDroneNear(int id, int x, int y, int distance, int width, int height) {
-			
-		Drone nearbyDrone;
-		
-		if ((nearbyDrone = getDroneAtDistance(id, x, y, distance, width, height)) != null) {	
-			System.out.println("Drone is near");			
-			return nearbyDrone;
-		}
-		
-		return null;
-		
-	}
-	
 	/**
-	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
-	 * @param id	id of a drone to ignore
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
+	 * Loop through all drones, moving them each once
 	 */
-	public Drone getDroneAt(int id, int x, int y, int width, int height) {
+	public void moveAllDrones() {
 		
-		for (Drone d : manyDrones) {
-			if (d.getId() == id) continue;
-			if (d.isHere(x, y, width, height)) return d;			
+		for (Drone d : manyDrones) {			
+			d.tryToMove(this);
 		}
-		
-		return null;		
-
-	}
-	
-	/**
-	 * Search arrayList of drones to see if there's one at x,y
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
-	 */
-	public Drone getDroneAt(int x, int y, int width, int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.isHere(x, y, width, height)) return d;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public Wall getObstacleAt(int x, int y, int width, int height) {
-		
-		for (Wall w : environment) {
-			if (w.isHere(x, y, width, height)) return w;
-		}
-		
-		return null;
 		
 	}
 	
-	/**
-	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
-	 * @param id	id of a drone to ignore
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
-	 */
-	public Drone getDroneAtDistance(int id, int x, int y, int distance, int width, int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.getId() == id) continue;
-			if (d.isHere(x, y, distance, width, height)) return d;			
-		}
-		
-		return null;		
-
-	}
-	
-	public String drawStatus() {
-		
-		String info = "";
-		
-		for (Drone d : manyDrones) 
-			info += d.toString();
-		
-		for  (Wall e : environment) {
-			info += e.toString();
-		}
-		
-		return info;
-	}
-		
 	public void setDrones(ArrayList<Drone> drones) {
 		
 		this.manyDrones = drones;
 		
-	}
-	
-	public ArrayList<String> describeAll() {
-		
-		ArrayList<String> info = new ArrayList<String>();
-		for (Drone d : manyDrones) info.add(d.toString());
-		return info;
-		
-	}
-	
-	/**
-	 * Getter for list of drones
-	 * @return		list of drones
-	 */
-	public ArrayList<Drone> getDrones() {
-		
-		return this.manyDrones;
-		
 	}	
 	
-	/**	 * 
-	 * @return		this arena
-	 */
-	public DroneArena getArena() {
+	public void translatePlacementWall(int type) {
 		
-		return this;
+		switch (type) {
+		case 0 : placementWall.rotateLeft();System.out.println("left"); break;
+		case 1 : placementWall.rotateRight();System.out.println("right"); break;
+		case 2 : placementWall.scaleUp();System.out.println("up"); break;
+		case 3 : placementWall.scaleDown();System.out.println("down"); 
+		}
 		
 	}
 

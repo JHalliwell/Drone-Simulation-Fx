@@ -7,7 +7,7 @@ import java.util.Random;
  * @author JoshH
  */
 public enum Direction {
-	NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST;
+	EAST, NORTH, NORTH_EAST, NORTH_WEST, SOUTH, SOUTH_EAST, SOUTH_WEST, WEST;
 	
 	/**	 
 	 * @return next Direction eg WEST then NORTH

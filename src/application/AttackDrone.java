@@ -1,11 +1,12 @@
 package application;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import javafx.scene.image.Image;
 
 public class AttackDrone extends Drone {
 
-	private static int height = 50;
-	private static int width = 50;
 	
 	public AttackDrone(int x, int y, Direction d) throws FileNotFoundException {
 		
@@ -14,31 +15,17 @@ public class AttackDrone extends Drone {
 		direction = d.random();
 		this.setDirection();
 		colour = "red";
+				
+		this.droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
 						
 	}
 	
-	public void tryToMove(DroneArena arena) {
-		
-		int newx = x + dx;
-		int newy = y + dy;
-		int count = 0; // To see if all directions have been tried		
-		
-		while (!arena.killerCanMoveHere(this.id, newx, newy, allowedDistance, width, height)) {			
-			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
-						
-			this.direction = direction.random();	// Move to next direction			
-			this.setDirection();	// Set dx,dy from direction
-			newx = x + dx;
-			newy = y + dy;			
-			count++;
-		};
-		
-		// Only move if drone can move to 'empty' location
-		if (count <= 8) {			
-			x = newx;
-			y = newy;			
-		}
-		
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getWidth() {
+		return width;
 	}
 	
 	/**
@@ -81,12 +68,28 @@ public class AttackDrone extends Drone {
 		
 	}
 	
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return height;
+	public void tryToMove(DroneArena arena) {
+		
+		int newx = x + dx;
+		int newy = y + dy;
+		int count = 0; // To see if all directions have been tried		
+		
+		while (!arena.killerCanMoveHere(this.id, newx, newy, allowedDistance, width, height)) {			
+			if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
+						
+			this.direction = direction.random();	// Move to next direction			
+			this.setDirection();	// Set dx,dy from direction
+			newx = x + dx;
+			newy = y + dy;			
+			count++;
+		};
+		
+		// Only move if drone can move to 'empty' location
+		if (count <= 8) {			
+			x = newx;
+			y = newy;			
+		}
+		
 	}
 	
 }

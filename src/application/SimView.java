@@ -1,6 +1,10 @@
 package application;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -21,6 +25,8 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -35,28 +41,32 @@ import javafx.stage.Stage;
 
 public class SimView extends VBox{	
 	
-	private Stage simStage;
-	private Scene simScene;
-	private BorderPane simPane;
-	private StackPane simStackPane;	
-	private Group canvasRoot, statusRoot;
-	private Canvas canvas;
-	private MyCanvas simCanvas;
-	private ScrollPane scrollPaneDrone, scrollPaneObstacle;
-	private VBox statusBox;
-	private TextArea droneText;
-	
-	private MyMenu simMenu;
-	private Buttons buttons;
-	
-	private DroneArena arena;
-
-	private static final int WINDOW_WIDTH = 1400;
-	private static final int WINDOW_HEIGHT = 900;
-	public static final int ARENA_WIDTH = 1220;
 	public static final int ARENA_HEIGHT = 818;
+	public static final int ARENA_WIDTH = 1220;
+	private static final int WINDOW_HEIGHT = 900;
+	private static final int WINDOW_WIDTH = 1400;	
+	private DroneArena arena;
+	private Buttons buttons;
+	private Canvas canvas;
+	private Group canvasRoot, statusRoot;
+	private TextArea droneText;
+	private ScrollPane scrollPaneDrone, scrollPaneObstacle;
 	
-	public SimView() {
+	private MyCanvas simCanvas;
+	private MyMenu simMenu;
+	
+	private BorderPane simPane;
+
+	private Scene simScene;
+	private StackPane simStackPane;
+	private Stage simStage;
+	private VBox statusBox;
+	
+	private String currentBackground;
+	private String[] backgrounds;
+	
+	
+	public SimView() throws FileNotFoundException {
 				
 		// Initialise Stage 		
 		simStage = new Stage();
@@ -65,15 +75,54 @@ public class SimView extends VBox{
 		
 		// Initialise Border Pane
 		simPane = new BorderPane();
-		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);		
+	
+		Image background = new Image(new FileInputStream("graphics/dayCycle.gif"));
+		ImageView image = new ImageView(background);
+
+		
 		
 		// Creating Canvas
 		canvasRoot = new Group();		
 		simStackPane = new StackPane();
-		simStackPane.setStyle("-fx-background-color: #7fb5d4");		
+		simStackPane.setStyle("-fx-background-color: #7fb5d4");	
+		simStackPane.getChildren().add(image);
+		image.fitWidthProperty().bind(simStackPane.widthProperty());
+		image.fitHeightProperty().bind(simStackPane.heightProperty());
+			
+		
+		// Creating background
+		backgrounds = new String[12];
+		backgrounds[0] = "graphics/frame0.gif";
+		backgrounds[1] = "graphics/frame1.gif";
+		backgrounds[2] = "graphics/frame2.gif";
+		backgrounds[3] = "graphics/frame3.gif";
+		backgrounds[4] = "graphics/frame4.gif";
+		backgrounds[5] = "graphics/frame5.gif";
+		backgrounds[6] = "graphics/frame6.gif";
+		backgrounds[7] = "graphics/frame7.gif";
+		backgrounds[8] = "graphics/frame8.gif";
+		backgrounds[9] = "graphics/frame9.gif";
+		backgrounds[10] = "graphics/frame10.gif";
+		backgrounds[11] = "graphics/frame11.gif";
+		
+		
+		
+		
+		currentBackground = backgrounds[0];
+		
 		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);		
 		simStackPane.getChildren().add(canvas);
 		canvasRoot.getChildren().add(simStackPane);
+		
+		Timer backTimer = new Timer() {
+			public void run() {
+				
+				
+				//currentBackground 
+				
+			}
+		};
 		
 		// Create custom canvas object
 		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), ARENA_WIDTH, ARENA_HEIGHT);
@@ -149,22 +198,6 @@ public class SimView extends VBox{
 		
 	}
 	
-	private void startAnimationTimer() {
-		
-		AnimationTimer at = new AnimationTimer() {
-			
-			@Override
-            public void handle(long now)
-            {
-            	drawStatus();
-            }	
-			
-		};
-		
-		at.start();
-	}
-	
-
 	/**
 	 * 
 	 * @return SimStage
@@ -173,6 +206,23 @@ public class SimView extends VBox{
 		
 		return simStage;
 		
+	}
+	
+
+	private void startAnimationTimer() {
+		
+		AnimationTimer at = new AnimationTimer() {
+			
+			@Override
+            public void handle(long now)
+            {
+				
+            	drawStatus();
+            }	
+			
+		};
+		
+		at.start();
 	}
 	
 }

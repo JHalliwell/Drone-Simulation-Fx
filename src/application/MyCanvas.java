@@ -9,10 +9,10 @@ import javafx.scene.paint.Color;
 
 public class MyCanvas {
 
-	private int width;
+	private GraphicsContext graphicsContext;
 	private int height;
 	
-	private GraphicsContext graphicsContext;
+	private int width;
 	
 	public MyCanvas(GraphicsContext graphicsContext, int width, int height) {
 		
@@ -22,13 +22,22 @@ public class MyCanvas {
 		
 	}
 	
-public void drawImage (Image i, double x, double y, double sz) {
-		
-		// to draw centred at x,y, give top left position and x,y size
-		// sizes/position in range 0.. canvassize 
-		graphicsContext.drawImage(i, x - sz/2, y - sz/2, sz, sz);
-		
-	}
+/**
+ * Clears canvas
+ */
+public void clear() {
+	
+	graphicsContext.clearRect(0,  0,  width,  height);
+	
+}
+	
+	public void drawImage (Image i, double x, double y, double sz) {
+			
+			// to draw centred at x,y, give top left position and x,y size
+			// sizes/position in range 0.. canvassize 
+			graphicsContext.drawImage(i, x, y, sz, sz);
+			
+		}
 	
 	/**
 	 * Draws drone to canvas
@@ -65,15 +74,6 @@ public void drawImage (Image i, double x, double y, double sz) {
 		
 		graphicsContext.setFill(Color.BLACK);
 		graphicsContext.fillText(s, x, y);
-		
-	}
-	
-	/**
-	 * Clears canvas
-	 */
-	public void clear() {
-		
-		graphicsContext.clearRect(0,  0,  width,  height);
 		
 	}
 	
