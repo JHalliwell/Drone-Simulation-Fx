@@ -2,10 +2,13 @@
 
 WORK IN PROGRESS
 
-The application currently allows the user to add different kinds of Drones to an arena, which act in different ways. For example, one moves randomly, 
-one hunts other drones, and one only moves if another drone is nearby. 
+The application currently allows the user to add different kinds of Drones to an arena, which act in different ways. 
 
 ![image](https://user-images.githubusercontent.com/66826402/143677362-258058f9-3b9c-453a-a77a-457b7583be66.png)
+
+here is the view when a user selects 'Add Wall'. The wall can be rotated and scaled up or down before being placed.
+![image](https://user-images.githubusercontent.com/66826402/143677479-a3d0630c-acf6-4f90-8050-54a2e2e48356.png)
+
 
 ### Current Features
 - 3 Drone types with different movement and collision characteristics
