@@ -6,7 +6,7 @@ The application currently allows the user to add different kinds of Drones to an
 
 ![image](https://user-images.githubusercontent.com/66826402/143677362-258058f9-3b9c-453a-a77a-457b7583be66.png)
 
-here is the view when a user selects 'Add Wall'. The wall can be rotated and scaled up or down before being placed.
+Here is the view when a user selects 'Add Wall'. The wall can be rotated and scaled up or down before being placed.
 ![image](https://user-images.githubusercontent.com/66826402/143677479-a3d0630c-acf6-4f90-8050-54a2e2e48356.png)
 
 
