@@ -46,7 +46,7 @@ public class Buttons extends HBox {
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
-		
+		//this.setStyle("-fx-background-color: #000000");
 		createAddDrone();
 		createAddAttackDrone();
 		createAddCautiousDrone();

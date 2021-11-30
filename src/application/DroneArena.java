@@ -53,7 +53,7 @@ public class DroneArena implements Serializable {
 				Random ranGen = new Random();
 				x = ranGen.nextInt(SimView.ARENA_WIDTH - drone.getWidth());
 				y = ranGen.nextInt(SimView.ARENA_HEIGHT - drone.getHeight());
-				System.out.println("(" + x + ", " + y + ")");
+				//System.out.println("(" + x + ", " + y + ")");
 			} while (getDroneAt(x, y, drone.getWidth(), drone.getHeight()) != null || 
 					getObstacleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
 			drone.setXPos(x);
@@ -62,7 +62,7 @@ public class DroneArena implements Serializable {
 			break;
 			
 		case 1 :	// Add AttackDrone at random location
-			AttackDrone aDrone = new AttackDrone(0, 0, d.random(), myCanvas);
+			AttackDrone aDrone = new AttackDrone(0, 0, d.random(), myCanvas, this);
 			do {
 				Random ranGen = new Random();
 				x = ranGen.nextInt(SimView.ARENA_WIDTH - aDrone.getWidth());
@@ -88,6 +88,18 @@ public class DroneArena implements Serializable {
 			break;
 		
 		}
+		
+	}
+	
+	/**
+	 * Loop through all drones, moving them each once
+	 * @throws FileNotFoundException 
+	 */
+	public void moveAllDrones() throws FileNotFoundException {
+		
+		for (Drone d : manyDrones) {			
+			d.tryToMove(this);
+		}		
 		
 	}
 	
@@ -121,6 +133,58 @@ public class DroneArena implements Serializable {
 		if (getObstacleAt(x, y, width, height) != null) {
 			return false;
 		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * Checks if the drone is within the border, and if other attack drone is at x,y
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean killerCanMoveHere(int id, int targetId, int x, int y, int distance, 
+										int width, int height) {
+		
+		if (x <= 0 || x >= SimView.ARENA_WIDTH - width || y <= 0 || 
+				y >= SimView.ARENA_HEIGHT - width) {
+			return false;
+		}
+		
+		for (Drone d : manyDrones) {
+			
+			if (d.getId() == id) continue;			
+			if (d.getId() != targetId && d.isHere(x, y, distance, width, height)) return false;
+			if (d.getId() == targetId && d.isHere(x, y, distance, width, height)) {
+				
+				for (int i = 0; i < manyDrones.size(); i++) {
+					System.out.println("index : " + i + "| id : " + manyDrones.get(i).getId());					
+				}
+				
+				System.out.println("----------------");
+				
+				manyDrones.remove(id);
+				manyDrones.remove(d);
+				
+				for (int i = 0; i < manyDrones.size(); i++) {
+					manyDrones.get(i).setId(i);
+				}
+				
+				for (int i = 0; i < manyDrones.size(); i++) {
+					System.out.println("index : " + i + "| id : " + manyDrones.get(i).getId());					
+				}
+				
+				Drone.count = manyDrones.size();
+				drawStatus();
+				
+			}
+			
+			
+		}
+		
+		if (getObstacleAt(x, y, width, height) != null) return false;
 		
 		return true;
 		
@@ -240,15 +304,7 @@ public class DroneArena implements Serializable {
 
 	}
 	
-	/**
-	 * Getter for list of drones
-	 * @return		list of drones
-	 */
-	public ArrayList<Drone> getDrones() {
-		
-		return this.manyDrones;
-		
-	}
+
 	
 	/**
 	 * 
@@ -280,45 +336,24 @@ public class DroneArena implements Serializable {
 		return null;
 		
 	}
-		
+	
 	/**
-	 * Checks if the drone is within the border, and if other attack drone is at x,y
-	 * @param id
-	 * @param x
-	 * @param y
-	 * @return
+	 * Getter for list of drones
+	 * @return		list of drones
 	 */
-	public boolean killerCanMoveHere(int id, int x, int y, int distance, int width, int height) {
+	public ArrayList<Drone> getDrones() {
 		
-		if (x <= 0 || x >= SimView.ARENA_WIDTH - width || y <= 0 || 
-				y >= SimView.ARENA_HEIGHT - width) {
-			return false;
-		}
-		
-		for (Drone d : manyDrones) {
-			
-			if (d.getId() == id) continue;
-			if (d instanceof AttackDrone && d.isHere(x, y, distance, width, height)) return false;
-			if (!(d instanceof AttackDrone) && d.isHere(x, y, distance, width, height)) manyDrones.remove(d);
-			
-		}
-		
-		if (getObstacleAt(x, y, width, height) != null) return false;
-		
-		return true;
+		return this.manyDrones;
 		
 	}
 	
 	/**
-	 * Loop through all drones, moving them each once
-	 * @throws FileNotFoundException 
+	 * 
+	 * @param id
+	 * @return	drone of specified id
 	 */
-	public void moveAllDrones() throws FileNotFoundException {
-		
-		for (Drone d : manyDrones) {			
-			d.tryToMove(this);
-		}
-		
+	public Drone getDrone(int id) {
+		return manyDrones.get(id);
 	}
 	
 	public void setDrones(ArrayList<Drone> drones) {
@@ -326,7 +361,7 @@ public class DroneArena implements Serializable {
 		this.manyDrones = drones;
 		
 	}	
-	
+
 	public void translatePlacementWall(int type) {
 		
 		switch (type) {

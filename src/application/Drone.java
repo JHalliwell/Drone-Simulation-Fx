@@ -45,6 +45,10 @@ public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundEx
 		
 	}	
 
+	public void setCount(int count) {
+		Drone.count = count;
+	}
+
     public String getColour() {
 		return colour;
 	}	
@@ -172,6 +176,10 @@ public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundEx
 	
 	public void setYPos(int y) {
 		this.y = y;		
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public String toString() {
