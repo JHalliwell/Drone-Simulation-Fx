@@ -156,31 +156,35 @@ public class DroneArena implements Serializable {
 		for (Drone d : manyDrones) {
 			
 			if (d.getId() == id) continue;			
-			if (d.getId() != targetId && d.isHere(x, y, distance, width, height)) return false;
+			if (d.getId() != targetId && d.isHere(x, y, distance, width, height)) {
+				System.out.println("drone is here");
+				return false;
+			}
 			if (d.getId() == targetId && d.isHere(x, y, distance, width, height)) {
-				
-				for (int i = 0; i < manyDrones.size(); i++) {
-					System.out.println("index : " + i + "| id : " + manyDrones.get(i).getId());					
-				}
-				
-				System.out.println("----------------");
 				
 				manyDrones.remove(id);
 				manyDrones.remove(d);
 				
+				// Set drone id's to match index after removals
 				for (int i = 0; i < manyDrones.size(); i++) {
 					manyDrones.get(i).setId(i);
 				}
 				
-				for (int i = 0; i < manyDrones.size(); i++) {
-					System.out.println("index : " + i + "| id : " + manyDrones.get(i).getId());					
+				// Give attack drones new targets after removals
+				for (Drone dr : manyDrones) {
+					dr.setIsTarget(false);
+				}
+				
+				for (Drone dr : manyDrones) {
+					if (dr instanceof AttackDrone) {
+						((AttackDrone) dr).setTarget(this);
+					}
 				}
 				
 				Drone.count = manyDrones.size();
 				drawStatus();
 				
-			}
-			
+			}			
 			
 		}
 		
@@ -189,6 +193,7 @@ public class DroneArena implements Serializable {
 		return true;
 		
 	}
+
 	
 	public ArrayList<String> describeAll() {
 		

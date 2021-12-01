@@ -20,6 +20,10 @@ public class CautiousDrone extends Drone {
 		
 	}
 	
+	public String getType() {
+		return "scaredDrone";
+	}
+	
 	/**
 	 * Change dx and dy to correspond to Direction enum
 	 */

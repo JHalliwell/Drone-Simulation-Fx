@@ -11,6 +11,7 @@ public class AttackDrone extends Drone {
 	int target;
 	Drone targetDrone;
 	boolean hasTarget;
+	int stuckCount = 0;
 	
 	public AttackDrone(int x, int y, Direction d, MyCanvas myCanvas, DroneArena arena) 
 			throws FileNotFoundException {
@@ -21,33 +22,51 @@ public class AttackDrone extends Drone {
 		this.setDirection();
 		colour = "red";
 		
-		System.out.println("manyDrones.size : " + arena.getDrones().size());
+		//System.out.println("manyDrones.size : " + arena.getDrones().size());
 		
 		// Select random target drone if there is valid (not attack) drone in arena
 		if (arena.getDrones().size() > 0) {
 			
-			hasTarget = true;
-			Random ranGen = new Random();
-			target = ranGen.nextInt(id); // Between 0 and this.id
+			setTarget(arena);
 			
-			System.out.println("target before while: " + target);
+			System.out.println("Drone " + id + " targeting Drone" + target +
+								" (" + arena.getDrones().get(target).getType() + ")");
 			
-			while (arena.getDrones().get(target) instanceof AttackDrone ) {				
-				target = ranGen.nextInt(id);	
-				System.out.println("target in while: " + target);
-			}
-			
-			arena.getDrones().get(target).setIsTarget(true);
-			
-		} else hasTarget = false;			
+		} 			
 		
 		this.droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
 						
 	}
 	
+	public void setTarget(DroneArena arena) {
+		
+		Random ranGen = new Random();
+		target = ranGen.nextInt(id); // Between 0 and this.id
+		
+		System.out.println("target before while: " + target);
+		System.out.println("isTarget? " + arena.getDrones().get(target).isTarget);
+		
+		while (arena.getDrones().get(target) instanceof AttackDrone ||
+				arena.getDrones().get(target).isTarget || 
+				arena.getDrones().get(target) instanceof CautiousDrone) {				
+			target = ranGen.nextInt(id);	
+			System.out.println("target in while: " + target);
+		}
+		
+		arena.getDrones().get(target).setIsTarget(true);
+		
+	}
+	
+	public String getType() {
+		return " attackDrone";
+	}
+	
 	public void tryToMove(DroneArena arena) {
 		
-		if (hasTarget) {
+		System.out.println("Try to move Drone " + id);
+		System.out.println("Stuck count : " + stuckCount);
+		
+		if (stuckCount < 9) {
 			// Set target drone 
 			targetDrone = arena.getDrone(target);	
 			
@@ -71,32 +90,41 @@ public class AttackDrone extends Drone {
 			
 			// Change speed based on direction
 			setDirection();
+		}		
+		
+		// Set new x and y 
+		int newx = x += dx;
+		int newy = y += dy;
+		int breakCount = 0;
+		
+		while (!arena.killerCanMoveHere(id, target, newx, newy, allowedDistance, width, height)) {
 			
-			// Set new x and y 
-			int newx = x += dx;
-			int newy = y += dy;
+			System.out.println("cant move here");
+			System.out.println("Break count: " + breakCount);
 			
-			while (!arena.killerCanMoveHere(id, target, newx, newy, allowedDistance, width, height)) {
-				
-				if (count > 8) break;	// If the drone can't move anywhere, stop trying to move	
-				
-				direction = direction.next();	// Move to next direction			
-				setDirection();	// Set dx,dy from direction
-				newx = x + dx;
-				newy = y + dy;			
-				count++;
-							
-			}
+			// If the drone can't move anywhere, stop trying to move
+			if (breakCount > 8) {
+				System.out.println("break");
+				stuckCount++;
+				break;	
+			}				
 			
-			if (count <= 8) {
-				x = newx;
-				y = newy;			
-			}			
+			direction = direction.next();	// Move to next direction			
+			setDirection();	// Set dx,dy from direction
+			newx = x + dx;
+			newy = y + dy;			
+			breakCount++;
+						
 		}
 		
-
+		if (breakCount <= 8) {
+			stuckCount = 0;
+			x = newx;
+			y = newy;	
+			
+		}			
+	}	
 	
-	}
 	
 	public int getHeight() {
 		return height;

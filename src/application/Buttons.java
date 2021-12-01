@@ -23,7 +23,7 @@ public class Buttons extends HBox {
 	DroneArena arena;
 	Canvas canvas;
 	MyCanvas myCanvas;
-	private boolean wallSelected, animationPlay;
+	private boolean wallSelected, animationPlaying;
 	
 	String buttonStyle = "-fx-background-color: \n"
 			+ "        linear-gradient(#f2f2f2, #d6d6d6),\n"
@@ -80,6 +80,10 @@ public class Buttons extends HBox {
 		
 	}
 	
+	/**
+	 * Creates an attackDrone, as long as there is a drone of another type available to
+	 * 	target, which is not already targeted by another attack drone
+	 */
 	private void createAddAttackDrone() {
 		
 		addAttackDrone = new Button("Add Attack Drone");
@@ -90,13 +94,16 @@ public class Buttons extends HBox {
 			try {
 				
 				boolean hasOtherDrone = false;
+				boolean targetFreeDrone = false; // Check there's a drone without a target
 				
 				for (Drone d : arena.getDrones()) {
-					if (!(d instanceof AttackDrone)) hasOtherDrone = true;
-					if (d.isTarget) hasOtherDrone = true;
+					if (!(d instanceof AttackDrone) && !(d instanceof CautiousDrone) &&
+							!d.getIsTarget()) hasOtherDrone = true;					
 				}
 				
+				// Only add drone if there is one available to target
 				if (hasOtherDrone) arena.addDrone(1);
+				else {System.out.println("no drone to target");}
 				
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
@@ -155,6 +162,7 @@ public class Buttons extends HBox {
 		addWall = new Button("Add Wall");
 		addWall.setStyle(buttonStyle);	
 		
+		// Array needed as seperate int not allowed in mouse handler
 		int[] mouse = new int[2];
 		
 		addWall.setOnAction(e -> {
@@ -173,18 +181,20 @@ public class Buttons extends HBox {
 					});
 																
 					canvas.setOnMouseClicked(e -> {
-						if (wallSelected && !animationPlay) {
+						if (wallSelected && !animationPlaying) {
 							arena.addEnvironment(myCanvas, mouse[0], mouse[1]);
 							wallSelected = false;			
 							wallAnimation.stop();
 						}
 					});	
 					
-					arena.drawWallPlacement(myCanvas, mouse[0], mouse[1]);
+					if (!animationPlaying)
+						arena.drawWallPlacement(myCanvas, mouse[0], mouse[1]);
 					
 	             }	
-			};			
-			wallAnimation.start();		
+			};	
+			if (!animationPlaying)
+				wallAnimation.start();		
 			
 		
 	     });
@@ -200,7 +210,7 @@ public class Buttons extends HBox {
 		
 		play.setOnAction(e -> {
 			
-			animationPlay = true;
+			animationPlaying = true;
 			
 			if (animationTimer != null) {
 				animationTimer.stop();
@@ -236,7 +246,7 @@ public class Buttons extends HBox {
 		
 		stop.setOnAction(e -> {
 			
-			animationPlay = false;
+			animationPlaying = false;
 			
 			animationTimer.stop();
 			

@@ -32,10 +32,10 @@ public class Drone implements Serializable {
 	 */
 public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		
-		this.myCanvas = myCanvas;
+		myCanvas = myCanvas;
 		this.x = x;
 		this.y = y;
-		this.allowedDistance = 2;
+		allowedDistance = 2;
 		colour = "black";			
 		
 		direction = d.random();
@@ -45,6 +45,14 @@ public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundEx
 
 		
 	}	
+
+	public String getType() {
+		return "regDrone";
+	}
+
+	public boolean getIsTarget() {
+		return isTarget;
+	}
 
 	public void setIsTarget(boolean isTarget) {
 		this.isTarget = isTarget;
