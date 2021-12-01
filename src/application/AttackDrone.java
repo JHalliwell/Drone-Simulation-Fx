@@ -21,20 +21,25 @@ public class AttackDrone extends Drone {
 		this.setDirection();
 		colour = "red";
 		
+		System.out.println("manyDrones.size : " + arena.getDrones().size());
+		
 		// Select random target drone if there is valid (not attack) drone in arena
-		if (arena.getDrones().size() > 1) {
+		if (arena.getDrones().size() > 0) {
 			
 			hasTarget = true;
 			Random ranGen = new Random();
 			target = ranGen.nextInt(id); // Between 0 and this.id
 			
-			while (arena.getDrones().get(target) instanceof AttackDrone) {				
-				target = ranGen.nextInt(id);				
+			System.out.println("target before while: " + target);
+			
+			while (arena.getDrones().get(target) instanceof AttackDrone ) {				
+				target = ranGen.nextInt(id);	
+				System.out.println("target in while: " + target);
 			}
-		} else hasTarget = false;	
-		
-		System.out.println("id: " + this.id);
-		System.out.println("target: " + target);
+			
+			arena.getDrones().get(target).setIsTarget(true);
+			
+		} else hasTarget = false;			
 		
 		this.droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
 						
@@ -99,6 +104,10 @@ public class AttackDrone extends Drone {
 	
 	public int getWidth() {
 		return width;
+	}
+	
+	public int getTarget() {
+		return target;
 	}
 	
 	/**

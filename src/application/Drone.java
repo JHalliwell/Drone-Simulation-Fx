@@ -21,6 +21,7 @@ public class Drone implements Serializable {
 	protected int height = 50;
 	protected int width = 50;
 	protected int x, y, id, dx, dy, allowedDistance;
+	protected boolean isTarget; // True if targeted by attack drone
 	
 	/**
 	 * Construct drone at position x,y
@@ -44,6 +45,10 @@ public Drone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundEx
 
 		
 	}	
+
+	public void setIsTarget(boolean isTarget) {
+		this.isTarget = isTarget;
+	}
 
 	public void setCount(int count) {
 		Drone.count = count;

@@ -88,7 +88,16 @@ public class Buttons extends HBox {
 		addAttackDrone.setOnAction(e -> {
 			
 			try {
-				arena.addDrone(1);
+				
+				boolean hasOtherDrone = false;
+				
+				for (Drone d : arena.getDrones()) {
+					if (!(d instanceof AttackDrone)) hasOtherDrone = true;
+					if (d.isTarget) hasOtherDrone = true;
+				}
+				
+				if (hasOtherDrone) arena.addDrone(1);
+				
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
