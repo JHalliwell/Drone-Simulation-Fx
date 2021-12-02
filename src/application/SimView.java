@@ -38,14 +38,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class SimView extends VBox{	
 	
-	public static final int ARENA_HEIGHT = 850;
-	public static final int ARENA_WIDTH = 1220;
-	private static final int WINDOW_HEIGHT = 900;
-	private static final int WINDOW_WIDTH = 1400;	
+	public int ARENA_HEIGHT;
+	public int ARENA_WIDTH;
+	private int WINDOW_HEIGHT;
+	private int WINDOW_WIDTH;	
 	private DroneArena arena;
 	private Buttons buttons;
 	private Canvas canvas;
@@ -73,6 +74,27 @@ public class SimView extends VBox{
 	
 	public SimView() throws FileNotFoundException {
 				
+		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
+	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
+
+	    // Responsive Design       
+        if (screenWidth <= 800 && screenHeight <= 600) {
+            WINDOW_HEIGHT = 500;
+            WINDOW_WIDTH = 700;
+        } else if (screenWidth <= 1280 && screenHeight <= 768) {
+        	WINDOW_WIDTH = 1000;
+        	WINDOW_HEIGHT = 650;
+        } else if (screenWidth <= 1920 && screenHeight <= 1080) {
+        	WINDOW_WIDTH = 1620;
+        	WINDOW_HEIGHT = 880;
+        } else {
+        	WINDOW_WIDTH = 1620;
+        	WINDOW_HEIGHT = 880;
+        }
+        
+        ARENA_WIDTH = (int)(WINDOW_WIDTH * 0.85);
+        ARENA_HEIGHT = (int)(WINDOW_HEIGHT * 0.88);
+		
 		// Initialise Stage 		
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR 29020945");
@@ -141,14 +163,15 @@ public class SimView extends VBox{
 		
 		// Create status area
 		scrollPaneDrone = new ScrollPane();
-		scrollPaneDrone.setPrefWidth(170);
+		scrollPaneDrone.setPrefWidth(WINDOW_WIDTH * 0.15);
+		scrollPaneDrone.setPrefHeight(WINDOW_HEIGHT * 0.68);
 		scrollPaneDrone.setFitToWidth(true);
     	statusBox = new VBox();
     	
     	scrollPaneDrone.setContent(statusBox);
     	
 		// Create drone arena
-		arena = new DroneArena(simCanvas);			
+		arena = new DroneArena(simCanvas, ARENA_WIDTH, ARENA_HEIGHT);			
 						
 		// Initialise menu, buttons
 		simMenu = new MyMenu(this, arena, simCanvas);

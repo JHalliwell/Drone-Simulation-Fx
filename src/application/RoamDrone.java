@@ -74,8 +74,8 @@ public class RoamDrone extends Drone implements Serializable {
 	 */
 	public boolean canMoveHere(int newX, int newY, DroneArena arena) {	
 		
-		if (newX <= 0 || newX >= SimView.ARENA_WIDTH - width || newY <= 0 || 
-				newY >= SimView.ARENA_HEIGHT - height) {			
+		if (newX <= 0 || newX >= arena.getWidth() - width || newY <= 0 || 
+				newY >= arena.getHeight() - height) {			
 			return false;
 		}
 		

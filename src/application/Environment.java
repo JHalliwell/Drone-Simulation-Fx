@@ -18,6 +18,15 @@ public abstract class Environment implements Serializable {
 		
 	}
 	
+	Environment(int xPos, int yPos, int width, int height) {
+	
+		this.xPos = xPos;
+		this.yPos = yPos;		
+		this.width = width;
+		this.height = height;
+		
+	}
+	
 	public abstract boolean isHere(int droneX, int droneY, int droneWidth, int droneHeight);
 	
 	public String toString() {

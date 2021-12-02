@@ -98,24 +98,12 @@ private void createLoad() {
 					DroneArena temp = (DroneArena)is.readObject();
 					is.close();			
 					
-					arena.clearDrones();
+					// Clear arena of drones and environment
+					arena.clearDrones();	
+					arena.clearEnvironment();
+					Drone.droneCount = 0;
 					
-					System.out.println("Temp pos:");
-					
-					for (Drone d : temp.getDrones()){
-						
-						System.out.println(d.getXPos() + ", " + d.getYPos());
-						
-					}
-					
-					System.out.println("arena before pos: ");
-					
-					for (Drone d : arena.getDrones()){
-						
-						System.out.println(d.getXPos() + ", " + d.getYPos());
-						
-					}
-					
+					// Add correct drones and environment from loaded arena object
 					for (Drone d : temp.getDrones()) {
 						
 						if (d instanceof RoamDrone) {
@@ -133,17 +121,15 @@ private void createLoad() {
 						
 					}
 					
-					System.out.println("Arena after pos");
-					
-					for (Drone d : arena.getDrones()){
+					for (Environment en : temp.getEnvironment()) {
 						
-						System.out.println(d.getXPos() + ", " + d.getYPos());
+						if (en instanceof Wall) {
+							arena.addEnvironmentToList(en.getXPos(), en.getYPos(), en.getWidth(),
+															en.getHeight(), "wall");
+						}
 						
 					}
-					
-					// Transfer from loaded object
-//					arena.setDrones(temp.getDrones());
-//					arena.setEnvironment(temp.getEnvironment());
+
 					arena.drawArena(canvas);
 					
 				}

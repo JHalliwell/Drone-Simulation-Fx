@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 public class DroneArena implements Serializable {
 	
 	private MyCanvas myCanvas;
+	private int arenaWidth;
+	private int arenaHeight;
 	
 	private ArrayList<Environment> environment;
 	private ArrayList<Drone> manyDrones;
@@ -20,9 +22,11 @@ public class DroneArena implements Serializable {
 	/**
 	 *  Creates arrayList of drones and a canvas on which to draw arena
 	 */
-	DroneArena(MyCanvas myCanvas) {
+	DroneArena(MyCanvas myCanvas, int arenaWidth, int arenaHeight) {
 		
 		this.myCanvas = myCanvas;
+		this.arenaWidth = arenaWidth;
+		this.arenaHeight = arenaHeight;
 		
 		manyDrones = new ArrayList<Drone>();	
 		environment = new ArrayList<Environment>();		
@@ -47,8 +51,8 @@ public class DroneArena implements Serializable {
 			RoamDrone drone = new RoamDrone(0, 0, d.random(), myCanvas);
 			do {
 				Random ranGen = new Random();
-				x = ranGen.nextInt(SimView.ARENA_WIDTH - drone.getWidth());
-				y = ranGen.nextInt(SimView.ARENA_HEIGHT - drone.getHeight());
+				x = ranGen.nextInt(arenaWidth - drone.getWidth());
+				y = ranGen.nextInt(arenaHeight - drone.getHeight());
 			} while (getDroneAt(x, y, drone.getWidth(), drone.getHeight()) != null || 
 					getObstacleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
 			drone.setXPos(x);
@@ -60,8 +64,8 @@ public class DroneArena implements Serializable {
 			AttackDrone aDrone = new AttackDrone(0, 0, d.random(), myCanvas, this);
 			do {
 				Random ranGen = new Random();
-				x = ranGen.nextInt(SimView.ARENA_WIDTH - aDrone.getWidth());
-				y = ranGen.nextInt(SimView.ARENA_HEIGHT - aDrone.getHeight());
+				x = ranGen.nextInt(arenaWidth - aDrone.getWidth());
+				y = ranGen.nextInt(arenaHeight - aDrone.getHeight());
 			} while (getDroneAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null || 
 					getObstacleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null);
 			aDrone.setXPos(x);
@@ -73,8 +77,8 @@ public class DroneArena implements Serializable {
 			CautiousDrone cDrone = new CautiousDrone(0, 0, d.random(), myCanvas);
 			do {
 				Random ranGen = new Random();
-				x = ranGen.nextInt(SimView.ARENA_WIDTH - cDrone.getWidth());
-				y = ranGen.nextInt(SimView.ARENA_HEIGHT - cDrone.getHeight());
+				x = ranGen.nextInt(arenaWidth - cDrone.getWidth());
+				y = ranGen.nextInt(arenaHeight - cDrone.getHeight());
 			} while (getDroneAt(x, y, cDrone.getWidth(), cDrone.getHeight()) != null || 
 					getObstacleAt(x, y,cDrone.getWidth(), cDrone.getHeight()) != null);
 			cDrone.setXPos(x);
@@ -263,8 +267,19 @@ public class DroneArena implements Serializable {
 		}
 	}
 	
+	public void addEnvironmentToList(int xPos, int yPos, int width, 
+										int height, String type) {
+		if (type == "wall") {
+			environment.add(new Wall(xPos, yPos, width, height));
+		}
+	}
+	
 	public void clearDrones() {
 		manyDrones.clear();
+	}
+	
+	public void clearEnvironment() {
+		environment.clear();
 	}
 	
 	/**	 * 
@@ -300,6 +315,14 @@ public class DroneArena implements Serializable {
 	
 	public void setEnvironment(ArrayList<Environment> environment) {
 		this.environment = environment;
+	}
+	
+	public int getWidth() {
+		return arenaWidth;
+	}
+	
+	public int getHeight() {
+		return arenaHeight;
 	}
 
 }
