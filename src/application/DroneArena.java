@@ -103,11 +103,13 @@ public class DroneArena implements Serializable {
 	 */
 	public void drawArena(MyCanvas canvas) {	  // keep
 		
+		System.out.println("Draw arena");
+		
 		canvas.clear();
         
         for (Drone d : manyDrones) {
         	
-    		//canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
+    		// canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
     		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getHeight());
         	
         }
@@ -247,6 +249,24 @@ public class DroneArena implements Serializable {
 		
 	}
 	
+	public void addDroneToList(int xPos, int yPos, Direction direction, 
+									MyCanvas myCanvas, String type) 
+											throws FileNotFoundException {
+		if (type == "roam") {
+			manyDrones.add(new RoamDrone(xPos, yPos, direction, myCanvas));
+		}
+		if (type == "attack") {
+			manyDrones.add(new AttackDrone(xPos, yPos, direction, myCanvas, this));
+		}
+		if (type == "cautious") {
+			manyDrones.add(new CautiousDrone(xPos, yPos, direction, myCanvas));
+		}
+	}
+	
+	public void clearDrones() {
+		manyDrones.clear();
+	}
+	
 	/**	 * 
 	 * @return		this arena
 	 */
@@ -259,7 +279,7 @@ public class DroneArena implements Serializable {
 	 * @return		list of drones
 	 */
 	public ArrayList<Drone> getDrones() {		
-		return this.manyDrones;		
+		return manyDrones;		
 	}
 	
 	/**
@@ -270,10 +290,16 @@ public class DroneArena implements Serializable {
 		return manyDrones.get(id);
 	}
 	
-	public void setDrones(ArrayList<Drone> manyDrones) {
-		
-		this.manyDrones = manyDrones;
-		
+	public ArrayList<Environment> getEnvironment(){
+		return environment;
+	}
+	
+	public void setDrones(ArrayList<Drone> manyDrones) {		
+		this.manyDrones = manyDrones;		
 	}	
+	
+	public void setEnvironment(ArrayList<Environment> environment) {
+		this.environment = environment;
+	}
 
 }

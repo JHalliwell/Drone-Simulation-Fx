@@ -9,19 +9,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-public class MyCanvas {
+public class MyCanvas implements Serializable {
 
-	private Canvas canvas;
-	private GraphicsContext graphicsContext;
+	private transient GraphicsContext graphicsContext;
 	private int height;	
 	private int width;
 	
-	public MyCanvas(GraphicsContext graphicsContext, Canvas canvas, int width, int height) {
+	public MyCanvas (GraphicsContext graphicsContext, Canvas canvas, 
+						int width, int height) {
 		
 		this.width = width;
 		this.height = height;
-		this.graphicsContext = graphicsContext;
-		this.canvas = canvas;
+		this.graphicsContext = graphicsContext;	
 		
 	}
 	

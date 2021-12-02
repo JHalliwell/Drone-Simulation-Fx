@@ -20,7 +20,8 @@ public class RoamDrone extends Drone implements Serializable {
 	 * @param d		direction of drone
 	 * @throws FileNotFoundException 
 	 */
-	public RoamDrone(int xPos, int yPos, Direction direction, MyCanvas myCanvas) throws FileNotFoundException  {
+	public RoamDrone(int xPos, int yPos, Direction direction, 
+						MyCanvas myCanvas) throws FileNotFoundException  {
 		
 		super(xPos, yPos, direction, myCanvas);	
 		

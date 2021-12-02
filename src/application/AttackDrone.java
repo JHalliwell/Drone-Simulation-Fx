@@ -2,12 +2,13 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.image.Image;
 
-public class AttackDrone extends Drone {
+public class AttackDrone extends Drone implements Serializable {
 
 	int target;
 	Drone targetDrone;

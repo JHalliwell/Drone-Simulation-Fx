@@ -1,8 +1,10 @@
 package application;
 
+import java.io.Serializable;
+
 import javafx.scene.image.Image;
 
-public abstract class Environment {
+public abstract class Environment implements Serializable {
 
 	String colour;
 	Image image;

@@ -2,10 +2,11 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 
 import javafx.scene.image.Image;
 
-public class CautiousDrone extends Drone {
+public class CautiousDrone extends Drone implements Serializable {
 
 	CautiousDrone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		

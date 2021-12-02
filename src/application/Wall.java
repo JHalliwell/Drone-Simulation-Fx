@@ -1,6 +1,8 @@
 package application;
 
-public class Wall extends Environment {
+import java.io.Serializable;
+
+public class Wall extends Environment implements Serializable {
 	
 	public Wall(int xPos, int yPos, int width, int height) {
 		

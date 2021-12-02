@@ -2,6 +2,7 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,19 +11,12 @@ import javafx.scene.image.ImageView;
  * Parent class of all drones 
  * @author jhalli
  */
-public abstract class Drone {
+public abstract class Drone implements Serializable {
 	
 	protected static int droneCount = 0;		
 	
-	protected Image droneImage;
-	protected Image droneN;
-	protected Image droneNE;
-	protected Image droneE;
-	protected Image droneSE;
-	protected Image droneS;
-	protected Image droneSW;
-	protected Image droneW;
-	protected Image droneNW;	
+	protected transient Image droneImage, droneN, droneNE, droneE, droneSE, 
+								droneS, droneSW, droneW, droneNW;	
 	
 	protected MyCanvas myCanvas;
 	
@@ -200,6 +194,8 @@ public abstract class Drone {
 	 * @return Drone's width
 	 */
 	public int getWidth() { return width; }
+	
+	public Direction getDirection() { return direction; }
 	
 	/**
 	 * @return Drone's xPos

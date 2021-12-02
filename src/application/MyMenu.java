@@ -22,7 +22,7 @@ public class MyMenu extends MenuBar {
 	MyCanvas canvas;
 	
 	MenuItem exit, save, load;
-	Menu file;
+	Menu file, About;
 	SimView simView;
 	
 	public MyMenu(SimView simView, DroneArena arena, MyCanvas canvas) {		
@@ -96,10 +96,54 @@ private void createLoad() {
 				if(selFile.isFile()){
 					ObjectInputStream is = new ObjectInputStream(new FileInputStream(selFile));
 					DroneArena temp = (DroneArena)is.readObject();
-					is.close();						
+					is.close();			
+					
+					arena.clearDrones();
+					
+					System.out.println("Temp pos:");
+					
+					for (Drone d : temp.getDrones()){
+						
+						System.out.println(d.getXPos() + ", " + d.getYPos());
+						
+					}
+					
+					System.out.println("arena before pos: ");
+					
+					for (Drone d : arena.getDrones()){
+						
+						System.out.println(d.getXPos() + ", " + d.getYPos());
+						
+					}
+					
+					for (Drone d : temp.getDrones()) {
+						
+						if (d instanceof RoamDrone) {
+							arena.addDroneToList(d.getXPos(), d.getYPos(), d.getDirection(), canvas, 
+													"roam");
+						}
+						if (d instanceof AttackDrone) {
+							arena.addDroneToList(d.getXPos(), d.getYPos(), d.getDirection(), canvas, 
+									"attack");
+						}
+						if (d instanceof CautiousDrone) {	
+							arena.addDroneToList(d.getXPos(), d.getYPos(), d.getDirection(), canvas, 
+									"cautious");
+						}
+						
+					}
+					
+					System.out.println("Arena after pos");
+					
+					for (Drone d : arena.getDrones()){
+						
+						System.out.println(d.getXPos() + ", " + d.getYPos());
+						
+					}
 					
 					// Transfer from loaded object
-					arena.setDrones(temp.getDrones());
+//					arena.setDrones(temp.getDrones());
+//					arena.setEnvironment(temp.getEnvironment());
 					arena.drawArena(canvas);
 					
 				}
