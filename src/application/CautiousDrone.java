@@ -11,87 +11,90 @@ public class CautiousDrone extends Drone {
 		
 		super(x, y, d, myCanvas);
 		
+		type = "Cautious";
 		allowedDistance = 50;
-		colour = "orange";
 		dy = 3;
 		dx = 3;		
-		
-		this.droneImage = new Image(new FileInputStream("graphics/yellowDrone.png"));
+		width = 50;
+		height = 50;
+						
+		droneImage = new Image(new FileInputStream("graphics/yellowDrone.png"));
 		
 	}
 	
-	public String getType() {
-		return "scaredDrone";
+	@Override
+	 public void tryToMove(DroneArena arena) {
+		
+		int newx = xPos;
+		int newy = yPos;
+		
+		Drone nearbyDrone;
+		
+		if ((nearbyDrone = isDroneNear(id, xPos, yPos, allowedDistance, width, height, arena)) != null) {			
+			if (nearbyDrone.getXPos() < xPos) {
+				if (canMoveHere(newx + dx, newy, arena)) newx += dx;
+			}
+			
+			if (nearbyDrone.getXPos() > xPos) {
+				if (canMoveHere(newx - dx, newy, arena)) newx -= dx;
+			}
+			
+			if (nearbyDrone.getYPos() < yPos) {
+				if (canMoveHere(newx, newy + dy, arena)) newy += dy;
+			}
+			
+			if (nearbyDrone.getYPos() > yPos) {
+				if (canMoveHere(newx, newy - dy, arena)) newy -= dy;
+			}				
+		}		
+		
+		xPos = newx;
+		yPos = newy;
+	
 	}
 	
 	/**
-	 * Change dx and dy to correspond to Direction enum
+	 * Determines whether a drone can be moved to x,y pos, checked if
+	 * x,y is in arena and if there's a drone there already
+	 * @param x		x co-ord
+	 * @param y		y co-ord
+	 * @return		false: drone move here, true: drone can move here
 	 */
-	public void setDirection() {	
+	public boolean canMoveHere(int newX, int newY, DroneArena arena) {	
 		
-		if (this.direction == direction.NORTH) {
-			dx = 0;
-			dy = -3;
+		if (newX <= 0 || newX >= SimView.ARENA_WIDTH - width || newY <= 0 || 
+				newY >= SimView.ARENA_HEIGHT - height) {			
+			return false;
 		}
-		if (this.direction == direction.NORTH_EAST) {
-			dx = 3;
-			dy = -3;
+		
+		if (arena.getDroneAt(id, newX, newY, width, height) != null) {		
+			return false;
 		}
-		if (this.direction == direction.EAST) {
-			dx = 3;
-			dy = 0;
+		
+		if (arena.getObstacleAt(newX, newY, width, height) != null) {
+			return false;
 		}
-		if (this.direction == direction.SOUTH_EAST) {
-			dx = 3;
-			dy = 3;
+		
+		return true;
+		
+	}
+	
+	public Drone isDroneNear(int id, int xPos, int yPos, int distance, int width, int height, DroneArena arena) {
+		
+		Drone nearbyDrone;
+		
+		if ((nearbyDrone = arena.getDroneAt(id, xPos, yPos, distance, width, height)) != null) {	
+			System.out.println("Drone is near");			
+			return nearbyDrone;
 		}
-		if (this.direction == direction.SOUTH) {
-			dx = 0;
-			dy = 3;
-		}
-		if (this.direction == direction.SOUTH_WEST) {
-			dx = -3;
-			dy = 3;
-		}
-		if (this.direction == direction.WEST) {
-			dx = -3;
-			dy = 0;
-		}
-		if (this.direction == direction.NORTH_WEST) {
-			dx = -3;
-			dy = -3;
-		}
+		
+		return null;
 		
 	}
 
- public void tryToMove(DroneArena arena) {
-	
-	int newx = x;
-	int newy = y;
-	
-	Drone nearbyDrone;
-	
-	if ((nearbyDrone = arena.isDroneNear(id, x, y, allowedDistance, width, height)) != null) {			
-		if (nearbyDrone.getXPos() < x) {
-			if (arena.canMoveHere(id, newx + dx, newy, width, height)) newx += dx;
-		}
-		
-		if (nearbyDrone.getXPos() > x) {
-			if (arena.canMoveHere(id, newx - dx, newy, width, height)) newx -= dx;
-		}
-		
-		if (nearbyDrone.getYPos() < y) {
-			if (arena.canMoveHere(id, newx, newy + dy, width, height)) newy += dy;
-		}
-		
-		if (nearbyDrone.getYPos() > y) {
-			if (arena.canMoveHere(id, newx, newy - dy, width, height)) newy -= dy;
-		}				
-	}		
-	
-	x = newx;
-	y = newy;
 
-}
+	protected boolean canMoveHere() {
+		return false;
+	}
 	
 }

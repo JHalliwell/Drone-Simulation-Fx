@@ -1,49 +1,24 @@
 package application;
 
-import javafx.scene.shape.Rectangle;
-
-public class Wall{
+public class Wall extends Environment {
 	
-	String colour;
-	private int height, width;
-	private int xPos, yPos;
-	
-	public Wall(int width, int height) {
+	public Wall(int xPos, int yPos, int width, int height) {
+		
+		super(xPos, yPos);
 		
 		this.width = width;
 		this.height = height;
-		
-	}
-	
-	public Wall(int width, int height, int xPos, int yPos) {
-		
-		this.width = width;
-		this.height = height;		
-		this.xPos = xPos;
-		this.yPos = yPos;
-		
 		colour = "black";
 		
 	}
 	
-	public String getColour() {
-		return colour;
-	}
-	
-	public int getHeight() {
-		return height;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getXPos() {
-		return xPos;
-	}
-	
-	public int getYPos() {
-		return yPos;
+	public Wall(int xPos, int yPos) {
+		
+		super(xPos, yPos);
+		
+		width = 200;
+		height = 20;
+		
 	}
 	
 	/**
@@ -89,24 +64,6 @@ public class Wall{
 		width *= 1.25;
 		height *= 1.25;
 		System.out.println("" + width + ", " + height);
-	}
-	
-	public void setXPos(int x) {
-		this.xPos = x;
-	}
-	
-	public void setYPos(int y) {
-		this.yPos = y;
-	}
-	
-	public String toString() {
-		
-		String info = "";
-		
-		info += "Wall: (" + xPos + ", " + yPos + ")";
-		
-		return info;
-		
 	}
 	
 }

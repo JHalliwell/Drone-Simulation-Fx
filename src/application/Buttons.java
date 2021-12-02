@@ -1,6 +1,7 @@
 package application;
 
 import java.io.FileNotFoundException;
+import java.time.Duration;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -12,6 +13,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -23,7 +25,9 @@ public class Buttons extends HBox {
 	DroneArena arena;
 	Canvas canvas;
 	MyCanvas myCanvas;
-	private boolean wallSelected, animationPlaying;
+	BorderPane simPane;
+	private boolean wallSelected, animationPlaying, invalidPlacement, placeWall, mouseReleased, mouseClicked;
+	private int mouseX, mouseY;
 	
 	String buttonStyle = "-fx-background-color: \n"
 			+ "        linear-gradient(#f2f2f2, #d6d6d6),\n"
@@ -41,8 +45,10 @@ public class Buttons extends HBox {
 			+ "  -fx-text-shadow: -1px -1px 0 darken(red, 9.5%);\n"
 			+ "  -fx-transition: all 250ms linear;";
 	
-	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas) {
+	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
+						BorderPane simPane) {
 		
+		this.simPane = simPane;
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
@@ -91,24 +97,22 @@ public class Buttons extends HBox {
 		
 		addAttackDrone.setOnAction(e -> {
 			
-			try {
-				
+			try {				
 				boolean hasOtherDrone = false;
-				boolean targetFreeDrone = false; // Check there's a drone without a target
-				
-				for (Drone d : arena.getDrones()) {
-					if (!(d instanceof AttackDrone) && !(d instanceof CautiousDrone) &&
-							!d.getIsTarget()) hasOtherDrone = true;					
-				}
 				
 				// Only add drone if there is one available to target
+				for (Drone d : arena.getDrones()) {
+					if (d instanceof RoamDrone && !((RoamDrone) d).getIsTarget()) 
+						hasOtherDrone = true;		
+				}				
+				
 				if (hasOtherDrone) arena.addDrone(1);
 				else {System.out.println("no drone to target");}
 				
 			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
 			arena.drawArena(myCanvas);
 			
 		});
@@ -161,6 +165,9 @@ public class Buttons extends HBox {
 		
 		addWall = new Button("Add Wall");
 		addWall.setStyle(buttonStyle);	
+		Wall placementWall = new Wall(0, 0);
+		createKeyEvents(placementWall);	
+		createMouseEvents(placementWall);
 		
 		// Array needed as seperate int not allowed in mouse handler
 		int[] mouse = new int[2];
@@ -168,36 +175,82 @@ public class Buttons extends HBox {
 		addWall.setOnAction(e -> {
 			
 			wallSelected = true;
+			mouseClicked = false;
+			
 			
 			wallAnimation = new AnimationTimer()
 			{
 				@Override
-	            public void handle(long now)
-	            {
-								
-					canvas.setOnMouseMoved(e -> {						
-						mouse[0] = (int)e.getX();
-						mouse[1] = (int)e.getY();
-					});
-																
-					canvas.setOnMouseClicked(e -> {
-						if (wallSelected && !animationPlaying) {
-							arena.addEnvironment(myCanvas, mouse[0], mouse[1]);
-							wallSelected = false;			
-							wallAnimation.stop();
-						}
-					});	
+	            public void handle(long now)  {			
 					
-					if (!animationPlaying)
-						arena.drawWallPlacement(myCanvas, mouse[0], mouse[1]);
+					if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
+							placementWall.getWidth(), placementWall.getHeight()) != null) {
+						
+						System.out.println("1");
+						
+						arena.drawWallPlacement(myCanvas, mouseX, mouseY, 
+								"red", placementWall);					
+						
+					} else if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
+							placementWall.getWidth(), placementWall.getHeight()) == null) {						
+						
+					System.out.println("2");
+					arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
+					wallSelected = false;			
+					wallAnimation.stop();
 					
+					} else {
+						
+						arena.drawWallPlacement(myCanvas, mouseX, mouseY, "grey_tran",
+								placementWall);	
+						
+					}									
 	             }	
 			};	
-			if (!animationPlaying)
-				wallAnimation.start();		
 			
+			if (!animationPlaying)
+				wallAnimation.start();				
 		
 	     });
+	}
+	
+	public void createMouseEvents(Wall placementWall) {
+				
+		canvas.setOnMouseMoved(e -> {						
+			mouseX = (int)e.getX();
+			mouseY = (int)e.getY();
+		});
+													
+		canvas.setOnMousePressed(e -> {
+			
+			mouseClicked = true;
+			System.out.println("mouse Clicked");
+
+		});	
+		
+		canvas.setOnMouseReleased(e -> {			
+			
+			mouseClicked = false;
+			System.out.println("mouse released");
+		});
+		
+		
+		
+	}
+	
+	public void createKeyEvents(Wall placementWall) {
+		
+		simPane.setOnKeyPressed(e -> {
+			
+			switch (e.getCode()) {
+			case A : placementWall.rotateLeft();System.out.println("left"); break;
+			case D : placementWall.rotateRight();System.out.println("right"); break;
+			case W : placementWall.scaleUp();System.out.println("up"); break;
+			case S : placementWall.scaleDown();System.out.println("down"); 
+			}
+			
+		});
+		
 	}
 	
 	/**

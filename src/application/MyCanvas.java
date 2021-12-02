@@ -25,14 +25,14 @@ public class MyCanvas {
 		
 	}
 	
-/**
- * Clears canvas
- */
-public void clear() {
-	
-	graphicsContext.clearRect(0,  0,  width,  height);
-	
-}
+	/**
+	 * Clears canvas
+	 */
+	public void clear() {
+		
+		graphicsContext.clearRect(0,  0,  width,  height);
+		
+	}
 	
 	public void drawImage (Image i, double x, double y, double sz) {
 			
@@ -67,7 +67,7 @@ public void clear() {
 		}
 		
 		if (colour == "grey_tran") {
-			graphicsContext.setFill(Color.MEDIUMPURPLE);
+			graphicsContext.setFill(Color.DIMGREY);
 			graphicsContext.fillRect(x, y, width, height);
 		}
 		

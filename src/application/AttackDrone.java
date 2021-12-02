@@ -2,6 +2,7 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.image.Image;
@@ -13,47 +14,35 @@ public class AttackDrone extends Drone {
 	boolean hasTarget;
 	int stuckCount = 0;
 	
-	public AttackDrone(int x, int y, Direction d, MyCanvas myCanvas, DroneArena arena) 
+	public AttackDrone(int xPos, int yPos, Direction direction, MyCanvas myCanvas, DroneArena arena) 
 			throws FileNotFoundException {
 		
-		super(x, y, d, myCanvas);
+		super(xPos, yPos, direction, myCanvas);		
 		
-		direction = d.random();
-		this.setDirection();
-		colour = "red";
-		
-		//System.out.println("manyDrones.size : " + arena.getDrones().size());
+		setDirection();
+		type = "Attack";
+		width = 50;
+		height = 50;
+		speed = 3;
 		
 		// Select random target drone if there is valid (not attack) drone in arena
-		if (arena.getDrones().size() > 0) {
-			
-			setTarget(arena);
-			
-			System.out.println("Drone " + id + " targeting Drone" + target +
-								" (" + arena.getDrones().get(target).getType() + ")");
-			
-		} 			
+		if (arena.getDrones().size() > 0) setTarget(arena);			
 		
-		this.droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
+		droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
 						
 	}
 	
 	public void setTarget(DroneArena arena) {
 		
 		Random ranGen = new Random();
-		target = ranGen.nextInt(id); // Between 0 and this.id
-		
-		System.out.println("target before while: " + target);
-		System.out.println("isTarget? " + arena.getDrones().get(target).isTarget);
-		
-		while (arena.getDrones().get(target) instanceof AttackDrone ||
-				arena.getDrones().get(target).isTarget || 
-				arena.getDrones().get(target) instanceof CautiousDrone) {				
-			target = ranGen.nextInt(id);	
-			System.out.println("target in while: " + target);
+		target = ranGen.nextInt(id); // Between 0 and this.id		
+			
+		while (!(arena.getDrones().get(target) instanceof RoamDrone) ||
+				((RoamDrone) arena.getDrones().get(target)).getIsTarget()) {				
+			target = ranGen.nextInt(id);
 		}
 		
-		arena.getDrones().get(target).setIsTarget(true);
+		((RoamDrone) arena.getDrones().get(target)).setIsTarget(true);		
 		
 	}
 	
@@ -61,123 +50,128 @@ public class AttackDrone extends Drone {
 		return " attackDrone";
 	}
 	
+	@Override
 	public void tryToMove(DroneArena arena) {
 		
-		System.out.println("Try to move Drone " + id);
-		System.out.println("Stuck count : " + stuckCount);
+			
+		// Set target drone 
+		targetDrone = arena.getDrone(target);	
 		
-		if (stuckCount < 9) {
-			// Set target drone 
-			targetDrone = arena.getDrone(target);	
-			
-			// Change direction to follow target drone
-			if (x == targetDrone.getXPos() && y > targetDrone.getYPos()) 
-				direction = Direction.NORTH;
-			else if (x < targetDrone.getXPos() && y > targetDrone.getYPos()) 
-				direction = Direction.NORTH_EAST;
-			else if (x < targetDrone.getXPos() && y == targetDrone.getYPos()) 
-				direction = Direction.EAST;
-			else if (x < targetDrone.getXPos() && y < targetDrone.getYPos()) 
-				direction = Direction.SOUTH_EAST;
-			else if (x == targetDrone.getXPos() && y < targetDrone.getYPos()) 
-				direction = Direction.SOUTH;
-			else if (x > targetDrone.getXPos() && y < targetDrone.getYPos()) 
-				direction = Direction.SOUTH_WEST;
-			else if (x > targetDrone.getXPos() && y == targetDrone.getYPos()) 
-				direction = Direction.WEST;
-			else if (x > targetDrone.getXPos() && y > targetDrone.getYPos()) 
-				direction = Direction.NORTH_WEST;
-			
-			// Change speed based on direction
-			setDirection();
-		}		
+		// Change direction to follow target drone
+		if (xPos == targetDrone.getXPos() && yPos > targetDrone.getYPos()) 
+			direction = Direction.NORTH;
+		else if (xPos < targetDrone.getXPos() && yPos > targetDrone.getYPos()) 
+			direction = Direction.NORTH_EAST;
+		else if (xPos < targetDrone.getXPos() && yPos == targetDrone.getYPos()) 
+			direction = Direction.EAST;
+		else if (xPos < targetDrone.getXPos() && yPos < targetDrone.getYPos()) 
+			direction = Direction.SOUTH_EAST;
+		else if (xPos == targetDrone.getXPos() && yPos < targetDrone.getYPos()) 
+			direction = Direction.SOUTH;
+		else if (xPos > targetDrone.getXPos() && yPos < targetDrone.getYPos()) 
+			direction = Direction.SOUTH_WEST;
+		else if (xPos > targetDrone.getXPos() && yPos == targetDrone.getYPos()) 
+			direction = Direction.WEST;
+		else if (xPos > targetDrone.getXPos() && yPos > targetDrone.getYPos()) 
+			direction = Direction.NORTH_WEST;
+		
+		// Change speed based on direction
+		setDirection();
+				
 		
 		// Set new x and y 
-		int newx = x += dx;
-		int newy = y += dy;
+		int newx = xPos += dx;
+		int newy = yPos += dy;
 		int breakCount = 0;
 		
-		while (!arena.killerCanMoveHere(id, target, newx, newy, allowedDistance, width, height)) {
-			
-			System.out.println("cant move here");
-			System.out.println("Break count: " + breakCount);
+		while (!canMoveHere(newx, newy, arena)) {
 			
 			// If the drone can't move anywhere, stop trying to move
-			if (breakCount > 8) {
-				System.out.println("break");
-				stuckCount++;
-				break;	
-			}				
+			if (breakCount > 8) break;			
 			
 			direction = direction.next();	// Move to next direction			
 			setDirection();	// Set dx,dy from direction
-			newx = x + dx;
-			newy = y + dy;			
+			newx = xPos + dx;
+			newy = yPos + dy;			
 			breakCount++;
 						
 		}
 		
 		if (breakCount <= 8) {
-			stuckCount = 0;
-			x = newx;
-			y = newy;	
+			xPos = newx;
+			yPos = newy;	
 			
 		}			
 	}	
 	
-	
-	public int getHeight() {
-		return height;
+	/**
+	 * Checks if the drone is within the border, and if other attack drone is at x,y
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean canMoveHere(int newX, int newY, DroneArena arena) {
+		
+		if (newX <= 0 || newX >= SimView.ARENA_WIDTH - width || newY <= 0 || 
+				newY >= SimView.ARENA_HEIGHT - width) {
+			return false;
+		}
+		
+		// Copy drone list from arena
+		ArrayList<Drone> manyDrones = arena.getDrones();
+		
+		//System.out.println("Target: " + target);
+		
+		for (Drone d : manyDrones) {
+			
+			//System.out.println("drone id: " + d.getId());
+			
+			if (d.getId() == id) continue;			
+			if (d.getId() != target && d.isHere(newX, newY, allowedDistance, width, height)) {
+				return false;
+			}
+			if (d.getId() == target && d.isHere(newX, newY, 0, width, height)) {
+				
+				System.out.println("killed");
+				
+				manyDrones.remove(id);
+				manyDrones.remove(d);
+				
+				// Set drone id's to match index after removals
+				for (int i = 0; i < manyDrones.size(); i++) {
+					manyDrones.get(i).setId(i);
+				}
+				
+				// Give attack drones new targets after removals
+				for (Drone dr : manyDrones) {
+					if (dr instanceof RoamDrone) {
+						((RoamDrone) dr).setIsTarget(false);
+					}					
+				}
+				
+				for (Drone dr : manyDrones) {
+					if (dr instanceof AttackDrone) {
+						((AttackDrone) dr).setTarget(arena);
+					}
+				}
+				
+				arena.setDrones(manyDrones); // Set arena list to edited list
+				Drone.droneCount = manyDrones.size();
+				arena.drawStatus();
+				
+			}			
+			
+		}
+		
+		if (arena.getObstacleAt(newX, newY, width, height) != null) return false;
+		
+		return true;
+		
 	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
+		
 	public int getTarget() {
 		return target;
-	}
-	
-	/**
-	 * Change dx and dy to correspond to Direction enum
-	 */
-	public void setDirection() {	
-		
-		if (this.direction == direction.NORTH) {
-			dx = 0;
-			dy = -3;
-		}
-		if (this.direction == direction.NORTH_EAST) {
-			dx = 3;
-			dy = -3;
-		}
-		if (this.direction == direction.EAST) {
-			dx = 3;
-			dy = 0;
-		}
-		if (this.direction == direction.SOUTH_EAST) {
-			dx = 3;
-			dy = 3;
-		}
-		if (this.direction == direction.SOUTH) {
-			dx = 0;
-			dy = 3;
-		}
-		if (this.direction == direction.SOUTH_WEST) {
-			dx = -3;
-			dy = 3;
-		}
-		if (this.direction == direction.WEST) {
-			dx = -3;
-			dy = 0;
-		}
-		if (this.direction == direction.NORTH_WEST) {
-			dx = -3;
-			dy = -3;
-		}
-		
-	}
-	
-	
+	}	
 	
 }

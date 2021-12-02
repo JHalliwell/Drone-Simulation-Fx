@@ -76,7 +76,8 @@ public class SimView extends VBox{
 		// Initialise Stage 		
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR 29020945");
-		simStage.setResizable(false);				
+		simStage.setResizable(false);	
+		//simStage.setMaximized(true);
 		
 		// Initialise Border Pane
 		simPane = new BorderPane();
@@ -147,14 +148,11 @@ public class SimView extends VBox{
     	scrollPaneDrone.setContent(statusBox);
     	
 		// Create drone arena
-		arena = new DroneArena(simCanvas);	
-		
-		// Add key event handlers
-		createKeyEvents();
+		arena = new DroneArena(simCanvas);			
 						
 		// Initialise menu, buttons
 		simMenu = new MyMenu(this, arena, simCanvas);
-		buttons = new Buttons(arena, simCanvas, canvas);		
+		buttons = new Buttons(arena, simCanvas, canvas, simPane);		
 			
 		// Add to border pane: menu, buttons
 		simPane.setTop(simMenu);
@@ -177,21 +175,6 @@ public class SimView extends VBox{
 		simStage.setScene(simScene);
 
 	}	
-	
-	public void createKeyEvents() {
-		
-		simPane.setOnKeyPressed(e -> {
-			
-			switch (e.getCode()) {
-			case A: arena.translatePlacementWall(0); break;
-			case D : arena.translatePlacementWall(1); break;
-			case W : arena.translatePlacementWall(2); break;
-			case S : arena.translatePlacementWall(3); 
-			}
-			
-		});
-		
-	}
 	
 	public void drawStatus() {
 		
