@@ -69,6 +69,8 @@ private void createFile() {
  */
 private void createLoad() {
 	
+	this.setId("menu");
+	
 	load = new MenuItem("Load");
 	
 	load.setOnAction(e -> {

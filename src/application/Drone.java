@@ -23,6 +23,8 @@ public abstract class Drone implements Serializable {
 	protected Direction direction;
 	protected int height;
 	protected int width;
+	protected int printWidth;
+	protected int printHeight;
 	protected int xPos, yPos;
 	protected int speed;
 	protected int dx, dy;
@@ -30,7 +32,8 @@ public abstract class Drone implements Serializable {
 	protected int allowedDistance;	// Collision distance
 	protected String type;
 	
-	Drone (int xPos, int yPos, Direction direction, MyCanvas myCanvas) {
+	Drone (int xPos, int yPos, Direction direction, MyCanvas myCanvas) 
+			throws FileNotFoundException {
 		
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -38,16 +41,17 @@ public abstract class Drone implements Serializable {
 		this.myCanvas = myCanvas;
 		
 		allowedDistance = 2;
-		id = droneCount++;
+		id = droneCount++;		
 		setDirection();
 		
 	}
 	
 	protected abstract void tryToMove(DroneArena arena);
 	
-	protected abstract boolean canMoveHere(int newX, int newY, DroneArena arena);	
+	protected abstract boolean canMoveHere(int newX, int newY, DroneArena arena);
 	
-	public boolean isHereWallPlacement(int otherX, int otherY, int otherWidth, int otherHeight) {
+	public boolean isHereWallPlacement(int otherX, int otherY, int otherWidth, 
+										int otherHeight) {
 		
 		if (otherX > (xPos - (otherWidth / 2) - 2) && 
 				otherX < (xPos + width + (otherWidth / 2) + 2) &&
@@ -76,31 +80,42 @@ public abstract class Drone implements Serializable {
 		return false;
 		
 	}
-	
+		
 	/**
-	 * Is the drone at this x,y position?
-	 * @param x		x position
-	 * @param y		y position
-	 * @return		true if drone is at x,y. False otherwise
+	 * Check if another drone is colliding with this drone
+	 * @param otherX - other drone's xPos to check against
+	 * @param otherY - other drone's yPos to check against
+	 * @return true if this drone is colliding with other drone
 	 */
-	public boolean isHere(int otherX, int otherY, int distance, int otherWidth, int otherHeight) {
+	public boolean isHere(int otherX, int otherY, int distance) {
 		
-		System.out.println("this.x,y : " + xPos + ", " + yPos);
-		System.out.println("other.x,y : " + otherX + ", " + otherY);
-		
-		//System.out.println("is here");
-		
-		if (otherX > (xPos - otherWidth - distance) && 
-				otherX < (xPos + otherWidth + distance) &&
-				otherY > (yPos - otherHeight - distance) && 
-				otherY < (yPos + otherHeight + distance)) {
+		if (otherX > (xPos - width - distance) && 
+				otherX < (xPos + width + distance) &&
+				otherY > (yPos - height - distance) && 
+				otherY < (yPos + height + distance)) {
 			System.out.println("is here true");
 			return true;			
-		}
-		
-		//System.out.println("is here false");
+		}		
 		
 		return false;
+		
+	}
+	
+	/**
+	 * Loop through all drones, returning a drone if it's at newX, newY
+	 * @param newX - xPos the drone is trying to move to
+	 * @param newY - yPos the drone is trying to move to 
+	 * @param arena - main droneArena
+	 * @return	Drone if that drone is colliding with newX, newY
+	 */
+	protected Drone getDroneAt(int newX, int newY, int distance, DroneArena arena) {
+		
+		for (Drone d : arena.getDrones()) {
+			if (d.getId() == id) continue;
+			if (d.isHere(newX, newY, distance)) return d;
+		}
+		
+		return null;
 		
 	}
 	
@@ -108,55 +123,12 @@ public abstract class Drone implements Serializable {
 	 * Change dx and dy to correspond to Direction enum
 	 * @throws FileNotFoundException 
 	 */
-	protected void setDirection() {	
-		
-		if (direction == Direction.NORTH) {
-			//droneImage = droneN;
-			dx = 0;
-			dy = -speed;
-		}
-		if (direction == Direction.NORTH_EAST) {
-			//droneImage = droneNE;
-			dx = speed;
-			dy = -speed;
-		}
-		if (direction == Direction.EAST) {
-			//droneImage = droneE;
-			dx = speed;
-			dy = 0;
-		}
-		if (direction == Direction.SOUTH_EAST) {
-			//droneImage = droneSE;
-			dx = speed;
-			dy = speed;
-		}
-		if (direction == Direction.SOUTH) {
-			//droneImage = droneS;
-			dx = 0;
-			dy = speed;
-		}
-		if (direction == Direction.SOUTH_WEST) {
-			//droneImage = droneSW;
-			dx = -speed;
-			dy = speed;
-		}
-		if (direction == Direction.WEST) {
-			//droneImage = droneW;
-			dx = -speed;
-			dy = 0;
-		}
-		if (direction == Direction.NORTH_WEST) {
-			//droneImage = droneNW;
-			dx = -speed;
-			dy = -speed;
-		}
-		
-	}	
+	protected abstract void setDirection();	
 	
-	public String toString() {
-		
-		String info = "";		
-		info += id + " -- Position: (" + xPos + ", " + yPos + ")" + "\n";		
+	public String toString() {		
+
+		String info = "";				
+		info += type + " Ship at (" + xPos + ", " + yPos + ")";		
 		return info;
 		
 	}
@@ -196,6 +168,10 @@ public abstract class Drone implements Serializable {
 	public int getWidth() { return width; }
 	
 	public Direction getDirection() { return direction; }
+	
+	public int getPrintWidth() { return printWidth; } 
+	
+	public int getPrintHeight() { return printHeight; }
 	
 	/**
 	 * @return Drone's xPos

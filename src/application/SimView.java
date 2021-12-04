@@ -76,21 +76,11 @@ public class SimView extends VBox{
 				
 		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
 	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
-
-	    // Responsive Design       
-        if (screenWidth <= 800 && screenHeight <= 600) {
-            WINDOW_HEIGHT = 500;
-            WINDOW_WIDTH = 700;
-        } else if (screenWidth <= 1280 && screenHeight <= 768) {
-        	WINDOW_WIDTH = 1000;
-        	WINDOW_HEIGHT = 650;
-        } else if (screenWidth <= 1920 && screenHeight <= 1080) {
-        	WINDOW_WIDTH = 1620;
-        	WINDOW_HEIGHT = 880;
-        } else {
-        	WINDOW_WIDTH = 1620;
-        	WINDOW_HEIGHT = 880;
-        }
+	    
+	    System.out.println("(" + screenWidth + ", " + screenHeight + ")");
+	    
+	    WINDOW_WIDTH = (int)(screenWidth * 0.9);
+	    WINDOW_HEIGHT = (int)(screenHeight * 0.9);
         
         ARENA_WIDTH = (int)(WINDOW_WIDTH * 0.85);
         ARENA_HEIGHT = (int)(WINDOW_HEIGHT * 0.88);
@@ -166,9 +156,9 @@ public class SimView extends VBox{
 		scrollPaneDrone.setPrefWidth(WINDOW_WIDTH * 0.15);
 		scrollPaneDrone.setPrefHeight(WINDOW_HEIGHT * 0.68);
 		scrollPaneDrone.setFitToWidth(true);
-    	statusBox = new VBox();
+    	statusBox = new VBox();   	
     	
-    	scrollPaneDrone.setContent(statusBox);
+    	scrollPaneDrone.setContent(statusBox);    	
     	
 		// Create drone arena
 		arena = new DroneArena(simCanvas, ARENA_WIDTH, ARENA_HEIGHT);			
@@ -195,6 +185,7 @@ public class SimView extends VBox{
 		
 		// Initialise scene and add pane, set scene to stage
 		simScene = new Scene(simPane);
+		simScene.getStylesheets().add(this.getClass().getResource("application.css").toExternalForm());
 		simStage.setScene(simScene);
 
 	}	

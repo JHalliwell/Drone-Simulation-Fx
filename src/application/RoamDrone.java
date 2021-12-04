@@ -25,13 +25,15 @@ public class RoamDrone extends Drone implements Serializable {
 		
 		super(xPos, yPos, direction, myCanvas);	
 		
-		width = 50;
-		height = 50;
-		speed = 4;
+		width = 45;
+		height = 45;
+		printWidth = width;
+		printHeight = height;
+		speed = 2;
+		type = "Roamer";
 		
+		setImages();	
 		setDirection();
-		
-		droneImage = new Image(new FileInputStream("graphics/regDroneN.png"));
 		
 	}	
 	
@@ -79,7 +81,7 @@ public class RoamDrone extends Drone implements Serializable {
 			return false;
 		}
 		
-		if (arena.getDroneAt(id, newX, newY, width, height) != null) {		
+		if (getDroneAt(newX, newY, allowedDistance, arena) != null) {		
 			return false;
 		}
 		
@@ -90,6 +92,96 @@ public class RoamDrone extends Drone implements Serializable {
 		return true;
 		
 	}
+	
+	@Override
+	public String toString() {
+		
+		String info = "";				
+		info += type + " Ship at (" + xPos + ", " + yPos + ")";	
+		
+		if (isTarget) info += " is being targeted!";
+		
+		return info;
+		
+	}
+	
+	protected void setImages() throws FileNotFoundException {
+		
+		droneN = new Image(new FileInputStream("graphics/roamShipN.png"));
+		droneNE = new Image(new FileInputStream("graphics/roamShipNE.png"));
+		droneE = new Image(new FileInputStream("graphics/roamShipE.png"));
+		droneSE = new Image(new FileInputStream("graphics/roamShipSE.png"));
+		droneS = new Image(new FileInputStream("graphics/roamShipS.png"));
+		droneSW = new Image(new FileInputStream("graphics/roamShipSW.png"));
+		droneW = new Image(new FileInputStream("graphics/roamShipW.png"));
+		droneNW = new Image(new FileInputStream("graphics/roamShipNW.png"));
+		
+	}
+	
+	/**
+	 * Change dx and dy to correspond to Direction enum
+	 * @throws FileNotFoundException 
+	 */
+	protected void setDirection() {	
+		
+		if (direction == Direction.NORTH) {
+			printWidth = width;
+			printHeight = height;
+			droneImage = droneN;
+			dx = 0;
+			dy = -speed;
+		}
+		if (direction == Direction.NORTH_EAST) {
+			printWidth = (int)(width * 1.35);
+			printHeight = (int)(height * 1.35);
+			droneImage = droneNE;
+			dx = speed;
+			dy = -speed;
+		}
+		if (direction == Direction.EAST) {
+			printWidth = width;
+			printHeight = height;
+			droneImage = droneE;
+			dx = speed;
+			dy = 0;
+		}
+		if (direction == Direction.SOUTH_EAST) {
+			printWidth = (int)(width * 1.35);
+			printHeight = (int)(height * 1.35);
+			droneImage = droneSE;
+			dx = speed;
+			dy = speed;
+		}
+		if (direction == Direction.SOUTH) {
+			printWidth = width;
+			printHeight = height;
+			droneImage = droneS;
+			dx = 0;
+			dy = speed;
+		}
+		if (direction == Direction.SOUTH_WEST) {
+			printWidth = (int)(width * 1.35);
+			printHeight = (int)(height * 1.35);
+			droneImage = droneSW;
+			dx = -speed;
+			dy = speed;
+		}
+		if (direction == Direction.WEST) {
+			printWidth = width;
+			printHeight = height;
+			droneImage = droneW;
+			dx = -speed;
+			dy = 0;
+		}
+		if (direction == Direction.NORTH_WEST) {
+			printWidth = (int)(width * 1.35);
+			printHeight = (int)(height * 1.35);
+			droneImage = droneNW;
+			dx = -speed;
+			dy = -speed;
+		}
+		
+	}	
 		
 	public void setIsTarget(boolean isTarget) {
 		this.isTarget = isTarget;

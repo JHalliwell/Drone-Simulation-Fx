@@ -7,9 +7,10 @@ import javafx.scene.image.Image;
 public abstract class Environment implements Serializable {
 
 	String colour;
-	Image image;
+	transient Image image;
 	protected int width, height;
 	protected int xPos, yPos;
+	protected String type;
 	
 	Environment(int xPos, int yPos){
 		
@@ -33,10 +34,14 @@ public abstract class Environment implements Serializable {
 		
 		String info = "";
 		
-		info += "Wall: (" + xPos + ", " + yPos + ")";
+		info += type + " at (" + xPos + ", " + yPos + ")";
 		
 		return info;
 		
+	}
+	
+	public Image getImage() {
+		return image;
 	}
 	
 	public void setXPos(int xPos) {

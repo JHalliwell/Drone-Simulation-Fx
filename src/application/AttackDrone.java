@@ -20,16 +20,23 @@ public class AttackDrone extends Drone implements Serializable {
 		
 		super(xPos, yPos, direction, myCanvas);		
 		
-		setDirection();
+		
 		type = "Attack";
-		width = 50;
-		height = 50;
-		speed = 3;
+		width = 45;
+		height = 45;
+		printWidth = width;
+		printHeight = height;
+		speed = 2;
+		
+		
+		droneImage = new Image(new FileInputStream("graphics/greyShip.png"));
+		
+		setDirection();
 		
 		// Select random target drone if there is valid (not attack) drone in arena
 		if (arena.getDrones().size() > 0) setTarget(arena);			
 		
-		droneImage = new Image(new FileInputStream("graphics/redDrone.png"));
+		
 						
 	}
 	
@@ -122,17 +129,13 @@ public class AttackDrone extends Drone implements Serializable {
 		// Copy drone list from arena
 		ArrayList<Drone> manyDrones = arena.getDrones();
 		
-		//System.out.println("Target: " + target);
-		
 		for (Drone d : manyDrones) {
 			
-			//System.out.println("drone id: " + d.getId());
-			
 			if (d.getId() == id) continue;			
-			if (d.getId() != target && d.isHere(newX, newY, allowedDistance, width, height)) {
+			if (d.getId() != target && d.isHere(newX, newY, allowedDistance)) {
 				return false;
 			}
-			if (d.getId() == target && d.isHere(newX, newY, 0, width, height)) {
+			if (d.getId() == target && d.isHere(newX, newY, 0)) {
 				
 				System.out.println("killed");
 				
@@ -170,6 +173,47 @@ public class AttackDrone extends Drone implements Serializable {
 		return true;
 		
 	}
+	
+	/**
+	 * Change dx and dy to correspond to Direction enum
+	 * @throws FileNotFoundException 
+	 */
+	protected void setDirection() {	
+		
+		if (direction == Direction.NORTH) {
+			dx = 0;
+			dy = -speed;
+		}
+		if (direction == Direction.NORTH_EAST) {
+			dx = speed;
+			dy = -speed;
+		}
+		if (direction == Direction.EAST) {
+			dx = speed;
+			dy = 0;
+		}
+		if (direction == Direction.SOUTH_EAST) {
+			dx = speed;
+			dy = speed;
+		}
+		if (direction == Direction.SOUTH) {
+			dx = 0;
+			dy = speed;
+		}
+		if (direction == Direction.SOUTH_WEST) {
+			dx = -speed;
+			dy = speed;
+		}
+		if (direction == Direction.WEST) {
+			dx = -speed;
+			dy = 0;
+		}
+		if (direction == Direction.NORTH_WEST) {
+			dx = -speed;
+			dy = -speed;
+		}
+		
+	}	
 		
 	public int getTarget() {
 		return target;

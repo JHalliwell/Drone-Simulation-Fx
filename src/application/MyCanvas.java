@@ -33,11 +33,11 @@ public class MyCanvas implements Serializable {
 		
 	}
 	
-	public void drawImage (Image i, double x, double y, double sz) {
+	public void drawImage (Image i, double xPos, double yPos, double width, double height) {
 			
 			// to draw centred at x,y, give top left position and x,y size
 			// sizes/position in range 0.. canvassize 
-			graphicsContext.drawImage(i, x, y, sz, sz);
+			graphicsContext.drawImage(i, xPos, yPos, width, height);
 			
 		}
 	

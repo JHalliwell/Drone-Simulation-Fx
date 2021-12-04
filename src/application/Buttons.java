@@ -29,22 +29,6 @@ public class Buttons extends HBox {
 	private boolean wallSelected, animationPlaying, invalidPlacement, placeWall, mouseReleased, mouseClicked;
 	private int mouseX, mouseY;
 	
-	String buttonStyle = "-fx-background-color: \n"
-			+ "        linear-gradient(#f2f2f2, #d6d6d6),\n"
-			+ "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),\n"
-			+ "        linear-gradient(#dddddd 0%, #f6f6f6 50%);\n"
-			+ "    -fx-background-radius: 8,7,6;\n"
-			+ "    -fx-background-insets: 0,1,2;\n"
-			+ "    -fx-text-fill: black;\n"
-			+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
-	String buttonHoverStyle = "-fx-background: darken(red 1.5%);\n"
-			+ "  -fx-border: 1px solid rgba(#000, .05);\n"
-			+ "  -fx-box-shadow: 1px 1px 2px rgba(#fff, .2);\n"
-			+ "  -fx-color: lighten(red, 18%); \n"
-			+ "  -fx-text-decoration: none;\n"
-			+ "  -fx-text-shadow: -1px -1px 0 darken(red, 9.5%);\n"
-			+ "  -fx-transition: all 250ms linear;";
-	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
 						BorderPane simPane) {
 		
@@ -62,9 +46,9 @@ public class Buttons extends HBox {
 		addButtons();
 		setButtonLayout();
 		
-		canvas.setFocusTraversable(true);								
+		canvas.setFocusTraversable(true);			
 			
-	}
+	} 
 		
 	/**
 	 * Add buttons to the HBox
@@ -92,8 +76,8 @@ public class Buttons extends HBox {
 	 */
 	private void createAddAttackDrone() {
 		
-		addAttackDrone = new Button("Add Attack Drone");
-		addAttackDrone.setStyle(buttonStyle);
+		addAttackDrone = new Button("Honing");		
+		//addAttackDrone.setStyle(buttonHoverStyle);
 		
 		addAttackDrone.setOnAction(e -> {
 			
@@ -122,8 +106,8 @@ public class Buttons extends HBox {
 	
 	private void createAddCautiousDrone() {
 		
-		addCautiousDrone = new Button("Add Cautious Drone");
-		addCautiousDrone.setStyle(buttonStyle);
+		addCautiousDrone = new Button("Cautious");
+		//addCautiousDrone.setStyle(buttonStyle);
 		
 		addCautiousDrone.setOnAction(e -> {
 			
@@ -144,8 +128,8 @@ public class Buttons extends HBox {
 	 */
 	private void createAddDrone() {
 		
-		addDrone = new Button("Add Drone");
-		addDrone.setStyle(buttonStyle);
+		addDrone = new Button("Roamer");
+		//addDrone.setStyle(buttonStyle);
 		
 		addDrone.setOnAction(e -> {
 			
@@ -163,8 +147,10 @@ public class Buttons extends HBox {
 
 	private void createAddWall() {
 		
-		addWall = new Button("Add Wall");
-		addWall.setStyle(buttonStyle);	
+		addWall = new Button("Wall");
+		addWall.getStyleClass().add("button");
+		
+		//addWall.setStyle(buttonStyle);	
 		Wall placementWall = new Wall(0, 0);
 		createKeyEvents(placementWall);	
 		createMouseEvents(placementWall);
@@ -195,7 +181,12 @@ public class Buttons extends HBox {
 							placementWall.getWidth(), placementWall.getHeight()) == null) {						
 						
 					System.out.println("2");
-					arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
+					try {
+						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					wallSelected = false;			
 					wallAnimation.stop();
 					
@@ -259,11 +250,12 @@ public class Buttons extends HBox {
 	private void createPlay() {
 		
 		play = new Button("Play");
-		play.setStyle(buttonStyle);
+		//play.setStyle(buttonHoverStyle);
 		
 		play.setOnAction(e -> {
 			
 			animationPlaying = true;
+			//play.setStyle(buttonHoverStyle);
 			
 			if (animationTimer != null) {
 				animationTimer.stop();
@@ -295,7 +287,7 @@ public class Buttons extends HBox {
 	private void createStop() {
 		
 		stop = new Button("Stop");
-		stop.setStyle(buttonStyle);
+		//stop.setStyle(buttonStyle);
 		
 		stop.setOnAction(e -> {
 			

@@ -1,16 +1,21 @@
 package application;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
+import javafx.scene.image.Image;
 
 public class Wall extends Environment implements Serializable {
 	
-	public Wall(int xPos, int yPos, int width, int height) {
+	public Wall(int xPos, int yPos, int width, int height) throws FileNotFoundException {
 		
 		super(xPos, yPos);
 		
 		this.width = width;
 		this.height = height;
-		colour = "black";
+		type = "Barrier";
+		
+		image = new Image(new FileInputStream("graphics/wall3.png"));
 		
 	}
 	

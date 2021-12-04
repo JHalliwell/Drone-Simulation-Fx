@@ -12,6 +12,10 @@ import javafx.scene.paint.Color;
 
 public class DroneArena implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4938436733718179739L;
 	private MyCanvas myCanvas;
 	private int arenaWidth;
 	private int arenaHeight;
@@ -114,12 +118,13 @@ public class DroneArena implements Serializable {
         for (Drone d : manyDrones) {
         	
     		// canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
-    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getHeight());
+    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());
         	
         }
        
         for (Environment e : environment) {
        	    canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight(), e.getColour());
+       	    canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight());
         }      
             
 	}
@@ -136,7 +141,8 @@ public class DroneArena implements Serializable {
 		
 	}
 	
-	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, Wall placementWall) {	// keep
+	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, 
+									Wall placementWall) throws FileNotFoundException {	// keep
 
 		environment.add(new Wall(xPos - (placementWall.getWidth() / 2), 
 				yPos - (placementWall.getHeight() / 2), placementWall.getWidth(),
@@ -164,6 +170,9 @@ public class DroneArena implements Serializable {
 		
 		ArrayList<String> info = new ArrayList<String>();
 		for (Drone d : manyDrones) info.add(d.toString());
+		info.add("\n-------------------------------------"
+					+ "----------------------------------\n");
+		for (Environment e : environment) info.add(e.toString());
 		return info;
 		
 	}
@@ -199,43 +208,6 @@ public class DroneArena implements Serializable {
 	}
 	
 	/**
-	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
-	 * @param id	id of a drone to ignore
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
-	 */
-	public Drone getDroneAt(int id, int xPos, int yPos, int width, int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.getId() == id) continue;
-			if (d.isHere(xPos, yPos, width, height)) return d;			
-		}
-		
-		return null;		
-
-	}
-	
-	/**
-	 * Search arrayList of drones, excluding this.id, to see if there's one at x,y
-	 * @param id	id of a drone to ignore
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
-	 */
-	public Drone getDroneAt(int id, int xPos, int yPos, int distance, int width, 
-										int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.getId() == id) continue;
-			if (d.isHere(xPos, yPos, distance, width, height)) return d;			
-		}
-		
-		return null;		
-
-	}
-	
-	/**
 	 * 
 	 * @param x
 	 * @param y
@@ -268,7 +240,8 @@ public class DroneArena implements Serializable {
 	}
 	
 	public void addEnvironmentToList(int xPos, int yPos, int width, 
-										int height, String type) {
+										int height, String type) 
+												throws FileNotFoundException {
 		if (type == "wall") {
 			environment.add(new Wall(xPos, yPos, width, height));
 		}

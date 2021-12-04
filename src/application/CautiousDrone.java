@@ -12,14 +12,16 @@ public class CautiousDrone extends Drone implements Serializable {
 		
 		super(x, y, d, myCanvas);
 		
-		type = "Cautious";
-		allowedDistance = 50;
+		type = "Honer";
+		allowedDistance = 100;
 		dy = 3;
 		dx = 3;		
-		width = 50;
-		height = 50;
-						
-		droneImage = new Image(new FileInputStream("graphics/yellowDrone.png"));
+		width = 45;
+		height = 45;		
+		printWidth = width;
+		printHeight = height;
+		
+		droneImage = new Image(new FileInputStream("graphics/redShip.png"));
 		
 	}
 	
@@ -31,7 +33,11 @@ public class CautiousDrone extends Drone implements Serializable {
 		
 		Drone nearbyDrone;
 		
-		if ((nearbyDrone = isDroneNear(id, xPos, yPos, allowedDistance, width, height, arena)) != null) {			
+		// Initialise nearby drone if there is one nearby
+		if ((nearbyDrone = isDroneNear(id, xPos, yPos, allowedDistance, width, height, 
+				arena)) != null) {	
+			
+			// Move this drone depending on nearby drone's position
 			if (nearbyDrone.getXPos() < xPos) {
 				if (canMoveHere(newx + dx, newy, arena)) newx += dx;
 			}
@@ -41,13 +47,14 @@ public class CautiousDrone extends Drone implements Serializable {
 			}
 			
 			if (nearbyDrone.getYPos() < yPos) {
-				if (canMoveHere(newx, newy + dy, arena)) newy += dy;
+				if (canMoveHere(newx, newy + dy, arena)) newy += dy; 
 			}
 			
 			if (nearbyDrone.getYPos() > yPos) {
 				if (canMoveHere(newx, newy - dy, arena)) newy -= dy;
-			}				
-		}		
+			}	
+			
+		}
 		
 		xPos = newx;
 		yPos = newy;
@@ -68,7 +75,7 @@ public class CautiousDrone extends Drone implements Serializable {
 			return false;
 		}
 		
-		if (arena.getDroneAt(id, newX, newY, width, height) != null) {		
+		if (getDroneAt(newX, newY, 2, arena) != null) {		
 			return false;
 		}
 		
@@ -80,19 +87,35 @@ public class CautiousDrone extends Drone implements Serializable {
 		
 	}
 	
-	public Drone isDroneNear(int id, int xPos, int yPos, int distance, int width, int height, DroneArena arena) {
-		
+	/**
+	 * Determines if a drone is near this drone, if there is, returns that nearby drone 
+	 * 	(if not another cautious drone)
+	 * @param id - this drone's id
+	 * @param xPos - this drone's xPos
+	 * @param yPos - this drone's yPos
+	 * @param distance - this drone's allowedDistance to another drone
+	 * @param width - this drone's width
+	 * @param height - this drone's height
+	 * @param arena - the main droneArena
+	 * @return
+	 */
+	public Drone isDroneNear(int id, int xPos, int yPos, int distance, int width, 
+								int height, DroneArena arena) {
+			
 		Drone nearbyDrone;
 		
-		if ((nearbyDrone = arena.getDroneAt(id, xPos, yPos, distance, width, height)) != null) {	
-			System.out.println("Drone is near");			
-			return nearbyDrone;
+		if ((nearbyDrone = getDroneAt(xPos, yPos, allowedDistance, arena)) != null) {	
+				return nearbyDrone;
 		}
 		
 		return null;
 		
-	}
+	}		
+	
 
+	protected void setDirection() {
+		
+	}
 
 	protected boolean canMoveHere() {
 		return false;
