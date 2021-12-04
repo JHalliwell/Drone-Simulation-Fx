@@ -48,7 +48,7 @@ public class MyCanvas implements Serializable {
 	 */
 	public void drawObject(int x, int y, int width, int height, String colour) {
 		
-		if (colour == "black") {
+		if (colour == "black") {//
 			graphicsContext.setFill(Color.BLACK);
 			graphicsContext.fillRect(x, y, width, height);
 		}
