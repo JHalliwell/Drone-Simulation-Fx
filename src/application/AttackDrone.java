@@ -137,8 +137,6 @@ public class AttackDrone extends Drone implements Serializable {
 			}
 			if (d.getId() == target && d.isHere(newX, newY, 0)) {
 				
-				System.out.println("killed");
-				
 				manyDrones.remove(id);
 				manyDrones.remove(d);
 				

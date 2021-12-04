@@ -14,20 +14,31 @@ public class Wall extends Environment implements Serializable {
 		this.width = width;
 		this.height = height;
 		type = "Barrier";
-		
-		image = new Image(new FileInputStream("graphics/wall3.png"));
-		
+
+		image = new Image(new FileInputStream("graphics/wallV.png"));
+
+
 	}
 	
-	public Wall(int xPos, int yPos) {
+	public Wall(int xPos, int yPos) throws FileNotFoundException {
 		
 		super(xPos, yPos);
 		
-		width = 200;
-		height = 20;
+		width = 100;
+		height = 10;
+
+		image = new Image(new FileInputStream("graphics/wallV.png"));
+		
+		System.out.print(width + " " + height);
 		
 	}
-	
+
+	public String getColour() {
+		
+		return "darkGrey";
+		
+	}
+		
 	/**
 	 * 
 	 * @param droneX	drone xPos
@@ -47,30 +58,30 @@ public class Wall extends Environment implements Serializable {
 		
 	}
 	
-	public void rotateLeft() {
-		int temp;
-		temp = width;
+	public void rotate() {		
+
+		int temp = width;
 		width = height;
-		height = temp;
-	}
-	
-	public void rotateRight() {
-		int temp;
-		temp = width;
-		width = height;
-		height = temp;
+		height = temp;		
+		
 	}
 	
 	public void scaleDown() {
-		width *= 0.75;
-		height *= 0.75;
-		System.out.println("" + width + ", " + height);
+		
+		if (width > 10 && height > 10) {
+			width *= 0.75;
+			height *= 0.75;
+		}
+
 	}
 	
 	public void scaleUp() {
-		width *= 1.25;
-		height *= 1.25;
-		System.out.println("" + width + ", " + height);
+		
+		if (width < 800 && height < 800) {
+			width *= 1.25;
+			height *= 1.25;
+		}
+
 	}
 	
 }

@@ -1,43 +1,23 @@
 package application;
 
-import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -50,9 +30,12 @@ public class SimView extends VBox{
 	private DroneArena arena;
 	private Buttons buttons;
 	private Canvas canvas;
-	private Group canvasRoot, statusRoot;
-	private TextArea droneText;
-	private ScrollPane scrollPaneDrone, scrollPaneObstacle;
+	private Group canvasRoot;
+	private ScrollPane scrollPaneDrone;
+	private Popup aboutPopup;
+	private Label aboutLabel;
+	private Image aboutImage;
+	private ImageView aboutImageView;
 	
 	private MyCanvas simCanvas;
 	private MyMenu simMenu;
@@ -63,21 +46,16 @@ public class SimView extends VBox{
 	private StackPane simStackPane;
 	private Stage simStage;
 	private VBox statusBox;
-	
-	private String currentBackground;
-	private Image[] backgrounds;
+
 	private ImageView image;
-	private int backgroundNo = 0;
-	private Image frame0, frame1, frame2, frame3, frame4;
-	private Image frame5, frame6, frame7, frame8, frame9, frame10, frame11;
+
 	
 	
 	public SimView() throws FileNotFoundException {
 				
 		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
 	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
-	    
-	    System.out.println("(" + screenWidth + ", " + screenHeight + ")");
+
 	    
 	    WINDOW_WIDTH = (int)(screenWidth * 0.9);
 	    WINDOW_HEIGHT = (int)(screenHeight * 0.9);
@@ -89,7 +67,6 @@ public class SimView extends VBox{
 		simStage = new Stage();
 		simStage.setTitle("DRONE SIMULATOR 29020945");
 		simStage.setResizable(false);	
-		//simStage.setMaximized(true);
 		
 		// Initialise Border Pane
 		simPane = new BorderPane();
@@ -97,35 +74,7 @@ public class SimView extends VBox{
 			
 		// Creating Canvas
 		canvasRoot = new Group();		
-		simStackPane = new StackPane();				
-		
-		// Creating background
-		frame0 = new Image(new FileInputStream("graphics/frame0.png"));
-		frame1 = new Image(new FileInputStream("graphics/frame1.gif"));
-		frame2 = new Image(new FileInputStream("graphics/frame2.gif"));
-		frame3 = new Image(new FileInputStream("graphics/frame3.gif"));
-		frame4 = new Image(new FileInputStream("graphics/frame4.gif"));
-		frame5 = new Image(new FileInputStream("graphics/frame5.gif"));
-		frame6 = new Image(new FileInputStream("graphics/frame6.gif"));
-		frame7 = new Image(new FileInputStream("graphics/frame7.gif"));
-		frame8 = new Image(new FileInputStream("graphics/frame8.gif"));
-		frame9 = new Image(new FileInputStream("graphics/frame9.gif"));
-		frame10 = new Image(new FileInputStream("graphics/frame10.gif"));
-		frame11 = new Image(new FileInputStream("graphics/frame11.gif"));
-		
-		backgrounds = new Image[12];
-		backgrounds[0] = frame0;
-		backgrounds[1] = frame1;
-		backgrounds[2] = frame2;
-		backgrounds[3] = frame3;
-		backgrounds[4] = frame4;
-		backgrounds[5] = frame5;
-		backgrounds[6] = frame6;
-		backgrounds[7] = frame7;
-		backgrounds[8] = frame8;
-		backgrounds[9] = frame9;
-		backgrounds[10] = frame10;
-		backgrounds[11] = frame11;	
+		simStackPane = new StackPane();	
 		
 		Image test = new Image(new FileInputStream("graphics/spaceBackground.bmp"));
 		image = new ImageView(test);
@@ -137,17 +86,6 @@ public class SimView extends VBox{
 		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
 		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), canvas, ARENA_WIDTH, ARENA_HEIGHT);
 		simStackPane.getChildren().add(canvas);		
-		
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-		        @Override
-		        public void run() {
-		        	if (backgroundNo == 11)
-						backgroundNo = 0;
-					else backgroundNo++;				
-
-		        }
-		    }, 0, 5000);				
 		
 		canvasRoot.getChildren().add(simStackPane);				
 		
@@ -178,6 +116,24 @@ public class SimView extends VBox{
 		BorderPane.setMargin(scrollPaneDrone, new Insets(5));
 		BorderPane.setMargin(canvasRoot, new Insets(5));
 		
+		// Add popup about
+		aboutPopup = new Popup();
+		aboutPopup.setX(200);
+		aboutPopup.setY(200);	
+		aboutPopup.setAnchorX(105);
+		aboutPopup.setAnchorY(100);
+		aboutPopup.setHideOnEscape(true);
+		aboutPopup.setAutoHide(true);
+		
+		aboutImage = new Image(new FileInputStream("graphics/about.png"));
+		aboutImageView = new ImageView(aboutImage);
+		
+		aboutLabel = new Label();
+		aboutLabel.setGraphic(aboutImageView);
+		aboutLabel.setMinSize(200, 200);
+		
+		aboutPopup.getContent().add(aboutLabel);
+		
 		drawStatus();
 		
 		// Start animation timer for status
@@ -189,6 +145,12 @@ public class SimView extends VBox{
 		simStage.setScene(simScene);
 
 	}	
+	
+	public void showPopup() {
+		
+		aboutPopup.show(simStage);
+		
+	}
 	
 	public void drawStatus() {
 		
@@ -205,6 +167,10 @@ public class SimView extends VBox{
 		}	
 		
 	}
+	
+	// Create About pop up window
+	Popup aboutWindow = new Popup();
+	
 	
 	/**
 	 * 
@@ -225,10 +191,6 @@ public class SimView extends VBox{
             public void handle(long now)
             {				
             	drawStatus();
-//				image.setImage(backgrounds[backgroundNo]);
-//				simStackPane.getChildren().clear();
-//				simStackPane.getChildren().add(image);
-//				simStackPane.getChildren().add(canvas);
             }	
 			
 		};

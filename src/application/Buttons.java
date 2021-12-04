@@ -30,7 +30,7 @@ public class Buttons extends HBox {
 	private int mouseX, mouseY;
 	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
-						BorderPane simPane) {
+						BorderPane simPane) throws FileNotFoundException {
 		
 		this.simPane = simPane;
 		this.arena = arena;
@@ -145,7 +145,7 @@ public class Buttons extends HBox {
 		
 	}
 
-	private void createAddWall() {
+	private void createAddWall() throws FileNotFoundException {
 		
 		addWall = new Button("Wall");
 		addWall.getStyleClass().add("button");
@@ -154,9 +154,6 @@ public class Buttons extends HBox {
 		Wall placementWall = new Wall(0, 0);
 		createKeyEvents(placementWall);	
 		createMouseEvents(placementWall);
-		
-		// Array needed as seperate int not allowed in mouse handler
-		int[] mouse = new int[2];
 		
 		addWall.setOnAction(e -> {
 			
@@ -171,16 +168,14 @@ public class Buttons extends HBox {
 					
 					if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
 							placementWall.getWidth(), placementWall.getHeight()) != null) {
-						
-						System.out.println("1");
+
 						
 						arena.drawWallPlacement(myCanvas, mouseX, mouseY, 
 								"red", placementWall);					
 						
 					} else if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
 							placementWall.getWidth(), placementWall.getHeight()) == null) {						
-						
-					System.out.println("2");
+
 					try {
 						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
 					} catch (FileNotFoundException e) {
@@ -215,14 +210,14 @@ public class Buttons extends HBox {
 		canvas.setOnMousePressed(e -> {
 			
 			mouseClicked = true;
-			System.out.println("mouse Clicked");
+
 
 		});	
 		
 		canvas.setOnMouseReleased(e -> {			
 			
 			mouseClicked = false;
-			System.out.println("mouse released");
+
 		});
 		
 		
@@ -234,10 +229,10 @@ public class Buttons extends HBox {
 		simPane.setOnKeyPressed(e -> {
 			
 			switch (e.getCode()) {
-			case A : placementWall.rotateLeft();System.out.println("left"); break;
-			case D : placementWall.rotateRight();System.out.println("right"); break;
-			case W : placementWall.scaleUp();System.out.println("up"); break;
-			case S : placementWall.scaleDown();System.out.println("down"); 
+			case A : placementWall.rotate();break;
+			case D : placementWall.rotate();break;
+			case W : placementWall.scaleUp();break;
+			case S : placementWall.scaleDown();break;
 			}
 			
 		});

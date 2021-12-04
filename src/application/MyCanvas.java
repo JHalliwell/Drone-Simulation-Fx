@@ -35,8 +35,6 @@ public class MyCanvas implements Serializable {
 	
 	public void drawImage (Image i, double xPos, double yPos, double width, double height) {
 			
-			// to draw centred at x,y, give top left position and x,y size
-			// sizes/position in range 0.. canvassize 
 			graphicsContext.drawImage(i, xPos, yPos, width, height);
 			
 		}
@@ -68,6 +66,14 @@ public class MyCanvas implements Serializable {
 		if (colour == "grey_tran") {
 			graphicsContext.setFill(Color.DIMGREY);
 			graphicsContext.fillRect(x, y, width, height);
+		}
+		
+		if (colour == "darkGrey") {
+			graphicsContext.setFill(Color.INDIANRED);
+			graphicsContext.fillRect(x, y, width, height);
+			graphicsContext.setFill(Color.SLATEGREY);
+			graphicsContext.fillRect(x + 4, y + 4, width - 8, height - 8);
+			
 		}
 		
 	}

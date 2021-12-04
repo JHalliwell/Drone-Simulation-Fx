@@ -109,22 +109,18 @@ public class DroneArena implements Serializable {
 	/**
 	 * Draws arena and drones to canvas as graphics context
 	 */
-	public void drawArena(MyCanvas canvas) {	  // keep
-		
-		System.out.println("Draw arena");
-		
+	public void drawArena(MyCanvas canvas) {	  
+
 		canvas.clear();
         
-        for (Drone d : manyDrones) {
-        	
+        for (Drone d : manyDrones) {        	
     		// canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
-    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());
-        	
+    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());        	
         }
        
         for (Environment e : environment) {
-       	    canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight(), e.getColour());
-       	    canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight());
+        	canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight(), e.getColour());       	    
+       	    //canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight());
         }      
             
 	}
@@ -170,8 +166,12 @@ public class DroneArena implements Serializable {
 		
 		ArrayList<String> info = new ArrayList<String>();
 		for (Drone d : manyDrones) info.add(d.toString());
-		info.add("\n-------------------------------------"
-					+ "----------------------------------\n");
+		
+		if (manyDrones.size() > 0 || environment.size() > 0) {
+			info.add("\n-------------------------------------"
+					+ "----------------\n");
+		}		
+		
 		for (Environment e : environment) info.add(e.toString());
 		return info;
 		

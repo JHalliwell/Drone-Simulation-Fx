@@ -21,8 +21,8 @@ public class MyMenu extends MenuBar {
 	
 	MyCanvas canvas;
 	
-	MenuItem exit, save, load;
-	Menu file, About;
+	MenuItem exit, save, load, about;
+	Menu file, help;
 	SimView simView;
 	
 	public MyMenu(SimView simView, DroneArena arena, MyCanvas canvas) {		
@@ -35,6 +35,29 @@ public class MyMenu extends MenuBar {
 		createLoad();
 		createExit();
 		createFile();
+		createAbout();
+		createHelp();
+		
+		
+	}
+	
+	private void createHelp() {
+		
+		help = new Menu("Help");
+		help.getItems().add(about);
+		this.getMenus().add(help);
+		
+	}
+	
+	private void createAbout() {
+		
+		about = new MenuItem("About");
+		
+		about.setOnAction(e -> {
+			
+			simView.showPopup();
+			
+		});
 		
 	}
 	
@@ -53,21 +76,21 @@ public class MyMenu extends MenuBar {
 		
 	}
 	
-/**
- * Adds File option to menu bar, to store save, load and exit
- */
-private void createFile() {
+	/**
+	 * Adds File option to menu bar, to store save, load and exit
+	 */
+	private void createFile() {
+		
+		file = new Menu("File");	
+		file.getItems().addAll(exit, save, load);
+		this.getMenus().add(file);
+		
+	}
 	
-	file = new Menu("File");	
-	file.getItems().addAll(exit, save, load);
-	this.getMenus().add(file);
-	
-}
-
-/**
- * Create load option, to load drone arena
- */
-private void createLoad() {
+	/**
+	 * Create load option, to load drone arena
+	 */
+	private void createLoad() {
 	
 	this.setId("menu");
 	
