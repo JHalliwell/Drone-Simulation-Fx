@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.time.Duration;
 
 import javafx.animation.AnimationTimer;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -26,7 +27,8 @@ public class Buttons extends HBox {
 	Canvas canvas;
 	MyCanvas myCanvas;
 	BorderPane simPane;
-	private boolean wallSelected, animationPlaying, invalidPlacement, placeWall, mouseReleased, mouseClicked;
+	private boolean wallSelected, animationPlaying, 
+						placeWall, mouseReleased, mouseClicked;
 	private int mouseX, mouseY;
 	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
@@ -36,7 +38,6 @@ public class Buttons extends HBox {
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
-		//this.setStyle("-fx-background-color: #000000");
 		createAddDrone();
 		createAddAttackDrone();
 		createAddCautiousDrone();
@@ -46,7 +47,7 @@ public class Buttons extends HBox {
 		addButtons();
 		setButtonLayout();
 		
-		canvas.setFocusTraversable(true);			
+		canvas.setFocusTraversable(true);		
 			
 	} 
 		
@@ -148,7 +149,6 @@ public class Buttons extends HBox {
 	private void createAddWall() throws FileNotFoundException {
 		
 		addWall = new Button("Wall");
-		addWall.getStyleClass().add("button");
 		
 		//addWall.setStyle(buttonStyle);	
 		Wall placementWall = new Wall(0, 0);
@@ -158,6 +158,7 @@ public class Buttons extends HBox {
 		addWall.setOnAction(e -> {
 			
 			wallSelected = true;
+			addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
 			mouseClicked = false;
 			
 			
@@ -177,6 +178,7 @@ public class Buttons extends HBox {
 							placementWall.getWidth(), placementWall.getHeight()) == null) {						
 
 					try {
+						addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -250,7 +252,7 @@ public class Buttons extends HBox {
 		play.setOnAction(e -> {
 			
 			animationPlaying = true;
-			//play.setStyle(buttonHoverStyle);
+			play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
 			
 			if (animationTimer != null) {
 				animationTimer.stop();
@@ -286,7 +288,10 @@ public class Buttons extends HBox {
 		
 		stop.setOnAction(e -> {
 			
-			animationPlaying = false;
+			if (animationPlaying = true) {
+				animationPlaying = false;
+				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+			}			
 			
 			animationTimer.stop();
 			
