@@ -15,9 +15,7 @@ public class CautiousDrone extends Drone implements Serializable {
 		type = "Honer";
 		allowedDistance = 100;
 		dy = 3;
-		dx = 3;		
-		width = 45;
-		height = 45;		
+		dx = 3;			
 		printWidth = width;
 		printHeight = height;
 		

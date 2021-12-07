@@ -39,6 +39,8 @@ public abstract class Drone implements Serializable {
 		this.yPos = yPos;
 		this.direction = direction;
 		this.myCanvas = myCanvas;
+		width = 40;
+		height = 40;
 		
 		allowedDistance = 2;
 		id = droneCount++;		

@@ -21,7 +21,7 @@ public class MyMenu extends MenuBar {
 	
 	MyCanvas canvas;
 	
-	MenuItem exit, save, load, about;
+	MenuItem exit, save, load, newArena, about;
 	Menu file, help;
 	SimView simView;
 	
@@ -34,10 +34,30 @@ public class MyMenu extends MenuBar {
 		createSave();
 		createLoad();
 		createExit();
+		createNew();
 		createFile();
 		createAbout();
 		createHelp();
 		
+		
+	}
+	
+	private void createNew() {
+		
+		newArena = new MenuItem("New Arena");
+		
+		newArena.setOnAction(e -> {
+			
+			arena.debugStatus();
+			System.out.println("----------------------------------");
+			
+			arena.clearDrones();
+			arena.clearEnvironment();
+			arena.drawArena(canvas);
+			
+			arena.debugStatus();
+			
+		});
 		
 	}
 	
@@ -82,7 +102,7 @@ public class MyMenu extends MenuBar {
 	private void createFile() {
 		
 		file = new Menu("File");	
-		file.getItems().addAll(exit, save, load);
+		file.getItems().addAll(exit, save, load, newArena);
 		this.getMenus().add(file);
 		
 	}

@@ -22,8 +22,6 @@ public class AttackDrone extends Drone implements Serializable {
 		
 		
 		type = "Attack";
-		width = 45;
-		height = 45;
 		printWidth = width;
 		printHeight = height;
 		speed = 2;

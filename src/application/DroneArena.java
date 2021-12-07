@@ -162,6 +162,20 @@ public class DroneArena implements Serializable {
 		return info;
 	}
 	
+	public String debugStatus() {	// keep
+		
+		String info = "";
+		
+		for (Drone d : manyDrones) 
+			 System.out.println(d.toString());
+		
+		for  (Environment e : environment) {
+			System.out.println(e.toString());
+		}
+		
+		return info;
+	}
+	
 	public ArrayList<String> describeAll() {
 		
 		ArrayList<String> info = new ArrayList<String>();
@@ -249,6 +263,7 @@ public class DroneArena implements Serializable {
 	
 	public void clearDrones() {
 		manyDrones.clear();
+		Drone.droneCount = 0;
 	}
 	
 	public void clearEnvironment() {

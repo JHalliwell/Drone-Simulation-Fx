@@ -25,8 +25,6 @@ public class RoamDrone extends Drone implements Serializable {
 		
 		super(xPos, yPos, direction, myCanvas);	
 		
-		width = 45;
-		height = 45;
 		printWidth = width;
 		printHeight = height;
 		speed = 2;
