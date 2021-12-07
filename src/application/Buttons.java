@@ -1,6 +1,7 @@
 package application;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Duration;
 
 import javafx.animation.AnimationTimer;
@@ -27,6 +28,7 @@ public class Buttons extends HBox {
 	Canvas canvas;
 	MyCanvas myCanvas;
 	BorderPane simPane;
+	SoundEffects soundEffects;
 	private boolean wallSelected, animationPlaying, 
 						placeWall, mouseReleased, mouseClicked;
 	private int mouseX, mouseY;
@@ -38,12 +40,14 @@ public class Buttons extends HBox {
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
+		soundEffects = new SoundEffects();
 		createAddDrone();
 		createAddAttackDrone();
 		createAddCautiousDrone();
 		createPlay();
 		createStop();
 		createAddWall();
+		animation();
 		addButtons();
 		setButtonLayout();
 		
@@ -170,7 +174,7 @@ public class Buttons extends HBox {
 					if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
 							placementWall.getWidth(), placementWall.getHeight()) != null) {
 
-						
+						soundEffects.playError();
 						arena.drawWallPlacement(myCanvas, mouseX, mouseY, 
 								"red", placementWall);					
 						
@@ -178,6 +182,7 @@ public class Buttons extends HBox {
 							placementWall.getWidth(), placementWall.getHeight()) == null) {						
 
 					try {
+						soundEffects.playClick();
 						addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
 					} catch (FileNotFoundException e) {
@@ -291,11 +296,31 @@ public class Buttons extends HBox {
 			if (animationPlaying = true) {
 				animationPlaying = false;
 				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+				animationTimer.stop();
 			}			
 			
-			animationTimer.stop();
+					
 			
 		});
+		
+	}
+	
+	private void animation() {
+		
+		Button a = new Button("explosion");
+		
+		a.setOnAction(e -> {
+			Explosion explosion;
+			try {
+				explosion = new Explosion();
+				explosion.showExplosion(100, 100, myCanvas);
+			} catch (IOException | InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
+		});
+		
+		this.getChildren().add(a);
 		
 	}
 	

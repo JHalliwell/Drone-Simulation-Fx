@@ -3,6 +3,7 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -41,6 +42,7 @@ public class SimView extends VBox{
 	private MyMenu simMenu;
 	
 	private BorderPane simPane;
+	private SoundEffects soundEffects;
 
 	private Scene simScene;
 	private StackPane simStackPane;
@@ -51,7 +53,7 @@ public class SimView extends VBox{
 
 	
 	
-	public SimView() throws FileNotFoundException {
+	public SimView() throws IOException {
 				
 		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
 	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
@@ -143,6 +145,9 @@ public class SimView extends VBox{
 		simScene = new Scene(simPane);
 		simScene.getStylesheets().add(this.getClass().getResource("application.css").toExternalForm());
 		simStage.setScene(simScene);
+		
+		soundEffects = new SoundEffects();
+		soundEffects.playBackgroundMusic();
 
 	}	
 	

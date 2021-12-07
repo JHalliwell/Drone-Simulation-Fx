@@ -1,6 +1,7 @@
 package application;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,8 +26,9 @@ public class DroneArena implements Serializable {
 	
 	/**
 	 *  Creates arrayList of drones and a canvas on which to draw arena
+	 * @throws IOException 
 	 */
-	DroneArena(MyCanvas myCanvas, int arenaWidth, int arenaHeight) {
+	DroneArena(MyCanvas myCanvas, int arenaWidth, int arenaHeight) throws IOException {
 		
 		this.myCanvas = myCanvas;
 		this.arenaWidth = arenaWidth;
@@ -34,6 +36,7 @@ public class DroneArena implements Serializable {
 		
 		manyDrones = new ArrayList<Drone>();	
 		environment = new ArrayList<Environment>();		
+		Explosion explosion = new Explosion();
 		
 	}
 

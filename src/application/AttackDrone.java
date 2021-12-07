@@ -14,6 +14,7 @@ public class AttackDrone extends Drone implements Serializable {
 	Drone targetDrone;
 	boolean hasTarget;
 	int stuckCount = 0;
+	SoundEffects soundEffects;
 	
 	public AttackDrone(int xPos, int yPos, Direction direction, MyCanvas myCanvas, DroneArena arena) 
 			throws FileNotFoundException {
@@ -22,11 +23,13 @@ public class AttackDrone extends Drone implements Serializable {
 		
 		
 		type = "Attack";
+		width = 40;
+		height = 25;
 		printWidth = width;
 		printHeight = height;
 		speed = 2;
 		
-		
+		soundEffects = new SoundEffects();
 		droneImage = new Image(new FileInputStream("graphics/greyShip.png"));
 		
 		setDirection();
@@ -134,6 +137,8 @@ public class AttackDrone extends Drone implements Serializable {
 				return false;
 			}
 			if (d.getId() == target && d.isHere(newX, newY, 0)) {
+				
+				soundEffects.playExplosion();
 				
 				manyDrones.remove(id);
 				manyDrones.remove(d);

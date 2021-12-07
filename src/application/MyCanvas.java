@@ -33,9 +33,16 @@ public class MyCanvas implements Serializable {
 		
 	}
 	
+	public void clearArea(int size, int xPos, int yPos) {
+		
+		graphicsContext.clearRect(xPos, yPos, size, size);
+		System.out.println("clearRect");
+	}
+	
 	public void drawImage (Image i, double xPos, double yPos, double width, double height) {
 			
 			graphicsContext.drawImage(i, xPos, yPos, width, height);
+			System.out.println("drawImage");
 			
 		}
 	
@@ -84,7 +91,7 @@ public class MyCanvas implements Serializable {
 		graphicsContext.fillText(s, x, y);
 		
 	}
-	
+		
 	public int getMyHeight() {
 		
 		return height;
