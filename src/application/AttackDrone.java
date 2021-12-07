@@ -24,7 +24,7 @@ public class AttackDrone extends Drone implements Serializable {
 		
 		type = "Attack";
 		width = 40;
-		height = 25;
+		height = 40;
 		printWidth = width;
 		printHeight = height;
 		speed = 2;
@@ -60,8 +60,7 @@ public class AttackDrone extends Drone implements Serializable {
 	}
 	
 	@Override
-	public void tryToMove(DroneArena arena) {
-		
+	public void tryToMove(DroneArena arena) {		
 			
 		// Set target drone 
 		targetDrone = arena.getDrone(target);	

@@ -29,8 +29,7 @@ public class Buttons extends HBox {
 	MyCanvas myCanvas;
 	BorderPane simPane;
 	SoundEffects soundEffects;
-	private boolean wallSelected, animationPlaying, 
-						placeWall, mouseReleased, mouseClicked;
+	private boolean wallSelected, animationPlaying, mouseClicked;
 	private int mouseX, mouseY;
 	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
@@ -40,6 +39,7 @@ public class Buttons extends HBox {
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
+		
 		soundEffects = new SoundEffects();
 		createAddDrone();
 		createAddAttackDrone();
@@ -149,22 +149,20 @@ public class Buttons extends HBox {
 		});
 		
 	}
-
+	
+	/**
+	 * Creates the addWall button and applies action
+	 * @throws FileNotFoundException
+	 */
 	private void createAddWall() throws FileNotFoundException {
 		
 		addWall = new Button("Wall");
-		
-		//addWall.setStyle(buttonStyle);	
+	
 		Wall placementWall = new Wall(0, 0);
 		createKeyEvents(placementWall);	
 		createMouseEvents(placementWall);
 		
-		addWall.setOnAction(e -> {
-			
-			wallSelected = true;
-			addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
-			mouseClicked = false;
-			
+		addWall.setOnAction(e -> {					
 			
 			wallAnimation = new AnimationTimer()
 			{
@@ -172,27 +170,29 @@ public class Buttons extends HBox {
 	            public void handle(long now)  {			
 					
 					if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
-							placementWall.getWidth(), placementWall.getHeight()) != null) {
+							placementWall.getWidth(), placementWall.getHeight()) != null && wallSelected) {
 
 						soundEffects.playError();
 						arena.drawWallPlacement(myCanvas, mouseX, mouseY, 
 								"red", placementWall);					
 						
 					} else if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
-							placementWall.getWidth(), placementWall.getHeight()) == null) {						
-
+							placementWall.getWidth(), placementWall.getHeight()) == null && wallSelected) {							
+						
 					try {
+						System.out.println("placing wall");
 						soundEffects.playClick();
 						addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
+						wallSelected = false;			
+						this.stop();
+					} 
+					catch (FileNotFoundException e) {
 						e.printStackTrace();
-					}
-					wallSelected = false;			
-					wallAnimation.stop();
+					}				
 					
-					} else {
+					
+					} else if (wallSelected) {
 						
 						arena.drawWallPlacement(myCanvas, mouseX, mouseY, "grey_tran",
 								placementWall);	
@@ -201,8 +201,19 @@ public class Buttons extends HBox {
 	             }	
 			};	
 			
-			if (!animationPlaying)
-				wallAnimation.start();				
+			// If animation isnt playing and wall isnt already selected, start animation
+			// 	and change button style. If wall is already selected, turn off selected
+			if (!animationPlaying && !wallSelected) {
+				System.out.println("Wall animation starting");
+				wallAnimation.start();					
+				wallSelected = true;
+				addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
+				mouseClicked = false;
+			} else if (wallSelected) {
+				wallSelected = false;
+				addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+				wallAnimation.stop();
+			}
 		
 	     });
 	}

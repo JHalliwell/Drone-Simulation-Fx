@@ -17,7 +17,6 @@ public class Wall extends Environment implements Serializable {
 
 		image = new Image(new FileInputStream("graphics/wallV.png"));
 
-
 	}
 	
 	public Wall(int xPos, int yPos) throws FileNotFoundException {
