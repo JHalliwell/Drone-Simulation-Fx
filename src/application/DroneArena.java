@@ -321,6 +321,36 @@ public class DroneArena implements Serializable {
 		Drone.droneCount = 0;
 	}
 	
+	/**
+	 * To be used after a drone is removed, matches id's to index's
+	 * and updates count
+	 */
+	public void resetDroneList() {
+		
+		// Set drone id's to match index after removals
+		for (int i = 0; i < manyDrones.size(); i++) {
+			manyDrones.get(i).setId(i);
+		}
+		
+		// Give attack drones new targets after removals
+		for (Drone dr : manyDrones) {
+			if (dr instanceof RoamDrone) {
+				((RoamDrone) dr).setIsTarget(false);
+			}					
+		}
+		
+		for (Drone dr : manyDrones) {
+			if (dr instanceof AttackDrone) {
+				((AttackDrone) dr).setTarget(this);
+			}
+		}
+		
+		setDrones(manyDrones); // Set arena list to edited list
+		Drone.droneCount = manyDrones.size();
+		drawStatus();
+		
+	}
+	
 	public void clearEnvironment() {
 		environment.clear();
 	}

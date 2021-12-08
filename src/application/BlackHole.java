@@ -62,25 +62,33 @@ public class BlackHole extends Environment {
 					" hole: " + xPos + ", " + yPos);
 			
 			if (nearbyDroneX > xPos) {
-				nearbyDroneX--;
-				System.out.println("x--");
+				nearbyDroneX-=3;
+				System.out.println("x-=4");
 			}
 			if (nearbyDroneX < xPos) {
-				nearbyDroneX++;
-				System.out.println("x++");
+				nearbyDroneX+=3;
+				System.out.println("x+=4");
 			}
 			if (nearbyDroneY > yPos) {
-				nearbyDroneY--;
-				System.out.println("y--");
+				nearbyDroneY-=3;
+				System.out.println("y-=4");
 			}
 			if (nearbyDroneY < yPos) {
-				nearbyDroneY++;
-				System.out.println("y++");
+				nearbyDroneY+=3;
+				System.out.println("y+=4");
 			}
 			
 			manyDrones.get(nearbyDroneId).setXPos(nearbyDroneX);
 			manyDrones.get(nearbyDroneId).setYPos(nearbyDroneY);
-			manyDrones.get(nearbyDroneId).scaleDown(5);
+			
+			if (manyDrones.get(nearbyDroneId).getWidth() > 10)
+				manyDrones.get(nearbyDroneId).scaleDown(1);
+			
+			if (nearbyDroneX > (xPos - 4) && nearbyDroneX < (xPos + 4) &&
+					nearbyDroneY > (yPos - 4) && nearbyDroneY < (yPos + 4)) {
+				manyDrones.remove(nearbyDroneId);
+				arena.resetDroneList();
+			}
 		}
 		
 	}

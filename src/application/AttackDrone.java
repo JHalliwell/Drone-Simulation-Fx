@@ -142,27 +142,7 @@ public class AttackDrone extends Drone implements Serializable {
 				manyDrones.remove(id);
 				manyDrones.remove(d);
 				
-				// Set drone id's to match index after removals
-				for (int i = 0; i < manyDrones.size(); i++) {
-					manyDrones.get(i).setId(i);
-				}
-				
-				// Give attack drones new targets after removals
-				for (Drone dr : manyDrones) {
-					if (dr instanceof RoamDrone) {
-						((RoamDrone) dr).setIsTarget(false);
-					}					
-				}
-				
-				for (Drone dr : manyDrones) {
-					if (dr instanceof AttackDrone) {
-						((AttackDrone) dr).setTarget(arena);
-					}
-				}
-				
-				arena.setDrones(manyDrones); // Set arena list to edited list
-				Drone.droneCount = manyDrones.size();
-				arena.drawStatus();
+				arena.resetDroneList();
 				
 			}			
 			

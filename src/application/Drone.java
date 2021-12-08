@@ -146,9 +146,11 @@ public abstract class Drone implements Serializable {
 	/**
 	 * Scales down the size of the drone
 	 */
-	public void scaleDown(int scale) {
+	public void scaleDown(double scale) {
 		width-=scale;
 		height-=scale;
+		printWidth = width;
+		printHeight = height;
 	}
 	
 	/**
