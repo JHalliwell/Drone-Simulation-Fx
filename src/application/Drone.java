@@ -65,6 +65,18 @@ public abstract class Drone implements Serializable {
 		
 	}
 	
+	protected void checkForHole(DroneArena arena) {
+		
+		for (Environment e : arena.getEnvironment()) {
+			
+			if (e instanceof BlackHole) {
+				((BlackHole) e).getIsNear(arena, this);
+			};
+			
+		}
+		
+	}
+	
 	/**
 	 * 
 	 * @param otherX

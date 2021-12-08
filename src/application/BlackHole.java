@@ -10,6 +10,7 @@ public class BlackHole extends Environment {
 	
 	private int centerX;
 	private int centerY;
+	private int distance;
 	DroneArena arena;
 
 	public BlackHole(int xPos, int yPos) throws FileNotFoundException {
@@ -20,9 +21,8 @@ public class BlackHole extends Environment {
 		height = 100;
 		centerX = xPos + (width / 2);
 		centerY = yPos + (height / 2);
-		type = "Black Hole";
-		
-		
+		type = "Black Hole";	
+		distance = 50;
 		
 	}
 	
@@ -36,6 +36,7 @@ public class BlackHole extends Environment {
 		this.height = height;
 		
 		type = "Black Hole";
+		distance = 50;
 		
 		centerX = xPos + (width / 2);
 		centerY = yPos + (height / 2);		
@@ -44,53 +45,76 @@ public class BlackHole extends Environment {
 		
 	}
 	
-	protected void checkForDrones(DroneArena arena, ArrayList<Drone> manyDrones) {
+	/**
+	 * Check's it the passed in drone is within distance to be sucked in
+	 * @param arena - main drone arena
+	 * @param drone - drone to check against
+	 */
+	public void getIsNear(DroneArena arena, Drone drone) {
 		
-		Drone nearbyDrone;
-		
-		if ((nearbyDrone = arena.getDroneAt(centerX, centerY, 70, width, height)) != null) {
+		if (drone.xPos > (xPos - drone.width - distance) && 
+				drone.xPos < (xPos + width + distance) &&
+				drone.yPos > (yPos - drone.height - distance) && 
+				drone.yPos < (yPos + height + distance)) {
 			
-			System.out.println("Drone nearby");					
+			// Use center of drone to compare with center of blackhole
+			int droneCenterX = drone.xPos + (drone.height / 2); 
+			int droneCenterY = drone.yPos + (drone.width / 2);
 			
-			int nearbyDroneX = nearbyDrone.getXPos();
-			int nearbyDroneY = nearbyDrone.getYPos();
-			int nearbyDroneId = nearbyDrone.getId();			
+			// Set drone's nearHole to true
+			drone.nearHole = true;
 			
-			manyDrones.get(nearbyDroneId).setNearHole(true);
-			
-			System.out.println("drone: " + nearbyDroneX + ", " + nearbyDroneY + 
-					" hole: " + xPos + ", " + yPos);
-			
-			if (nearbyDroneX > xPos) {
-				nearbyDroneX-=3;
+			// Move drone toward blackhole
+			if (drone.xPos > centerX) {
+				drone.xPos -= 3;
 				System.out.println("x-=4");
 			}
-			if (nearbyDroneX < xPos) {
-				nearbyDroneX+=3;
+			if (drone.xPos < centerX) {
+				drone.xPos += 3;
 				System.out.println("x+=4");
 			}
-			if (nearbyDroneY > yPos) {
-				nearbyDroneY-=3;
+			if (drone.yPos > centerY) {
+				drone.yPos -= 3;
 				System.out.println("y-=4");
 			}
-			if (nearbyDroneY < yPos) {
-				nearbyDroneY+=3;
+			if (drone.yPos < centerY) {
+				drone.yPos += 3;
 				System.out.println("y+=4");
 			}
 			
-			manyDrones.get(nearbyDroneId).setXPos(nearbyDroneX);
-			manyDrones.get(nearbyDroneId).setYPos(nearbyDroneY);
+			if (drone.width > 10)
+				drone.scaleDown(1);
 			
-			if (manyDrones.get(nearbyDroneId).getWidth() > 10)
-				manyDrones.get(nearbyDroneId).scaleDown(1);
-			
-			if (nearbyDroneX > (xPos - 4) && nearbyDroneX < (xPos + 4) &&
-					nearbyDroneY > (yPos - 4) && nearbyDroneY < (yPos + 4)) {
-				manyDrones.remove(nearbyDroneId);
+			if (droneCenterX > (centerX - 4) && 
+					droneCenterX < (centerX + 4) &&
+						droneCenterX > (centerY - 4) && 
+							droneCenterY < (centerY + 4)) {
+				arena.removeDroneFromList(drone.id);
 				arena.resetDroneList();
 			}
 		}
 		
+	}
+
+	/**
+	 * @return distance from the blackhole where a drone's sucked in
+	 */
+	public int getDistance() {
+		return distance;
+	}
+	
+	/**
+	 * @return x co-ord of center of blackhole
+	 */
+	public int getCenterX() {
+		return centerX;
+	}
+	
+	/**
+	 * @return y co-ord of center of blackhole
+	 */
+	public int getCenterY() {
+		return centerY;
 	}
 	
 	@Override

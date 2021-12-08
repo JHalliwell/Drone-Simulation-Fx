@@ -43,7 +43,7 @@ public class MyCanvas implements Serializable {
 		
 			graphicsContext.drawImage(i, xPos, yPos, width, height);
 			
-		}
+	}
 	
 	/**
 	 * Draws drone to canvas
@@ -56,7 +56,8 @@ public class MyCanvas implements Serializable {
 		
 		if (colour == "black") {
 			graphicsContext.setFill(Color.BLACK);
-			graphicsContext.fillRect(x, y, width, height);
+			graphicsContext.setLineWidth(3);
+			graphicsContext.strokeRect(x, y, width, height);
 		}
 		
 		if (colour == "red") {
@@ -80,6 +81,12 @@ public class MyCanvas implements Serializable {
 			graphicsContext.setFill(Color.SLATEGREY);
 			graphicsContext.fillRect(x + 4, y + 4, width - 8, height - 8);
 			
+		}
+		
+		if (colour == "hole") {
+			graphicsContext.setStroke(Color.rgb(134, 81, 80));
+			graphicsContext.setLineWidth(3);
+			graphicsContext.strokeOval(x, y, width, height);
 		}
 		
 	}

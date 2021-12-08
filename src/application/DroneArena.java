@@ -12,10 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class DroneArena implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4938436733718179739L;
 	private MyCanvas myCanvas;
 	private int arenaWidth;
@@ -101,20 +98,15 @@ public class DroneArena implements Serializable {
 	 */
 	public void moveAllDrones() throws FileNotFoundException {	// keep
 		
-		for (Environment e : environment ) {
-			if (e instanceof BlackHole) ((BlackHole) e).checkForDrones(this, manyDrones);
-		}
-		
 		for (Drone d : manyDrones) {	
+			d.checkForHole(this);
 			if (!d.nearHole) d.tryToMove(this);
 		}		
-		
-		
 		
 	}
 	
 	/**
-	 * Draws arena and drones to canvas as graphics context
+	 * Draws drones and environment objects to canvas as graphics context
 	 */
 	public void drawArena(MyCanvas canvas) {	  
 
@@ -131,8 +123,18 @@ public class DroneArena implements Serializable {
         	if (e instanceof Wall) canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), 
         												e.getHeight(), e.getColour());
         	
-        	if (e instanceof BlackHole) canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(),
-        													e.getWidth(), e.getHeight()); 
+        	if (e instanceof BlackHole) {
+        		
+        		canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(),
+        							e.getWidth(), e.getHeight()); 
+        		        		
+        		// Draw a circle the size of the blackhole's field
+        		canvas.drawObject(e.getXPos() - ((BlackHole) e).getDistance(), e.getYPos() - 
+        							((BlackHole) e).getDistance(), 
+        							(e.getWidth()) + (((BlackHole) e).getDistance() * 2), 
+        							(e.getHeight()) + (((BlackHole) e).getDistance() * 2), "hole");	
+        	}
+        													
        	          	
         }      
             
@@ -306,6 +308,12 @@ public class DroneArena implements Serializable {
 		if (type == "cautious") {
 			manyDrones.add(new CautiousDrone(xPos, yPos, direction, myCanvas));
 		}
+	}
+	
+	public void removeDroneFromList(int id) {
+		
+		manyDrones.remove(id);
+		
 	}
 	
 	public void addEnvironmentToList(int xPos, int yPos, int width, 
