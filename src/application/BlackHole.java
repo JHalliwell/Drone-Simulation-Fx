@@ -10,9 +10,16 @@ public class BlackHole extends Environment {
 	
 	private int centerX;
 	private int centerY;
-	private int distance;
+	private int fieldWidth;
+	private int fieldHeight;
 	DroneArena arena;
 
+	/**
+	 * BlackHole constructor
+	 * @param xPos - of black hole
+	 * @param yPos - of black hole
+	 * @throws FileNotFoundException
+	 */
 	public BlackHole(int xPos, int yPos) throws FileNotFoundException {
 		
 		super(xPos, yPos);
@@ -23,9 +30,19 @@ public class BlackHole extends Environment {
 		centerY = yPos + (height / 2);
 		type = "Black Hole";	
 		distance = 50;
+		fieldWidth = width + (distance * 2);
+		fieldHeight = height + (distance * 2);
 		
 	}
 	
+	/**
+	 * 
+	 * @param xPos - of black hole
+	 * @param yPos - of black hole
+	 * @param width - of black hole
+	 * @param height - of black hole
+	 * @throws FileNotFoundException
+	 */
 	public BlackHole(int xPos, int yPos, int width, int height) throws FileNotFoundException {	
 		
 		super(xPos, yPos);
@@ -39,10 +56,42 @@ public class BlackHole extends Environment {
 		distance = 50;
 		
 		centerX = xPos + (width / 2);
-		centerY = yPos + (height / 2);		
+		centerY = yPos + (height / 2);
+		fieldWidth = width + (distance * 2);
+		fieldHeight = height + (distance * 2);
 		
 		image = new Image(new FileInputStream("graphics/blackHole.png"));
 		
+	}
+	
+	/**
+	 * @param droneX
+	 * @param droneY
+	 * @param droneWidth
+	 * @param droneHeight
+	 * @return true if the drone is within the field of the BlackHole 
+	 */
+	public boolean isHere(int droneX, int droneY, int droneWidth, int droneHeight) {
+		
+		if (droneX > (xPos - droneWidth - distance) && 
+		droneX < (xPos + width + distance) &&
+		droneY > (yPos - droneHeight - distance) && 
+		droneY < (yPos + height + distance)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth, int otherHeight) {
+		if (otherX > (xPos - (otherWidth / 2) - distance) && 
+				otherX < (xPos + width + (otherWidth / 2) + distance) &&
+				otherY > (yPos - (otherHeight / 2) - 2 - distance) && 
+				otherY < (yPos + height + (otherHeight / 2) + distance)) 
+			return true;
+		
+		return false;
 	}
 	
 	/**
@@ -95,6 +144,14 @@ public class BlackHole extends Environment {
 		}
 		
 	}
+	
+	public int getFieldWidth() {
+		return fieldWidth;
+	}
+	
+	public int getFieldHeight() {
+		return fieldHeight;
+	}
 
 	/**
 	 * @return distance from the blackhole where a drone's sucked in
@@ -116,11 +173,8 @@ public class BlackHole extends Environment {
 	public int getCenterY() {
 		return centerY;
 	}
-	
-	@Override
-	public boolean isHere(int droneX, int droneY, int droneWidth, int droneHeight) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+
+
 
 }

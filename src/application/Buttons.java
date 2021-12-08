@@ -182,15 +182,16 @@ public class Buttons extends HBox {
 				@Override
 	            public void handle(long now)  {	
 					
-					if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
-							placementWall.getWidth(), placementWall.getHeight()) != null && wallSelected) {
+					if (mouseClicked && (arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
+							placementWall.getWidth(), placementWall.getHeight()) != null || 
+							arena.getEnvironmentAtPlacement(mouseX, mouseY, placementWall.getWidth(), 
+									placementWall.getHeight()) != null) && wallSelected) {
 						
 						soundEffects.playError();								
 						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, 
 								"red", placementWall);	
 						
-					} else if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
-							placementWall.getWidth(), placementWall.getHeight()) == null && wallSelected) {			
+					} else if (mouseClicked && wallSelected) {			
 						
 					try {
 						
@@ -215,7 +216,7 @@ public class Buttons extends HBox {
 			
 			// If animation isn't playing and wall isn't already selected, start animation
 			// 	and change button style. If wall is already selected, turn off selected
-			if (!animationPlaying && !wallSelected) {
+			if (!animationPlaying && !wallSelected && !holeSelected) {
 				wallAnimation.start();					
 				wallSelected = true;
 				addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
@@ -241,14 +242,15 @@ public class Buttons extends HBox {
 				
 				public void handle(long now) {
 					
-					if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
-							blackHole.getWidth(), blackHole.getHeight()) != null && holeSelected) {
+					if (mouseClicked && (arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
+							blackHole.getFieldWidth(), blackHole.getFieldHeight()) != null ||
+							arena.getEnvironmentAtPlacement(mouseX, mouseY, blackHole.getFieldWidth(), 
+							blackHole.getFieldHeight()) != null) && holeSelected) {
 						
 						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, "red", blackHole);
 						soundEffects.playError();
 						
-					} else if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
-									blackHole.getWidth(), blackHole.getHeight()) == null && holeSelected) {						
+					} else if (mouseClicked && holeSelected) {						
 						
 						System.out.println("Add hole");
 						
@@ -256,27 +258,29 @@ public class Buttons extends HBox {
 							soundEffects.playClick();
 							addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 							arena.addEnvironment(myCanvas, mouseX, mouseY, blackHole);
+							holeSelected = false;
 							this.stop();
 						} catch (FileNotFoundException e) {							
 							e.printStackTrace();
 						}
 												
-					} else if(holeSelected) {			
+					} else if (holeSelected) {			
 						
-						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, "grey_tran",
-														blackHole);						
+						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, 
+														"hole",	blackHole);	
+	
 					}					
 				}				
 			};		
 			
 			// If animation isn't playing and hole isn't already selected, start animation
 			// 	and change button style. If hole is already selected, turn off selected
-			if (!animationPlaying && !wallSelected) {
+			if (!animationPlaying && !wallSelected && !holeSelected) {
 				holeAnimation.start();					
 				holeSelected = true;
 				addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
 				mouseClicked = false;
-			} else if (wallSelected) {
+			} else if (holeSelected) {
 				holeSelected = false;
 				addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 				holeAnimation.stop();
@@ -318,6 +322,11 @@ public class Buttons extends HBox {
 			case D : placementWall.rotate();break;
 			case W : placementWall.scaleUp();break;
 			case S : placementWall.scaleDown();break;
+			case ESCAPE : 
+				wallSelected = false; 
+				holeSelected = false; 
+				addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+				addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 			}
 			
 		});
@@ -337,6 +346,12 @@ public class Buttons extends HBox {
 			soundEffects.playAnimationMusic();
 			animationPlaying = true;
 			play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
+			
+			// De-select wall/blackhole if animation has started
+			wallSelected = false;
+			holeSelected = false;
+			addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+			addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
 			
 			if (animationTimer != null) {
 				animationTimer.stop();

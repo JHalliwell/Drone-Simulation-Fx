@@ -57,6 +57,18 @@ public class Wall extends Environment implements Serializable {
 		
 	}
 	
+	@Override
+	public boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth, int otherHeight) {
+		
+		if (otherX > (xPos - (otherWidth / 2) - 2) && 
+				otherX < (xPos + width + (otherWidth / 2) - 2) &&
+				otherY > (yPos - (otherHeight / 2) - 2 ) && 
+				otherY < (yPos + height + (otherHeight / 2) + 2)) 
+			return true;
+		
+		return false;
+	}
+	
 	public void rotate() {		
 
 		int temp = width;
@@ -82,5 +94,7 @@ public class Wall extends Environment implements Serializable {
 		}
 
 	}
+
+
 	
 }

@@ -89,6 +89,11 @@ public class MyCanvas implements Serializable {
 			graphicsContext.strokeOval(x, y, width, height);
 		}
 		
+		if (colour == "hole_solid") {
+			graphicsContext.setFill(Color.rgb(134, 81, 80));
+			graphicsContext.fillOval(x, y, width, height);
+		}
+		
 	}
 	
 	public void drawText(String s, int x, int y) {

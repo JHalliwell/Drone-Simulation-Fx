@@ -56,7 +56,8 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - drone.getWidth());
 				y = ranGen.nextInt(arenaHeight - drone.getHeight());
 			} while (getDroneAt(x, y, drone.getWidth(), drone.getHeight()) != null || 
-					getObstacleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
+					getObstacleAt(x, y, drone.getWidth(), drone.getHeight()) != null ||
+					getHoleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
 			drone.setXPos(x);
 			drone.setYPos(y);
 			manyDrones.add(drone);
@@ -69,7 +70,8 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - aDrone.getWidth());
 				y = ranGen.nextInt(arenaHeight - aDrone.getHeight());
 			} while (getDroneAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null || 
-					getObstacleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null);
+					getObstacleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null ||
+					getHoleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null);
 			aDrone.setXPos(x);
 			aDrone.setYPos(y);
 			manyDrones.add(aDrone);
@@ -82,7 +84,8 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - cDrone.getWidth());
 				y = ranGen.nextInt(arenaHeight - cDrone.getHeight());
 			} while (getDroneAt(x, y, cDrone.getWidth(), cDrone.getHeight()) != null || 
-					getObstacleAt(x, y,cDrone.getWidth(), cDrone.getHeight()) != null);
+					getObstacleAt(x, y,cDrone.getWidth(), cDrone.getHeight()) != null ||
+					getHoleAt(x, y, cDrone.getWidth(), cDrone.getHeight()) != null);
 			cDrone.setXPos(x);
 			cDrone.setYPos(y);
 			manyDrones.add(cDrone);
@@ -140,15 +143,23 @@ public class DroneArena implements Serializable {
             
 	}
 	
+	/**
+	 * For drawing selected object to be placed on the canvas
+	 * @param canvas - on which to draw
+	 * @param xPos - of object
+	 * @param yPos - of object
+	 * @param colour - determines what to draw
+	 * @param e - the object to draw
+	 */
 	public void drawEnvironmentPlacement(MyCanvas canvas, int x, int y, String colour, 
-											Environment e) {
-		
+											Environment e) {		
 		canvas.clear();		
 		
 		drawArena(canvas);
 		
 		if (e instanceof Wall) {
 			
+			// Draw wall to be placed
 			canvas.drawObject(x - (e.getWidth() / 2), y - (e.getHeight() / 2), 
 					e.getWidth(), e.getHeight(), colour);
 			
@@ -156,11 +167,14 @@ public class DroneArena implements Serializable {
 		
 		if (e instanceof BlackHole) {
 			
-			canvas.drawObject(x - (e.getWidth() / 2), y - (e.getHeight() / 2), 
-					e.getWidth(), e.getHeight(), colour);
-			
-		}		
-		
+			// Draw circle the size of the blackhole's field
+			if (colour == "hole") {
+				canvas.drawObject(x - (e.getWidth() / 2) - ((BlackHole) e).getDistance(), 
+									y - (e.getHeight() / 2) - ((BlackHole) e).getDistance(), 
+									e.getWidth() + (((BlackHole) e).getDistance() * 2), 
+									e.getHeight() + (((BlackHole) e).getDistance() * 2), colour);
+			}			
+		}			
 	}
 	
 	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, Environment e) 
@@ -175,8 +189,6 @@ public class DroneArena implements Serializable {
 		}
 		
 		if (e instanceof BlackHole) {
-			
-			System.out.println("Add environment");
 			
 			environment.add(new BlackHole(xPos - (e.getWidth() / 2), 
 					yPos - (e.getHeight() / 2), e.getWidth(),
@@ -274,8 +286,7 @@ public class DroneArena implements Serializable {
 			if (d.isHere(xPos, yPos, distance, width, height)) return d;
 		}
 		
-		return null;
-		
+		return null;		
 	}
 	
 	/**
@@ -289,9 +300,27 @@ public class DroneArena implements Serializable {
 	public Environment getObstacleAt(int xPos, int yPos, int width, int height) {
 		
 		for (Environment e : environment) {
-			if (e.isHere(xPos, yPos, width, height)) return e;
-		}
+			if (e.isHere(xPos, yPos, width, height) && e instanceof Wall) return e;
+
+		}		
+		return null;		
+	}
+	
+	public Environment getEnvironmentAtPlacement(int xPos, int yPos, int width, int height) {
 		
+		for (Environment e : environment) {
+			if (e.isHereEnvironmentPlacement(xPos, yPos, width, height))
+				return e;
+		}
+		return null;
+	}
+	
+	public Environment getHoleAt(int xPos, int yPos, int width, int height) {
+	
+		for (Environment e : environment) {
+			if (e.isHere(xPos, yPos, width, height) && e instanceof BlackHole)
+				return e;
+		}
 		return null;
 		
 	}

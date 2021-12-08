@@ -11,6 +11,7 @@ public abstract class Environment implements Serializable {
 	protected int width, height;
 	protected int xPos, yPos;
 	protected String type;
+	protected int distance;
 	
 	Environment(int xPos, int yPos){
 		
@@ -30,6 +31,9 @@ public abstract class Environment implements Serializable {
 	
 	public abstract boolean isHere(int droneX, int droneY, int droneWidth, int droneHeight);
 	
+	public abstract boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth,
+												int otherHeight);
+
 	public String toString() {
 		
 		String info = "";
