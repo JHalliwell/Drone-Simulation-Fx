@@ -42,7 +42,6 @@ public class SimView extends VBox{
 	private MyMenu simMenu;
 	
 	private BorderPane simPane;
-	private SoundEffects soundEffects;
 
 	private Scene simScene;
 	private StackPane simStackPane;
@@ -145,9 +144,6 @@ public class SimView extends VBox{
 		simScene = new Scene(simPane);
 		simScene.getStylesheets().add(this.getClass().getResource("application.css").toExternalForm());
 		simStage.setScene(simScene);
-		
-		soundEffects = new SoundEffects();
-		soundEffects.playBackgroundMusic();
 
 	}	
 	

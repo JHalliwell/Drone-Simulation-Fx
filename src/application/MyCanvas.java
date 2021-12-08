@@ -76,7 +76,7 @@ public class MyCanvas implements Serializable {
 		}
 		
 		if (colour == "darkGrey") {
-			graphicsContext.setFill(Color.INDIANRED);
+			graphicsContext.setFill(Color.rgb(75, 88, 115));
 			graphicsContext.fillRect(x, y, width, height);
 			graphicsContext.setFill(Color.SLATEGREY);
 			graphicsContext.fillRect(x + 4, y + 4, width - 8, height - 8);

@@ -1,31 +1,49 @@
 package application;
 
 import java.io.File;
-import javafx.scene.media.Media;  
-import javafx.scene.media.MediaPlayer;  
-import javafx.scene.media.MediaView;  
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 
 public class SoundEffects {
 
-	Media backgroundMusic, explosion, click, error;
-	MediaPlayer player;	
+	Media animationMusic, explosion, click, error;
+	MediaPlayer player, animationPlayer, errorPlayer;	
 	
 	SoundEffects() {
-
 		
-		backgroundMusic = new Media(new File("sounds/backgroundMusic.mp3").toURI().toString());
+		animationMusic = new Media(new File("sounds/ambientSpace.mp3").toURI().toString());
 		click = new Media(new File("sounds/click.mp3").toURI().toString());
 		error = new Media(new File("sounds/error.mp3").toURI().toString());
 		explosion = new Media(new File("sounds/explosion.mp3").toURI().toString());
 		
+		errorPlayer = new MediaPlayer(error);
+		errorPlayer.setVolume(0.7);
+		
+		
 	}
 	
-	public void playBackgroundMusic() {
+	public void playAnimationMusic() {
 		
-		player = new MediaPlayer(backgroundMusic);
-		player.setVolume(0.6);
-		player.play();		
+		animationPlayer = new MediaPlayer(animationMusic);
+		animationPlayer.setVolume(0.4);
+		// Replay sound if it ends
+		animationPlayer.setOnEndOfMedia(new Runnable() {
+			public void run() {
+				animationPlayer.seek(Duration.ZERO);
+			}
+		});
+		animationPlayer.play();		
+		
+	}
+	
+	public void stopAnimationMusic() {
+		
+		if (animationPlayer != null) {
+			animationPlayer.stop();
+		}
 		
 	}
 	
@@ -43,10 +61,10 @@ public class SoundEffects {
 		
 	}
 	
-	public void playError() {
+	public void playError() {		
 		
-		player = new MediaPlayer(error);
-		player.play();
+		errorPlayer.stop();
+		errorPlayer.play();
 		
 	}
 	
