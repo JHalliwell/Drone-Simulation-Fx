@@ -35,9 +35,7 @@ public class DroneArena implements Serializable {
 		this.arenaHeight = arenaHeight;
 		
 		manyDrones = new ArrayList<Drone>();	
-		environment = new ArrayList<Environment>();		
-		Explosion explosion = new Explosion();
-		
+		environment = new ArrayList<Environment>();	
 	}
 
 	/**
@@ -103,9 +101,15 @@ public class DroneArena implements Serializable {
 	 */
 	public void moveAllDrones() throws FileNotFoundException {	// keep
 		
-		for (Drone d : manyDrones) {			
-			d.tryToMove(this);
+		for (Environment e : environment ) {
+			if (e instanceof BlackHole) ((BlackHole) e).checkForDrones(this, manyDrones);
+		}
+		
+		for (Drone d : manyDrones) {	
+			if (!d.nearHole) d.tryToMove(this);
 		}		
+		
+		
 		
 	}
 	
@@ -116,36 +120,67 @@ public class DroneArena implements Serializable {
 
 		canvas.clear();
         
-        for (Drone d : manyDrones) {        	
-    		// canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
-    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());        	
+        for (Drone d : manyDrones) {
+        	
+    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());  
+    		
         }
        
         for (Environment e : environment) {
-        	canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight(), e.getColour());       	    
-       	    //canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight());
+        	
+        	if (e instanceof Wall) canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), 
+        												e.getHeight(), e.getColour());
+        	
+        	if (e instanceof BlackHole) canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(),
+        													e.getWidth(), e.getHeight()); 
+       	          	
         }      
             
 	}
 	
-	public void drawWallPlacement(MyCanvas canvas, int x, int y, String colour, 
-									Wall placementWall) {	//keep
+	public void drawEnvironmentPlacement(MyCanvas canvas, int x, int y, String colour, 
+											Environment e) {
 		
-		canvas.clear();
+		canvas.clear();		
 		
 		drawArena(canvas);
-				
-		canvas.drawObject(x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2), 
-				placementWall.getWidth(), placementWall.getHeight(), colour);
+		
+		if (e instanceof Wall) {
+			
+			canvas.drawObject(x - (e.getWidth() / 2), y - (e.getHeight() / 2), 
+					e.getWidth(), e.getHeight(), colour);
+			
+		}
+		
+		if (e instanceof BlackHole) {
+			
+			canvas.drawObject(x - (e.getWidth() / 2), y - (e.getHeight() / 2), 
+					e.getWidth(), e.getHeight(), colour);
+			
+		}		
 		
 	}
 	
-	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, 
-									Wall placementWall) throws FileNotFoundException {	// keep
+	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, Environment e) 
+								throws FileNotFoundException {	
 
-		environment.add(new Wall(xPos - (placementWall.getWidth() / 2), 
-				yPos - (placementWall.getHeight() / 2), placementWall.getWidth(),
-				placementWall.getHeight()));
+		if (e instanceof Wall) {
+			
+			environment.add(new Wall(xPos - (e.getWidth() / 2), 
+					yPos - (e.getHeight() / 2), e.getWidth(),
+					e.getHeight()));
+			
+		}
+		
+		if (e instanceof BlackHole) {
+			
+			System.out.println("Add environment");
+			
+			environment.add(new BlackHole(xPos - (e.getWidth() / 2), 
+					yPos - (e.getHeight() / 2), e.getWidth(),
+					e.getHeight()));
+			
+		}		
 
 		drawArena(canvas);							
 		
@@ -200,10 +235,10 @@ public class DroneArena implements Serializable {
 	 * @param y		drone y pos
 	 * @return null if no Drone there, or Drone if there is
 	 */
-	public Drone getDroneAtWallPlacement(int x, int y, int width, int height) {
+	public Drone getDroneAtEnvironmentPlacement(int x, int y, int width, int height) {
 		
 		for (Drone d : manyDrones) {
-			if (d.isHereWallPlacement(x, y, width, height)) return d;
+			if (d.isHereEnvironmentPlacement(x, y, width, height)) return d;
 		}
 		
 		return null;
@@ -222,6 +257,23 @@ public class DroneArena implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Loop through all drones, returning a drone if it's at newX, newY
+	 * @param newX - xPos the drone is trying to move to
+	 * @param newY - yPos the drone is trying to move to 
+	 * @param arena - main droneArena
+	 * @return	Drone if that drone is colliding with newX, newY
+	 */
+	public Drone getDroneAt(int xPos, int yPos, int distance, int width, int height) {
+		
+		for (Drone d : manyDrones) {
+			if (d.isHere(xPos, yPos, distance, width, height)) return d;
+		}
+		
+		return null;
+		
 	}
 	
 	/**

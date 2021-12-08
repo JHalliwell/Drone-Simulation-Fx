@@ -2,11 +2,9 @@ package application;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.Duration;
 
 import javafx.animation.AnimationTimer;
 import javafx.css.PseudoClass;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -18,17 +16,17 @@ import javafx.scene.text.Text;
 
 public class Buttons extends HBox {
 
-	private Button addDrone, addAttackDrone, addCautiousDrone, play, stop, addWall;
+	private Button addDrone, addAttackDrone, addCautiousDrone, play, 
+				stop, addWall, addBlackHole, step;
 	
-	private AnimationTimer animationTimer, wallAnimation;
+	private AnimationTimer animationTimer, wallAnimation, holeAnimation;
 	DroneArena arena;
 	Canvas canvas;
 	MyCanvas myCanvas;
 	BorderPane simPane;
 	SoundEffects soundEffects;
-	private boolean wallSelected, animationPlaying, mouseClicked;
+	private boolean wallSelected, holeSelected, animationPlaying, mouseClicked;
 	private int mouseX, mouseY;
-	private int wallErrorCount; // Used for wall error soundEffect, cant play more than once
 	
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
 						BorderPane simPane) throws FileNotFoundException {
@@ -38,6 +36,20 @@ public class Buttons extends HBox {
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
 		
+		step = new Button("Step");
+		step.setOnAction(e -> {
+			
+			try {
+				arena.moveAllDrones();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			arena.drawArena(myCanvas);
+			
+		});
+		
+		
 		soundEffects = new SoundEffects();
 		createAddDrone();
 		createAddAttackDrone();
@@ -45,9 +57,12 @@ public class Buttons extends HBox {
 		createPlay();
 		createStop();
 		createAddWall();
+		createAddBlackHole();
 		animation();
 		addButtons();
 		setButtonLayout();
+		
+		
 		
 		canvas.setFocusTraversable(true);		
 			
@@ -68,8 +83,8 @@ public class Buttons extends HBox {
 		one = new Separator(Orientation.VERTICAL);
 		two = new Separator(Orientation.VERTICAL);
 		
-		this.getChildren().addAll(animation, play, stop, one, drones, addDrone, addCautiousDrone, 
-									addAttackDrone, two, environment, addWall);
+		this.getChildren().addAll(step, animation, play, stop, one, drones, addDrone, addCautiousDrone, 
+									addAttackDrone, two, environment, addWall, addBlackHole);
 		
 	}
 	
@@ -158,24 +173,23 @@ public class Buttons extends HBox {
 	
 		Wall placementWall = new Wall(0, 0);
 		createKeyEvents(placementWall);	
-		createMouseEvents(placementWall);
+		createMouseEvents();
 		
 		addWall.setOnAction(e -> {					
 			
 			wallAnimation = new AnimationTimer()
 			{
 				@Override
-	            public void handle(long now)  {		
-
+	            public void handle(long now)  {	
 					
-					if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
+					if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
 							placementWall.getWidth(), placementWall.getHeight()) != null && wallSelected) {
 						
-							soundEffects.playError();	
-							
-						arena.drawWallPlacement(myCanvas, mouseX, mouseY, 
-								"red", placementWall);											
-					} else if (mouseClicked && arena.getDroneAtWallPlacement(mouseX, mouseY, 
+						soundEffects.playError();								
+						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, 
+								"red", placementWall);	
+						
+					} else if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
 							placementWall.getWidth(), placementWall.getHeight()) == null && wallSelected) {			
 						
 					try {
@@ -193,16 +207,15 @@ public class Buttons extends HBox {
 					}		
 					
 					} else if (wallSelected) {						
-						arena.drawWallPlacement(myCanvas, mouseX, mouseY, "grey_tran",
+						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, "grey_tran",
 								placementWall);							
 					}						
 	             }	
 			};			
 			
-			// If animation isnt playing and wall isnt already selected, start animation
+			// If animation isn't playing and wall isn't already selected, start animation
 			// 	and change button style. If wall is already selected, turn off selected
 			if (!animationPlaying && !wallSelected) {
-				System.out.println("Wall animation starting");
 				wallAnimation.start();					
 				wallSelected = true;
 				addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
@@ -216,7 +229,63 @@ public class Buttons extends HBox {
 	     });
 	}
 	
-	public void createMouseEvents(Wall placementWall) {
+	public void createAddBlackHole() throws FileNotFoundException {
+		
+		addBlackHole = new Button("Black Hole");
+		createMouseEvents();
+		BlackHole blackHole = new BlackHole(0, 0);
+		
+		addBlackHole.setOnAction(e -> {
+			
+			holeAnimation = new AnimationTimer() {
+				
+				public void handle(long now) {
+					
+					if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
+							blackHole.getWidth(), blackHole.getHeight()) != null && holeSelected) {
+						
+						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, "red", blackHole);
+						soundEffects.playError();
+						
+					} else if (mouseClicked && arena.getDroneAtEnvironmentPlacement(mouseX, mouseY, 
+									blackHole.getWidth(), blackHole.getHeight()) == null && holeSelected) {						
+						
+						System.out.println("Add hole");
+						
+						try {
+							soundEffects.playClick();
+							addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+							arena.addEnvironment(myCanvas, mouseX, mouseY, blackHole);
+							this.stop();
+						} catch (FileNotFoundException e) {							
+							e.printStackTrace();
+						}
+												
+					} else if(holeSelected) {			
+						
+						arena.drawEnvironmentPlacement(myCanvas, mouseX, mouseY, "grey_tran",
+														blackHole);						
+					}					
+				}				
+			};		
+			
+			// If animation isn't playing and hole isn't already selected, start animation
+			// 	and change button style. If hole is already selected, turn off selected
+			if (!animationPlaying && !wallSelected) {
+				holeAnimation.start();					
+				holeSelected = true;
+				addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
+				mouseClicked = false;
+			} else if (wallSelected) {
+				holeSelected = false;
+				addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+				holeAnimation.stop();
+			}
+			
+		});		
+	}
+	
+	public void createMouseEvents() {
 				
 		canvas.setOnMouseMoved(e -> {						
 			mouseX = (int)e.getX();

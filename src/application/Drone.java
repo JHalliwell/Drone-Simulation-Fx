@@ -31,6 +31,7 @@ public abstract class Drone implements Serializable {
 	protected int id;	 
 	protected int allowedDistance;	// Collision distance
 	protected String type;
+	protected boolean nearHole;
 	
 	Drone (int xPos, int yPos, Direction direction, MyCanvas myCanvas) 
 			throws FileNotFoundException {
@@ -52,7 +53,7 @@ public abstract class Drone implements Serializable {
 	
 	protected abstract boolean canMoveHere(int newX, int newY, DroneArena arena);
 	
-	public boolean isHereWallPlacement(int otherX, int otherY, int otherWidth, 
+	public boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth, 
 										int otherHeight) {
 		
 		if (otherX > (xPos - (otherWidth / 2) - 2) && 
@@ -104,6 +105,26 @@ public abstract class Drone implements Serializable {
 	}
 	
 	/**
+	 * Check if another drone is colliding with this drone
+	 * @param otherX - other drone's xPos to check against
+	 * @param otherY - other drone's yPos to check against
+	 * @return true if this drone is colliding with other drone
+	 */
+	public boolean isHere(int otherX, int otherY, int distance, int width, int height) {
+		
+		if (otherX > (xPos - width - distance) && 
+				otherX < (xPos + width + distance) &&
+				otherY > (yPos - height - distance) && 
+				otherY < (yPos + height + distance)) {
+			System.out.println("is here true");
+			return true;			
+		}		
+		
+		return false;
+		
+	}
+	
+	/**
 	 * Loop through all drones, returning a drone if it's at newX, newY
 	 * @param newX - xPos the drone is trying to move to
 	 * @param newY - yPos the drone is trying to move to 
@@ -119,6 +140,15 @@ public abstract class Drone implements Serializable {
 		
 		return null;
 		
+	}
+	
+	
+	/**
+	 * Scales down the size of the drone
+	 */
+	public void scaleDown(int scale) {
+		width-=scale;
+		height-=scale;
 	}
 	
 	/**
@@ -146,12 +176,19 @@ public abstract class Drone implements Serializable {
 	 * @param yPos to be set
 	 */
 	public void setYPos(int yPos) { this.yPos = yPos; }
+
 	
 	/**
 	 * Sets Drone's id
 	 * @param id to be set
 	 */
 	public void setId(int id) { this.id = id; }
+	
+	/**
+	 * Set Drone's nearHole boolean
+	 * @param nearHole	boolean to be set
+	 */
+	public void setNearHole(boolean nearHole) {this.nearHole = nearHole;}
 	
 	/**
 	 * Sets Drone count
@@ -189,6 +226,11 @@ public abstract class Drone implements Serializable {
 	 * @return Drone's id
 	 */
 	public int getId() { return id; }
+	
+	/**
+	 * @return True if drone is near hole
+	 */
+	public boolean getNearHole() { return nearHole; }
 	
 	/**
 	 * @return Drone's type

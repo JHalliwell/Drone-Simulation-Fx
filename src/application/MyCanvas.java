@@ -40,9 +40,8 @@ public class MyCanvas implements Serializable {
 	}
 	
 	public void drawImage (Image i, double xPos, double yPos, double width, double height) {
-			
+		
 			graphicsContext.drawImage(i, xPos, yPos, width, height);
-			System.out.println("drawImage");
 			
 		}
 	
