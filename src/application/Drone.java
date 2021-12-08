@@ -108,7 +108,6 @@ public abstract class Drone implements Serializable {
 				otherX < (xPos + width + distance) &&
 				otherY > (yPos - height - distance) && 
 				otherY < (yPos + height + distance)) {
-			System.out.println("is here true");
 			return true;			
 		}		
 		
@@ -128,7 +127,6 @@ public abstract class Drone implements Serializable {
 				otherX < (xPos + width + distance) &&
 				otherY > (yPos - height - distance) && 
 				otherY < (yPos + height + distance)) {
-			System.out.println("is here true");
 			return true;			
 		}		
 		

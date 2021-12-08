@@ -13,6 +13,7 @@ public class BlackHole extends Environment {
 	private int fieldWidth;
 	private int fieldHeight;
 	DroneArena arena;
+	private SoundEffects soundEffects;
 
 	/**
 	 * BlackHole constructor
@@ -24,14 +25,16 @@ public class BlackHole extends Environment {
 		
 		super(xPos, yPos);
 		
-		width = 100;
-		height = 100;
+		width = 80;
+		height = 80;
 		centerX = xPos + (width / 2);
 		centerY = yPos + (height / 2);
 		type = "Black Hole";	
 		distance = 50;
 		fieldWidth = width + (distance * 2);
 		fieldHeight = height + (distance * 2);
+		soundEffects = new SoundEffects();
+		image = new Image(new FileInputStream("graphics/blackHole.png"));
 		
 	}
 	
@@ -47,8 +50,6 @@ public class BlackHole extends Environment {
 		
 		super(xPos, yPos);
 		
-		System.out.println("BlackHole()");
-		
 		this.width = width;
 		this.height = height;
 		
@@ -61,9 +62,10 @@ public class BlackHole extends Environment {
 		fieldHeight = height + (distance * 2);
 		
 		image = new Image(new FileInputStream("graphics/blackHole.png"));
+		soundEffects = new SoundEffects();
 		
 	}
-	
+
 	/**
 	 * @param droneX
 	 * @param droneY
@@ -116,30 +118,28 @@ public class BlackHole extends Environment {
 			// Move drone toward blackhole
 			if (drone.xPos > centerX) {
 				drone.xPos -= 3;
-				System.out.println("x-=4");
 			}
 			if (drone.xPos < centerX) {
 				drone.xPos += 3;
-				System.out.println("x+=4");
 			}
 			if (drone.yPos > centerY) {
 				drone.yPos -= 3;
-				System.out.println("y-=4");
 			}
 			if (drone.yPos < centerY) {
 				drone.yPos += 3;
-				System.out.println("y+=4");
 			}
 			
 			if (drone.width > 10)
 				drone.scaleDown(1);
 			
-			if (droneCenterX > (centerX - 4) && 
-					droneCenterX < (centerX + 4) &&
-						droneCenterX > (centerY - 4) && 
-							droneCenterY < (centerY + 4)) {
+			if (drone.xPos > (centerX - (width / 2)) && 
+					drone.xPos < (centerX + (width / 2)) &&
+						drone.yPos > (centerY - (height / 2)) && 
+							drone.yPos < (centerY + (height / 2))) {
+				System.out.println("drone holed");
 				arena.removeDroneFromList(drone.id);
 				arena.resetDroneList();
+				soundEffects.playBlackHole();
 			}
 		}
 		

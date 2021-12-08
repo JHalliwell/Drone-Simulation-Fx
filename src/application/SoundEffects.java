@@ -9,7 +9,7 @@ import javafx.util.Duration;
 
 public class SoundEffects {
 
-	Media animationMusic, explosion, click, error;
+	Media animationMusic, click, error, blackhole, explosion;
 	MediaPlayer player, animationPlayer, errorPlayer;	
 	
 	SoundEffects() {
@@ -17,11 +17,11 @@ public class SoundEffects {
 		animationMusic = new Media(new File("sounds/ambientSpace.mp3").toURI().toString());
 		click = new Media(new File("sounds/click.mp3").toURI().toString());
 		error = new Media(new File("sounds/error.mp3").toURI().toString());
+		blackhole = new Media(new File("sounds/blackhole.mp3").toURI().toString());
 		explosion = new Media(new File("sounds/explosion.mp3").toURI().toString());
 		
 		errorPlayer = new MediaPlayer(error);
-		errorPlayer.setVolume(0.7);
-		
+		errorPlayer.setVolume(0.7);		
 		
 	}
 	
@@ -54,11 +54,15 @@ public class SoundEffects {
 		
 	}
 	
+	public void playBlackHole() {
+		System.out.println("play black hole");
+		player = new MediaPlayer(blackhole);
+		player.play();
+	}
+	
 	public void playExplosion() {
-		
 		player = new MediaPlayer(explosion);
 		player.play();
-		
 	}
 	
 	public void playError() {		
