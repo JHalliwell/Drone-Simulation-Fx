@@ -56,13 +56,12 @@ public class SimView extends VBox{
 				
 		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
 	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
-
 	    
-	    WINDOW_WIDTH = (int)(screenWidth * 0.9);
-	    WINDOW_HEIGHT = (int)(screenHeight * 0.9);
+	    WINDOW_WIDTH = (int)(screenWidth * 0.85);
+	    WINDOW_HEIGHT = (int)(screenHeight * 0.85);
         
-        ARENA_WIDTH = (int)(WINDOW_WIDTH * 0.85);
-        ARENA_HEIGHT = (int)(WINDOW_HEIGHT * 0.88);
+        ARENA_WIDTH = (int)(WINDOW_WIDTH * 0.8);
+        ARENA_HEIGHT = (int)(WINDOW_HEIGHT * 0.92);
 		
 		// Initialise Stage 		
 		simStage = new Stage();
@@ -92,8 +91,8 @@ public class SimView extends VBox{
 		
 		// Create status area
 		scrollPaneDrone = new ScrollPane();
-		scrollPaneDrone.setPrefWidth(WINDOW_WIDTH * 0.15);
-		scrollPaneDrone.setPrefHeight(WINDOW_HEIGHT * 0.68);
+		scrollPaneDrone.setPrefWidth(WINDOW_WIDTH * 0.2);
+		scrollPaneDrone.setPrefHeight(ARENA_HEIGHT);
 		scrollPaneDrone.setFitToWidth(true);
     	statusBox = new VBox();   	
     	
@@ -104,7 +103,8 @@ public class SimView extends VBox{
 						
 		// Initialise menu, buttons
 		simMenu = new MyMenu(this, arena, simCanvas);
-		buttons = new Buttons(arena, simCanvas, canvas, simPane);		
+		buttons = new Buttons(arena, simCanvas, canvas, simPane);	
+		buttons.setPrefHeight(WINDOW_HEIGHT * 0.02);
 			
 		// Add to border pane: menu, buttons
 		simPane.setTop(simMenu);
@@ -119,19 +119,16 @@ public class SimView extends VBox{
 		
 		// Add popup about
 		aboutPopup = new Popup();
-		aboutPopup.setX(200);
-		aboutPopup.setY(200);	
-		aboutPopup.setAnchorX(105);
-		aboutPopup.setAnchorY(100);
+		aboutPopup.setX(WINDOW_WIDTH * 0.092);
+		aboutPopup.setY(WINDOW_HEIGHT * 0.105);
 		aboutPopup.setHideOnEscape(true);
 		aboutPopup.setAutoHide(true);
 		
-		aboutImage = new Image(new FileInputStream("graphics/about.png"));
+		aboutImage = new Image(new FileInputStream("graphics/aboutthree.png"));
 		aboutImageView = new ImageView(aboutImage);
 		
 		aboutLabel = new Label();
 		aboutLabel.setGraphic(aboutImageView);
-		aboutLabel.setMinSize(200, 200);
 		
 		aboutPopup.getContent().add(aboutLabel);
 		

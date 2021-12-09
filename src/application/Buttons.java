@@ -14,13 +14,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 public class Buttons extends HBox {
 
 	private Button addDrone, addAttackDrone, addCautiousDrone, play, 
-				stop, addWall, addBlackHole, step;
+				stop, addWall, addBlackHole;
 	
 	private AnimationTimer animationTimer, wallAnimation, holeAnimation;
 	DroneArena arena;
@@ -38,19 +39,6 @@ public class Buttons extends HBox {
 		this.arena = arena;
 		this.myCanvas = myCanvas;
 		this.canvas = canvas;
-		
-		step = new Button("Step");
-		step.setOnAction(e -> {
-			
-			try {
-				arena.moveAllDrones();
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			arena.drawArena(myCanvas);
-			
-		});		
 		
 		soundEffects = new SoundEffects();
 		createAddDrone();
@@ -76,14 +64,14 @@ public class Buttons extends HBox {
 		Text animation, drones, environment;
 
 		animation = new Text("Animation");
-		drones = new Text("Drones");
+		drones = new Text("Ships");
 		environment = new Text("Environment");
 		
 		Separator one, two;
 		one = new Separator(Orientation.VERTICAL);
 		two = new Separator(Orientation.VERTICAL);
 		
-		this.getChildren().addAll(step, animation, play, stop, one, drones, addDrone, addCautiousDrone, 
+		this.getChildren().addAll(animation, play, stop, one, drones, addDrone, addCautiousDrone, 
 									addAttackDrone, two, environment, addWall, addBlackHole);
 		
 	}

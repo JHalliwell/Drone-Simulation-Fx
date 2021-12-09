@@ -21,7 +21,7 @@ public class CautiousDrone extends Drone {
 		printWidth = width;
 		printHeight = height;
 		
-		droneImage = new Image(new FileInputStream("graphics/redShip.png"));
+		droneImage = new Image(new FileInputStream("graphics/cautious.png"));
 		
 	}
 	
