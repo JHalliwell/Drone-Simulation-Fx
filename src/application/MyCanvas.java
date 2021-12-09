@@ -2,15 +2,14 @@ package application;
 
 import java.io.Serializable;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class MyCanvas implements Serializable {
 
+	private static final long serialVersionUID = -8324992548375973185L;
 	private transient GraphicsContext graphicsContext;
 	private int height;	
 	private int width;

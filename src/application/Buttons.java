@@ -8,11 +8,14 @@ import javafx.css.PseudoClass;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 
 public class Buttons extends HBox {
 
@@ -47,8 +50,7 @@ public class Buttons extends HBox {
 			}
 			arena.drawArena(myCanvas);
 			
-		});
-		
+		});		
 		
 		soundEffects = new SoundEffects();
 		createAddDrone();
@@ -60,9 +62,7 @@ public class Buttons extends HBox {
 		createAddBlackHole();
 		animation();
 		addButtons();
-		setButtonLayout();
-		
-		
+		setButtonLayout();	
 		
 		canvas.setFocusTraversable(true);		
 			
@@ -109,7 +109,13 @@ public class Buttons extends HBox {
 				}				
 				
 				if (hasOtherDrone) arena.addDrone(1);
-				else {System.out.println("no drone to target");}
+				
+				else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setHeaderText("Cannot spawn Honer Ship");
+					alert.setContentText("There is no roamer to target");
+					alert.showAndWait();
+				}
 				
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
@@ -343,9 +349,11 @@ public class Buttons extends HBox {
 		
 		play.setOnAction(e -> {
 			
-			soundEffects.playAnimationMusic();
-			animationPlaying = true;
-			play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
+			if (!animationPlaying) {
+				soundEffects.playAnimationMusic();
+				animationPlaying = true;
+				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
+			}			
 			
 			// De-select wall/blackhole if animation has started
 			wallSelected = false;
@@ -355,7 +363,7 @@ public class Buttons extends HBox {
 			
 			if (animationTimer != null) {
 				animationTimer.stop();
-			}			
+			}
 			
 			animationTimer = new AnimationTimer()
 	        {

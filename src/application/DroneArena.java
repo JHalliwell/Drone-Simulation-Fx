@@ -351,6 +351,10 @@ public class DroneArena implements Serializable {
 		if (type == "wall") {
 			environment.add(new Wall(xPos, yPos, width, height));
 		}
+		
+		if (type == "blackhole") {
+			environment.add(new BlackHole(xPos, yPos));
+		}
 	}
 	
 	public void clearDrones() {

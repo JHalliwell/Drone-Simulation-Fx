@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 
 public abstract class Environment implements Serializable {
 
+	private static final long serialVersionUID = 7465794064538223031L;
+	
 	String colour;
 	transient Image image;
 	protected int width, height;

@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import javafx.scene.image.Image;
 
-public class Wall extends Environment implements Serializable {
+public class Wall extends Environment {
 	
+	private static final long serialVersionUID = 223632663054522703L;
+
 	public Wall(int xPos, int yPos, int width, int height) throws FileNotFoundException {
 		
 		super(xPos, yPos);

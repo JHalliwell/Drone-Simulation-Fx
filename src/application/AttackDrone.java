@@ -8,13 +8,15 @@ import java.util.Random;
 
 import javafx.scene.image.Image;
 
-public class AttackDrone extends Drone implements Serializable {
+public class AttackDrone extends Drone {
 
+	private static final long serialVersionUID = 4755686755069909229L;
+	
 	int target;
-	Drone targetDrone;
-	boolean hasTarget;
 	int stuckCount = 0;
-	SoundEffects soundEffects;
+	private Drone targetDrone;
+	boolean hasTarget;
+	private transient SoundEffects soundEffects;
 	
 	public AttackDrone(int xPos, int yPos, Direction direction, MyCanvas myCanvas, DroneArena arena) 
 			throws FileNotFoundException {

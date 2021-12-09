@@ -9,8 +9,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 
-public class RoamDrone extends Drone implements Serializable {
+public class RoamDrone extends Drone {
 
+	private static final long serialVersionUID = -6502631940948391972L;
 	protected boolean isTarget; // True if targeted by attack drone
 	
 	/**

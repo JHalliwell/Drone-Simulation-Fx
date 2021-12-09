@@ -1,11 +1,9 @@
 package application;
 
-import java.io.FileInputStream;
+
 import java.io.FileNotFoundException;
 import java.io.Serializable;
-
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 /**
  * Parent class of all drones 
@@ -13,6 +11,11 @@ import javafx.scene.image.ImageView;
  */
 public abstract class Drone implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8457451603547781130L;
+
 	protected static int droneCount = 0;		
 	
 	protected transient Image droneImage, droneN, droneNE, droneE, droneSE, 

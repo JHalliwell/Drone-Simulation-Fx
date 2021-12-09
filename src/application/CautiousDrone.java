@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 import javafx.scene.image.Image;
 
-public class CautiousDrone extends Drone implements Serializable {
+public class CautiousDrone extends Drone {
+
+	private static final long serialVersionUID = -7073044221812250667L;
 
 	CautiousDrone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		

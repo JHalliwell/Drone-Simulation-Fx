@@ -173,6 +173,11 @@ public class MyMenu extends MenuBar {
 															en.getHeight(), "wall");
 						}
 						
+						if (en instanceof BlackHole) {
+							arena.addEnvironmentToList(en.getXPos(), en.getYPos(), en.getWidth(), 
+															en.getHeight(), "blackhole");
+						}
+						
 					}
 
 					arena.drawArena(canvas);

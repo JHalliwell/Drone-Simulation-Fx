@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import javafx.scene.image.Image;
 
 public class BlackHole extends Environment {
+
+	private static final long serialVersionUID = -7054226332930165459L;
 	
 	private int centerX;
 	private int centerY;
 	private int fieldWidth;
 	private int fieldHeight;
 	DroneArena arena;
-	private SoundEffects soundEffects;
+	
+	private transient SoundEffects soundEffects;
 
 	/**
 	 * BlackHole constructor
