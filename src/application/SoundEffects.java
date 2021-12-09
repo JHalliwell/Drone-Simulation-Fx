@@ -6,11 +6,14 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-
+/**
+ * Handles all sound in application
+ * @author 29020945
+ */
 public class SoundEffects {
 
-	Media animationMusic, click, error, blackhole, explosion;
-	MediaPlayer player, animationPlayer, errorPlayer;	
+	private Media animationMusic, click, error, blackhole, explosion;
+	private MediaPlayer player, animationPlayer, errorPlayer;	
 	
 	SoundEffects() {
 		

@@ -7,38 +7,34 @@ import javafx.scene.image.Image;
 
 /**
  * Parent class of all drones 
- * @author jhalli
+ * @author 29020945
  */
 public abstract class Drone implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -8457451603547781130L;
 
 	protected static int droneCount = 0;		
-	
 	protected transient Image droneImage, droneN, droneNE, droneE, droneSE, 
 								droneS, droneSW, droneW, droneNW;	
 	
 	protected MyCanvas myCanvas;
 	
 	protected Direction direction;
-	protected int height;
-	protected int width;
-	protected int printWidth;
-	protected int printHeight;
-	protected int xPos, yPos;
-	protected int speed;
-	protected int dx, dy;
-	protected int id;	 
-	protected int allowedDistance;	// Collision distance
+	protected int width, height, printWidth, printHeight, xPos, yPos,
+					speed, dx, dy, id, allowedDistance;
+
 	protected String type;
 	protected boolean nearHole;
 	
+	/**
+	 * @param xPos - of drone
+	 * @param yPos - of drone
+	 * @param direction - of drone
+	 * @param myCanvas - canvas to draw on
+	 * @throws FileNotFoundException
+	 */
 	Drone (int xPos, int yPos, Direction direction, MyCanvas myCanvas) 
-			throws FileNotFoundException {
-		
+						throws FileNotFoundException {		
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.direction = direction;
@@ -48,14 +44,38 @@ public abstract class Drone implements Serializable {
 		
 		allowedDistance = 2;
 		id = droneCount++;		
-		setDirection();
-		
+		setDirection();		
 	}
 	
+	/**
+	 * Try to move drone, depending on it's movement characteristics
+	 * @param arena - Main arena of drone's and environment objects
+	 */
 	protected abstract void tryToMove(DroneArena arena);
 	
+	/**
+	 * Determines whether a drone can move to this position
+	 * @param newX - xPos the drone is trying to move to
+	 * @param newY - yPos the drone is trying to move to 
+	 * @param arena - Main arena of drone's and environment objects
+	 * @return - true if there is a drone at the location, else false
+	 */
 	protected abstract boolean canMoveHere(int newX, int newY, DroneArena arena);
 	
+	/**
+	 * Change dx and dy to correspond to Direction enum
+	 * @throws FileNotFoundException 
+	 */
+	protected abstract void setDirection();	
+	
+	/**
+	 * Checks if drone is in given position, used in environment placement
+	 * @param otherX - to compare against
+	 * @param otherY - to compare against 
+	 * @param otherWidth - to compare against
+	 * @param otherHeight - to compare against
+	 * @return - true if drone is at the location, else false
+	 */
 	public boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth, 
 										int otherHeight) {
 		
@@ -68,16 +88,16 @@ public abstract class Drone implements Serializable {
 		
 	}
 	
-	protected void checkForHole(DroneArena arena) {
-		
-		for (Environment e : arena.getEnvironment()) {
-			
+	/**
+	 * Check if blackhole is at drone's location
+	 * @param arena - of drone's and environment objects
+	 */
+	protected void checkForHole(DroneArena arena) {		
+		for (Environment e : arena.getEnvironment()) {			
 			if (e instanceof BlackHole) {
 				((BlackHole) e).getIsNear(arena, this);
-			};
-			
-		}
-		
+			};			
+		}		
 	}
 	
 	/**
@@ -149,12 +169,10 @@ public abstract class Drone implements Serializable {
 		for (Drone d : arena.getDrones()) {
 			if (d.getId() == id) continue;
 			if (d.isHere(newX, newY, distance)) return d;
-		}
-		
+		}		
 		return null;
 		
-	}
-	
+	}	
 	
 	/**
 	 * Scales down the size of the drone
@@ -164,13 +182,8 @@ public abstract class Drone implements Serializable {
 		height-=scale;
 		printWidth = width;
 		printHeight = height;
-	}
-	
-	/**
-	 * Change dx and dy to correspond to Direction enum
-	 * @throws FileNotFoundException 
-	 */
-	protected abstract void setDirection();	
+	}	
+
 	
 	public String toString() {		
 

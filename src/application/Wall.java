@@ -5,10 +5,22 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import javafx.scene.image.Image;
 
+/**
+ * Can be placed as a barrier in the arena
+ * @author 29020945
+ */
 public class Wall extends Environment {
 	
 	private static final long serialVersionUID = 223632663054522703L;
-
+	
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @param width
+	 * @param height
+	 * @throws FileNotFoundException
+	 */
 	public Wall(int xPos, int yPos, int width, int height) throws FileNotFoundException {
 		
 		super(xPos, yPos);
@@ -21,6 +33,12 @@ public class Wall extends Environment {
 
 	}
 	
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @throws FileNotFoundException
+	 */
 	public Wall(int xPos, int yPos) throws FileNotFoundException {
 		
 		super(xPos, yPos);
@@ -34,10 +52,8 @@ public class Wall extends Environment {
 		
 	}
 
-	public String getColour() {
-		
-		return "darkGrey";
-		
+	public String getColour() {		
+		return "darkGrey";		
 	}
 		
 	/**

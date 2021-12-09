@@ -1,8 +1,6 @@
 package application;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import javafx.animation.AnimationTimer;
 import javafx.css.PseudoClass;
 import javafx.geometry.Orientation;
@@ -14,24 +12,33 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
 
+/**
+ * Holds information and functions of all buttons and their logic
+ * @author 29020945
+ */
 public class Buttons extends HBox {
 
 	private Button addDrone, addAttackDrone, addCautiousDrone, play, 
 				stop, addWall, addBlackHole;
 	
-	private AnimationTimer animationTimer, wallAnimation, holeAnimation;
-	DroneArena arena;
-	Canvas canvas;
-	MyCanvas myCanvas;
-	BorderPane simPane;
-	SoundEffects soundEffects;
+	private AnimationTimer mainAnimation, wallAnimation, holeAnimation;
+	private DroneArena arena;
+	private Canvas canvas;
+	private MyCanvas myCanvas;
+	private BorderPane simPane;
+	private SoundEffects soundEffects;
 	private boolean wallSelected, holeSelected, animationPlaying, mouseClicked;
 	private int mouseX, mouseY;
 	
+	/**
+	 * @param arena - Main arena of drone's and environment
+	 * @param myCanvas - Methods to draw arena 
+	 * @param canvas - On which the arena is drawn
+	 * @param simPane - BorderPane of different nodes
+	 * @throws FileNotFoundException
+	 */
 	public Buttons(DroneArena arena, MyCanvas myCanvas, Canvas canvas, 
 						BorderPane simPane) throws FileNotFoundException {
 		
@@ -41,38 +48,83 @@ public class Buttons extends HBox {
 		this.canvas = canvas;
 		
 		soundEffects = new SoundEffects();
+		createPlay();
+		createStop();
 		createAddDrone();
 		createAddAttackDrone();
 		createAddCautiousDrone();
-		createPlay();
-		createStop();
 		createAddWall();
 		createAddBlackHole();
-		animation();
 		addButtons();
 		setButtonLayout();	
-		
-		canvas.setFocusTraversable(true);		
 			
 	} 
-		
+	
 	/**
-	 * Add buttons to the HBox
+	 * Create button to start animation
 	 */
-	private void addButtons() {
+	private void createPlay() {
 		
-		Text animation, drones, environment;
-
-		animation = new Text("Animation");
-		drones = new Text("Ships");
-		environment = new Text("Environment");
+		play = new Button("Play");
 		
-		Separator one, two;
-		one = new Separator(Orientation.VERTICAL);
-		two = new Separator(Orientation.VERTICAL);
+		play.setOnAction(e -> {
+			
+			if (!animationPlaying) {
+				soundEffects.playAnimationMusic();
+				animationPlaying = true;
+				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);	// Change button style
+			}			
+			
+			// De-select wall/blackhole if animation has started
+			wallSelected = false;
+			holeSelected = false;
+			addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false); // Change button style
+			addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false); // Change button Style
+			
+			if (mainAnimation != null) {
+				mainAnimation.stop();
+			}
+			
+			mainAnimation = new AnimationTimer()
+	        {
+	            @Override
+	            public void handle(long now)
+	            {
+	            	try {
+						arena.moveAllDrones();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            	arena.drawArena(myCanvas);
+	            }		
+	        };
+	        mainAnimation.start();
+			
+		});
 		
-		this.getChildren().addAll(animation, play, stop, one, drones, addDrone, addCautiousDrone, 
-									addAttackDrone, two, environment, addWall, addBlackHole);
+	}
+	
+	/**
+	 * Create button to stop animation
+	 */
+	private void createStop() {
+		
+		stop = new Button("Stop");
+		//stop.setStyle(buttonStyle);
+		
+		stop.setOnAction(e -> {
+			
+			if (animationPlaying = true) {
+				animationPlaying = false;
+				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
+				soundEffects.stopAnimationMusic();
+				mainAnimation.stop();
+			}			
+			
+					
+			
+		});
 		
 	}
 	
@@ -114,8 +166,10 @@ public class Buttons extends HBox {
 		});
 		
 	}
-
 	
+	/**
+	 * Create's 'Cautious' button, adds cautious drone to arena when pressed
+	 */
 	private void createAddCautiousDrone() {
 		
 		addCautiousDrone = new Button("Cautious");
@@ -136,7 +190,7 @@ public class Buttons extends HBox {
 	}
 
 	/**
-	 * Create button to add drone to arena
+	 * Create button to add roamer drone to arena
 	 */
 	private void createAddDrone() {
 		
@@ -158,7 +212,8 @@ public class Buttons extends HBox {
 	}
 	
 	/**
-	 * Creates the addWall button and applies action
+	 * Creates the addWall button and handles logic of wall being moved,
+	 * 	scaled, rotated and placed
 	 * @throws FileNotFoundException
 	 */
 	private void createAddWall() throws FileNotFoundException {
@@ -192,7 +247,7 @@ public class Buttons extends HBox {
 						System.out.println("placing wall");
 						soundEffects.playClick();
 						addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
-						arena.addEnvironment(myCanvas, mouseX, mouseY, placementWall);
+						arena.addEnvironmentPlacement(myCanvas, mouseX, mouseY, placementWall);
 						wallSelected = false;			
 						this.stop();
 						
@@ -224,6 +279,11 @@ public class Buttons extends HBox {
 	     });
 	}
 	
+	/**
+	 * Creates Black Hole button and handles logic of it being moved
+	 * 	and placed
+	 * @throws FileNotFoundException
+	 */
 	public void createAddBlackHole() throws FileNotFoundException {
 		
 		addBlackHole = new Button("Black Hole");
@@ -251,7 +311,7 @@ public class Buttons extends HBox {
 						try {
 							soundEffects.playClick();
 							addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
-							arena.addEnvironment(myCanvas, mouseX, mouseY, blackHole);
+							arena.addEnvironmentPlacement(myCanvas, mouseX, mouseY, blackHole);
 							holeSelected = false;
 							this.stop();
 						} catch (FileNotFoundException e) {							
@@ -282,31 +342,60 @@ public class Buttons extends HBox {
 			
 		});		
 	}
+		
+	/**
+	 * Add buttons to the HBox
+	 */
+	private void addButtons() {
+		
+		Text animation, drones, environment;
+
+		animation = new Text("Animation");
+		drones = new Text("Ships");
+		environment = new Text("Environment");
+		
+		Separator one, two;
+		one = new Separator(Orientation.VERTICAL);
+		two = new Separator(Orientation.VERTICAL);
+		
+		this.getChildren().addAll(animation, play, stop, one, drones, addDrone, addCautiousDrone, 
+									addAttackDrone, two, environment, addWall, addBlackHole);
+		
+	}
 	
-	public void createMouseEvents() {
-				
+	/**
+	 * Set the layout of the buttons
+	 */
+	private void setButtonLayout() {
+		
+		this.setAlignment(Pos.CENTER_LEFT);
+		this.setSpacing(10);
+		
+	}
+	
+	/**
+	 * Creates the mouse event handler for mouse movement and clicking
+	 */
+	public void createMouseEvents() {				
 		canvas.setOnMouseMoved(e -> {						
 			mouseX = (int)e.getX();
 			mouseY = (int)e.getY();
 		});
 													
-		canvas.setOnMousePressed(e -> {
-			
+		canvas.setOnMousePressed(e -> {			
 			mouseClicked = true;
-
-
 		});	
 		
 		canvas.setOnMouseReleased(e -> {			
-			
 			mouseClicked = false;
-
-		});
-		
-		
-		
+		});		
 	}
 	
+	/**
+	 * Creates key events handler for placementWall scale and rotate,
+	 * 	and to cancel selection
+	 * @param placementWall
+	 */
 	public void createKeyEvents(Wall placementWall) {
 		
 		simPane.setOnKeyPressed(e -> {
@@ -325,105 +414,7 @@ public class Buttons extends HBox {
 			
 		});
 		
-	}
-	
-	/**
-	 * Create button to start animation
-	 */
-	private void createPlay() {
-		
-		play = new Button("Play");
-		//play.setStyle(buttonHoverStyle);
-		
-		play.setOnAction(e -> {
-			
-			if (!animationPlaying) {
-				soundEffects.playAnimationMusic();
-				animationPlaying = true;
-				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
-			}			
-			
-			// De-select wall/blackhole if animation has started
-			wallSelected = false;
-			holeSelected = false;
-			addBlackHole.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
-			addWall.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
-			
-			if (animationTimer != null) {
-				animationTimer.stop();
-			}
-			
-			animationTimer = new AnimationTimer()
-	        {
-	            @Override
-	            public void handle(long now)
-	            {
-	            	try {
-						arena.moveAllDrones();
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            	arena.drawArena(myCanvas);
-	            }		
-	        };
-	        animationTimer.start();
-			
-		});
-		
-	}
-	
-	/**
-	 * Create button to stop animation
-	 */
-	private void createStop() {
-		
-		stop = new Button("Stop");
-		//stop.setStyle(buttonStyle);
-		
-		stop.setOnAction(e -> {
-			
-			if (animationPlaying = true) {
-				animationPlaying = false;
-				play.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
-				soundEffects.stopAnimationMusic();
-				animationTimer.stop();
-			}			
-			
-					
-			
-		});
-		
-	}
-	
-	private void animation() {
-		
-		Button a = new Button("explosion");
-		
-		a.setOnAction(e -> {
-			Explosion explosion;
-			try {
-				explosion = new Explosion();
-				explosion.showExplosion(100, 100, myCanvas);
-			} catch (IOException | InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}		
-		});
-		
-		this.getChildren().add(a);
-		
-	}
-	
-	/**
-	 * Set the layout of the buttons
-	 */
-	private void setButtonLayout() {
-		
-		this.setAlignment(Pos.CENTER_LEFT);
-		this.setSpacing(10);
-		
-	}
+	}	
 }
 	
 	

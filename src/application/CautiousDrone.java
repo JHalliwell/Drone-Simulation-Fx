@@ -6,10 +6,23 @@ import java.io.Serializable;
 
 import javafx.scene.image.Image;
 
+/**
+ * Stay's still unless a drone is within a certain distance,
+ * then tries to move away from it
+ * @author 29020945
+ */
 public class CautiousDrone extends Drone {
 
 	private static final long serialVersionUID = -7073044221812250667L;
-
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param d
+	 * @param myCanvas
+	 * @throws FileNotFoundException
+	 */
 	CautiousDrone(int x, int y, Direction d, MyCanvas myCanvas) throws FileNotFoundException {
 		
 		super(x, y, d, myCanvas);
@@ -79,7 +92,7 @@ public class CautiousDrone extends Drone {
 			return false;
 		}
 		
-		if (arena.getObstacleAt(newX, newY, width, height) != null) {
+		if (arena.getEnironmentAt(newX, newY, width, height) != null) {
 			return false;
 		}
 		

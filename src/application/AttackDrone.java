@@ -8,16 +8,26 @@ import java.util.Random;
 
 import javafx.scene.image.Image;
 
+/**
+ * Target's a random RoamDrone and then will follow and destroy on contact
+ * @author 29020945
+ */
 public class AttackDrone extends Drone {
 
 	private static final long serialVersionUID = 4755686755069909229L;
 	
-	int target;
-	int stuckCount = 0;
+	private int target;
 	private Drone targetDrone;
-	boolean hasTarget;
-	private transient SoundEffects soundEffects;
+	private transient SoundEffects soundEffects;	
 	
+	/**
+	 * @param xPos
+	 * @param yPos
+	 * @param direction
+	 * @param myCanvas
+	 * @param arena
+	 * @throws FileNotFoundException
+	 */
 	public AttackDrone(int xPos, int yPos, Direction direction, MyCanvas myCanvas, DroneArena arena) 
 			throws FileNotFoundException {
 		
@@ -43,6 +53,10 @@ public class AttackDrone extends Drone {
 						
 	}
 	
+	/**
+	 * Sets the target of drone
+	 * @param arena
+	 */
 	public void setTarget(DroneArena arena) {
 		
 		Random ranGen = new Random();
@@ -55,11 +69,7 @@ public class AttackDrone extends Drone {
 		
 		((RoamDrone) arena.getDrones().get(target)).setIsTarget(true);		
 		
-	}
-	
-	public String getType() {
-		return " attackDrone";
-	}
+	}	
 	
 	@Override
 	public void tryToMove(DroneArena arena) {		
@@ -150,7 +160,7 @@ public class AttackDrone extends Drone {
 			
 		}
 		
-		if (arena.getObstacleAt(newX, newY, width, height) != null) return false;
+		if (arena.getEnironmentAt(newX, newY, width, height) != null) return false;
 		
 		return true;
 		
@@ -196,7 +206,17 @@ public class AttackDrone extends Drone {
 		}
 		
 	}	
-		
+	
+	/**
+	 * @return type
+	 */
+	public String getType() {
+		return " attackDrone";
+	}
+	
+	/**
+	 * @return target
+	 */
 	public int getTarget() {
 		return target;
 	}	

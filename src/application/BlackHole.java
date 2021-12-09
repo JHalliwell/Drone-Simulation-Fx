@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 
+/**
+ * Environment object that sucks in drones that are within it's field
+ * @author JoshH
+ *
+ */
 public class BlackHole extends Environment {
 
 	private static final long serialVersionUID = -7054226332930165459L;
@@ -13,9 +18,7 @@ public class BlackHole extends Environment {
 	private int centerX;
 	private int centerY;
 	private int fieldWidth;
-	private int fieldHeight;
-	DroneArena arena;
-	
+	private int fieldHeight;	
 	private transient SoundEffects soundEffects;
 
 	/**
