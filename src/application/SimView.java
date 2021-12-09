@@ -2,10 +2,8 @@ package application;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -18,51 +16,54 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class SimView extends VBox{	
+/**
+ * Interface for simulator application
+ * @author 29020945
+ */
+public class SimView {	
 	
-	public int ARENA_HEIGHT;
-	public int ARENA_WIDTH;
-	private int WINDOW_HEIGHT;
-	private int WINDOW_WIDTH;	
-	private DroneArena arena;
-	private Buttons buttons;
-	private Canvas canvas;
-	private Group canvasRoot;
-	private ScrollPane scrollPaneDrone;
-	private Popup aboutPopup;
-	private Label aboutLabel;
-	private Image aboutImage;
-	private ImageView aboutImageView;
+	// Dimensions for window and arena
+	private int arenaWidth;
+	private int arenaHeight;
+	private int windowWidth;
+	private int windowHeight;
 	
-	private MyCanvas simCanvas;
-	private MyMenu simMenu;
-	
-	private BorderPane simPane;
-
+	private Stage simStage; 
 	private Scene simScene;
-	private StackPane simStackPane;
-	private Stage simStage;
-	private VBox statusBox;
-
-	private ImageView image;
-
 	
+	private BorderPane simPane; // BorderPane for storing different simulation nodes
+	
+	private MyMenu simMenu;	// My menu class which inherits Menu
+		
+	// Objects for displaying arena
+	private DroneArena arena;
+	private Group canvasRoot;
+	private StackPane simStackPane;
+	private Image backgroundImage;
+	private ImageView backgroundImageView;
+	private Canvas canvas;
+	private MyCanvas simCanvas;
+	
+	private Buttons buttons;	// Buttons class which inherits HBox
+	
+	// Objects for status box	
+	private VBox statusBox;
+	private ScrollPane scrollPane;
 	
 	public SimView() throws IOException {
-				
+		
+		// Get screen dimensions of host machine
 		int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
 	    int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
-
 	    
-	    WINDOW_WIDTH = (int)(screenWidth * 0.9);
-	    WINDOW_HEIGHT = (int)(screenHeight * 0.9);
-        
-        ARENA_WIDTH = (int)(WINDOW_WIDTH * 0.85);
-        ARENA_HEIGHT = (int)(WINDOW_HEIGHT * 0.88);
+	    // Set window and arena dimensions based on host screen size
+	    windowWidth = (int)(screenWidth * 0.85);
+	    windowHeight = (int)(screenHeight * 0.85);        
+        arenaWidth = (int)(windowWidth * 0.8);
+        arenaHeight = (int)(windowHeight * 0.92);
 		
 		// Initialise Stage 		
 		simStage = new Stage();
@@ -71,74 +72,47 @@ public class SimView extends VBox{
 		
 		// Initialise Border Pane
 		simPane = new BorderPane();
-		simPane.setMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);		
+		simPane.setMinSize(windowWidth, windowHeight);		
 			
-		// Creating Canvas
+		// Creating arena area 
 		canvasRoot = new Group();		
-		simStackPane = new StackPane();	
-		
-		Image test = new Image(new FileInputStream("graphics/spaceBackground.bmp"));
-		image = new ImageView(test);
-		image.setFitWidth(ARENA_WIDTH);
-		image.setFitHeight(ARENA_HEIGHT);
-		
-		simStackPane.getChildren().add(image);
-		
-		canvas = new Canvas(ARENA_WIDTH, ARENA_HEIGHT);
-		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), canvas, ARENA_WIDTH, ARENA_HEIGHT);
-		simStackPane.getChildren().add(canvas);		
-		
+		simStackPane = new StackPane();			
+		backgroundImage = new Image(new FileInputStream("graphics/spaceBackground.bmp"));
+		backgroundImageView = new ImageView(backgroundImage);
+		backgroundImageView.setFitWidth(arenaWidth);
+		backgroundImageView.setFitHeight(arenaHeight);		
+		simStackPane.getChildren().add(backgroundImageView);		
+		canvas = new Canvas(arenaWidth, arenaHeight);
+		simCanvas = new MyCanvas(canvas.getGraphicsContext2D(), canvas, arenaWidth, arenaHeight);
+		simStackPane.getChildren().add(canvas);			
 		canvasRoot.getChildren().add(simStackPane);				
+		arena = new DroneArena(simCanvas, arenaWidth, arenaHeight);		
 		
 		// Create status area
-		scrollPaneDrone = new ScrollPane();
-		scrollPaneDrone.setPrefWidth(WINDOW_WIDTH * 0.15);
-		scrollPaneDrone.setPrefHeight(WINDOW_HEIGHT * 0.68);
-		scrollPaneDrone.setFitToWidth(true);
-    	statusBox = new VBox();   	
-    	
-    	scrollPaneDrone.setContent(statusBox);    	
-    	
-		// Create drone arena
-		arena = new DroneArena(simCanvas, ARENA_WIDTH, ARENA_HEIGHT);			
+		scrollPane = new ScrollPane();
+		scrollPane.setPrefWidth(windowWidth * 0.2);
+		scrollPane.setPrefHeight(arenaHeight);
+		scrollPane.setFitToWidth(true);
+    	statusBox = new VBox();   	    	
+    	scrollPane.setContent(statusBox);  
+    	startAnimationTimer(); // Animation timer for status
 						
 		// Initialise menu, buttons
-		simMenu = new MyMenu(this, arena, simCanvas);
-		buttons = new Buttons(arena, simCanvas, canvas, simPane);		
-			
-		// Add to border pane: menu, buttons
+		simMenu = new MyMenu(this, simStage, arena, simCanvas);
+		buttons = new Buttons(arena, simCanvas, canvas, simPane);	
+		buttons.setPrefHeight(windowHeight * 0.02);
+				
+		// Add nodes to border pane
 		simPane.setTop(simMenu);
 		simPane.setBottom(buttons);	
 		simPane.setLeft(canvasRoot);	
-		simPane.setRight(scrollPaneDrone);
+		simPane.setRight(scrollPane);
 		
+		// Format border pane
 		simPane.setPadding(new Insets(5));
 		BorderPane.setMargin(buttons, new Insets(5));
-		BorderPane.setMargin(scrollPaneDrone, new Insets(5));
-		BorderPane.setMargin(canvasRoot, new Insets(5));
-		
-		// Add popup about
-		aboutPopup = new Popup();
-		aboutPopup.setX(200);
-		aboutPopup.setY(200);	
-		aboutPopup.setAnchorX(105);
-		aboutPopup.setAnchorY(100);
-		aboutPopup.setHideOnEscape(true);
-		aboutPopup.setAutoHide(true);
-		
-		aboutImage = new Image(new FileInputStream("graphics/about.png"));
-		aboutImageView = new ImageView(aboutImage);
-		
-		aboutLabel = new Label();
-		aboutLabel.setGraphic(aboutImageView);
-		aboutLabel.setMinSize(200, 200);
-		
-		aboutPopup.getContent().add(aboutLabel);
-		
-		drawStatus();
-		
-		// Start animation timer for status
-		startAnimationTimer();
+		BorderPane.setMargin(scrollPane, new Insets(5));
+		BorderPane.setMargin(canvasRoot, new Insets(5));		
 		
 		// Initialise scene and add pane, set scene to stage
 		simScene = new Scene(simPane);
@@ -147,13 +121,10 @@ public class SimView extends VBox{
 
 	}	
 	
-	public void showPopup() {
-		
-		aboutPopup.show(simStage);
-		
-	}
-	
-	public void drawStatus() {
+	/**
+	 * Gets the arena info and adds it to status box
+	 */
+	private void drawStatus() {
 		
 		statusBox.getChildren().clear();
 		
@@ -169,21 +140,9 @@ public class SimView extends VBox{
 		
 	}
 	
-	// Create About pop up window
-	Popup aboutWindow = new Popup();
-	
-	
 	/**
-	 * 
-	 * @return SimStage
+	 * Animation timer for status box
 	 */
-	public Stage getSimStage() {
-		
-		return simStage;
-		
-	}
-	
-
 	private void startAnimationTimer() {
 		
 		AnimationTimer at = new AnimationTimer() {
@@ -197,6 +156,27 @@ public class SimView extends VBox{
 		};
 		
 		at.start();
+	}
+	
+	/**
+	 * @return windowWidth
+	 */
+	public int getWindowWidth() {
+		return windowWidth;
+	}
+	
+	/**
+	 * @return windowHeight
+	 */
+	public int getWindowHeight() {
+		return windowHeight;
+	}
+	
+	/**
+	 * @return SimStage
+	 */
+	public Stage getSimStage() {		
+		return simStage;		
 	}
 	
 }

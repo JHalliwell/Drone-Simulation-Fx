@@ -5,8 +5,22 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import javafx.scene.image.Image;
 
-public class Wall extends Environment implements Serializable {
+/**
+ * Can be placed as a barrier in the arena
+ * @author 29020945
+ */
+public class Wall extends Environment {
 	
+	private static final long serialVersionUID = 223632663054522703L;
+	
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @param width
+	 * @param height
+	 * @throws FileNotFoundException
+	 */
 	public Wall(int xPos, int yPos, int width, int height) throws FileNotFoundException {
 		
 		super(xPos, yPos);
@@ -19,6 +33,12 @@ public class Wall extends Environment implements Serializable {
 
 	}
 	
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @throws FileNotFoundException
+	 */
 	public Wall(int xPos, int yPos) throws FileNotFoundException {
 		
 		super(xPos, yPos);
@@ -32,10 +52,8 @@ public class Wall extends Environment implements Serializable {
 		
 	}
 
-	public String getColour() {
-		
-		return "darkGrey";
-		
+	public String getColour() {		
+		return "darkGrey";		
 	}
 		
 	/**
@@ -55,6 +73,18 @@ public class Wall extends Environment implements Serializable {
 		
 		return false;
 		
+	}
+	
+	@Override
+	public boolean isHereEnvironmentPlacement(int otherX, int otherY, int otherWidth, int otherHeight) {
+		
+		if (otherX > (xPos - (otherWidth / 2) - 2) && 
+				otherX < (xPos + width + (otherWidth / 2) - 2) &&
+				otherY > (yPos - (otherHeight / 2) - 2 ) && 
+				otherY < (yPos + height + (otherHeight / 2) + 2)) 
+			return true;
+		
+		return false;
 	}
 	
 	public void rotate() {		
@@ -82,5 +112,7 @@ public class Wall extends Environment implements Serializable {
 		}
 
 	}
+
+
 	
 }

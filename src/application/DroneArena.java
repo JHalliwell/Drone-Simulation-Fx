@@ -6,16 +6,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
+/**
+ * Handles informaion and methods on the arena, which includes
+ * 'drones' and environment objects
+ * @author JoshH
+ *
+ */
 public class DroneArena implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4938436733718179739L;
 	private MyCanvas myCanvas;
 	private int arenaWidth;
@@ -25,19 +23,18 @@ public class DroneArena implements Serializable {
 	private ArrayList<Drone> manyDrones;
 	
 	/**
-	 *  Creates arrayList of drones and a canvas on which to draw arena
-	 * @throws IOException 
+	 * @param myCanvas - Handles methods for drawing on canvas
+	 * @param arenaWidth - Width of arena
+	 * @param arenaHeight - Height of arena
+	 * @throws IOException
 	 */
-	DroneArena(MyCanvas myCanvas, int arenaWidth, int arenaHeight) throws IOException {
-		
+	DroneArena(MyCanvas myCanvas, int arenaWidth, int arenaHeight) throws IOException {		
 		this.myCanvas = myCanvas;
 		this.arenaWidth = arenaWidth;
 		this.arenaHeight = arenaHeight;
 		
 		manyDrones = new ArrayList<Drone>();	
-		environment = new ArrayList<Environment>();		
-		Explosion explosion = new Explosion();
-		
+		environment = new ArrayList<Environment>();	
 	}
 
 	/**
@@ -46,14 +43,12 @@ public class DroneArena implements Serializable {
 	 * @param	type of drone to add 
 	 * @throws FileNotFoundException 
 	 */
-	public void addDrone(int type) throws FileNotFoundException {     // keep
-		
+	public void addDrone(int type) throws FileNotFoundException {   		
 		int x;
 		int y;
 		Direction d = Direction.EAST; // Initialise, but will be made random later
 		
-		switch (type) {
-		
+		switch (type) {		
 		case 0 : 	// Add RandomMover at random location
 			RoamDrone drone = new RoamDrone(0, 0, d.random(), myCanvas);
 			do {
@@ -61,7 +56,8 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - drone.getWidth());
 				y = ranGen.nextInt(arenaHeight - drone.getHeight());
 			} while (getDroneAt(x, y, drone.getWidth(), drone.getHeight()) != null || 
-					getObstacleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
+					getEnironmentAt(x, y, drone.getWidth(), drone.getHeight()) != null ||
+					getHoleAt(x, y, drone.getWidth(), drone.getHeight()) != null);
 			drone.setXPos(x);
 			drone.setYPos(y);
 			manyDrones.add(drone);
@@ -74,7 +70,8 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - aDrone.getWidth());
 				y = ranGen.nextInt(arenaHeight - aDrone.getHeight());
 			} while (getDroneAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null || 
-					getObstacleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null);
+					getEnironmentAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null ||
+					getHoleAt(x, y, aDrone.getWidth(), aDrone.getHeight()) != null);
 			aDrone.setXPos(x);
 			aDrone.setYPos(y);
 			manyDrones.add(aDrone);
@@ -87,98 +84,154 @@ public class DroneArena implements Serializable {
 				x = ranGen.nextInt(arenaWidth - cDrone.getWidth());
 				y = ranGen.nextInt(arenaHeight - cDrone.getHeight());
 			} while (getDroneAt(x, y, cDrone.getWidth(), cDrone.getHeight()) != null || 
-					getObstacleAt(x, y,cDrone.getWidth(), cDrone.getHeight()) != null);
+					getEnironmentAt(x, y,cDrone.getWidth(), cDrone.getHeight()) != null ||
+					getHoleAt(x, y, cDrone.getWidth(), cDrone.getHeight()) != null);
 			cDrone.setXPos(x);
 			cDrone.setYPos(y);
 			manyDrones.add(cDrone);
 			break;
 		
-		}
-		
+		}		
 	}
 	
 	/**
-	 * Loop through all drones, moving them each once
+	 * Loop through all drones, moving them each once, unless they
+	 * are within the field of a blackhole
 	 * @throws FileNotFoundException 
 	 */
-	public void moveAllDrones() throws FileNotFoundException {	// keep
-		
-		for (Drone d : manyDrones) {			
-			d.tryToMove(this);
+	public void moveAllDrones() throws FileNotFoundException {			
+		for (Drone d : manyDrones) {	
+			d.checkForHole(this);
+			if (!d.nearHole) d.tryToMove(this);
 		}		
-		
 	}
 	
 	/**
-	 * Draws arena and drones to canvas as graphics context
+	 * Draws drones and environment objects to canvas as graphics context
 	 */
 	public void drawArena(MyCanvas canvas) {	  
-
 		canvas.clear();
         
         for (Drone d : manyDrones) {        	
-    		// canvas.drawObject(d.getXPos(), d.getYPos(), d.getWidth(), d.getHeight(), "red");
-    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());        	
+    		canvas.drawImage(d.getImage(), d.getXPos(), d.getYPos(), d.getPrintWidth(), d.getPrintHeight());      		
         }
        
-        for (Environment e : environment) {
-        	canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight(), e.getColour());       	    
-       	    //canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(), e.getWidth(), e.getHeight());
-        }      
-            
+        for (Environment e : environment) {        	
+        	if (e instanceof Wall) canvas.drawObject(e.getXPos(), e.getYPos(), e.getWidth(), 
+        												e.getHeight(), e.getColour());
+        	
+        	if (e instanceof BlackHole) {        		
+        		canvas.drawImage(e.getImage(), e.getXPos(), e.getYPos(),
+        							e.getWidth(), e.getHeight()); 
+        		        		
+        		// Draw a circle the size of the blackhole's field
+        		canvas.drawObject(e.getXPos() - ((BlackHole) e).getDistance(), e.getYPos() - 
+        							((BlackHole) e).getDistance(), 
+        							(e.getWidth()) + (((BlackHole) e).getDistance() * 2), 
+        							(e.getHeight()) + (((BlackHole) e).getDistance() * 2), "hole");	
+        	}		      	          	
+        }            
 	}
 	
-	public void drawWallPlacement(MyCanvas canvas, int x, int y, String colour, 
-									Wall placementWall) {	//keep
-		
-		canvas.clear();
+	/**
+	 * For drawing selected object to be placed on the canvas
+	 * @param canvas - on which to draw
+	 * @param xPos - of object
+	 * @param yPos - of object
+	 * @param type - determines what to draw
+	 * @param e - the object to draw
+	 */
+	public void drawEnvironmentPlacement(MyCanvas canvas, int x, int y, String type, 
+											Environment e) {		
+		canvas.clear();		
 		
 		drawArena(canvas);
-				
-		canvas.drawObject(x - (placementWall.getWidth() / 2), y - (placementWall.getHeight() / 2), 
-				placementWall.getWidth(), placementWall.getHeight(), colour);
 		
+		if (e instanceof Wall) {
+			
+			// Draw wall to be placed
+			canvas.drawObject(x - (e.getWidth() / 2), y - (e.getHeight() / 2), 
+					e.getWidth(), e.getHeight(), type);
+			
+		}
+		
+		if (e instanceof BlackHole) {
+			
+			// Draw circle the size of the blackhole's field
+			if (type == "hole") {
+				canvas.drawObject(x - (e.getWidth() / 2) - ((BlackHole) e).getDistance(), 
+									y - (e.getHeight() / 2) - ((BlackHole) e).getDistance(), 
+									e.getWidth() + (((BlackHole) e).getDistance() * 2), 
+									e.getHeight() + (((BlackHole) e).getDistance() * 2), type);
+			}			
+		}			
 	}
 	
-	public void addEnvironment(MyCanvas canvas, int xPos, int yPos, 
-									Wall placementWall) throws FileNotFoundException {	// keep
-
-		environment.add(new Wall(xPos - (placementWall.getWidth() / 2), 
-				yPos - (placementWall.getHeight() / 2), placementWall.getWidth(),
-				placementWall.getHeight()));
-
-		drawArena(canvas);							
+	/**
+	 * Adds environment to canvas at given coordinates, from user placement
+	 * @param canvas - On which to draw object
+	 * @param xPos - of environment object
+	 * @param yPos - of environment object
+	 * @param e - environment object to draw
+	 * @throws FileNotFoundException
+	 */
+	public void addEnvironmentPlacement(MyCanvas canvas, int xPos, int yPos, Environment e) 
+								throws FileNotFoundException {	
+		if (e instanceof Wall) {			
+			environment.add(new Wall(xPos - (e.getWidth() / 2), 
+					yPos - (e.getHeight() / 2), e.getWidth(),
+					e.getHeight()));			
+		}
 		
+		if (e instanceof BlackHole) {			
+			environment.add(new BlackHole(xPos - (e.getWidth() / 2), 
+					yPos - (e.getHeight() / 2), e.getWidth(),
+					e.getHeight()));			
+		}		
+
+		drawArena(canvas);				
 	}
 	
-	public String drawStatus() {	// keep
+	/**
+	 * Add an environment object to the list
+	 * @param xPos - of environment object to add
+	 * @param yPos - of environment object to add
+	 * @param width - of environment object to add
+	 * @param height - of environment object to add
+	 * @param type - of environemt object to add
+	 * @throws FileNotFoundException
+	 */
+	public void addEnvironmentToList(int xPos, int yPos, int width, 
+										int height, String type) 
+												throws FileNotFoundException {
+		if (type == "wall") {
+			environment.add(new Wall(xPos, yPos, width, height));
+		}
 		
+		if (type == "blackhole") {
+			environment.add(new BlackHole(xPos, yPos));
+		}
+	}
+	
+	/**
+	 * @return information on all drone's and environment objects
+	 */
+	public String getStatus() {		
 		String info = "";
 		
 		for (Drone d : manyDrones) 
 			info += d.toString();
 		
-		for  (Environment e : environment) {
+		for  (Environment e : environment) 
 			info += e.toString();
-		}
-		
+				
 		return info;
 	}
 	
-	public String debugStatus() {	// keep
-		
-		String info = "";
-		
-		for (Drone d : manyDrones) 
-			 System.out.println(d.toString());
-		
-		for  (Environment e : environment) {
-			System.out.println(e.toString());
-		}
-		
-		return info;
-	}
-	
+	/**
+	 * @return Information on each drone and environment object as a
+	 * seperate string, in an array list
+	 */
 	public ArrayList<String> describeAll() {
 		
 		ArrayList<String> info = new ArrayList<String>();
@@ -195,53 +248,14 @@ public class DroneArena implements Serializable {
 	}
 	
 	/**
-	 * Search arrayList of drones to see if there's one at x,y
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
+	 * Adds a drone to the list
+	 * @param xPos - of drone to add
+	 * @param yPos - of drone to add
+	 * @param direction - of drone to add
+	 * @param myCanvas - canvas to draw drone
+	 * @param type - type of drone to add
+	 * @throws FileNotFoundException
 	 */
-	public Drone getDroneAtWallPlacement(int x, int y, int width, int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.isHereWallPlacement(x, y, width, height)) return d;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * Search arrayList of drones to see if there's one at x,y
-	 * @param x		drone x pos
-	 * @param y		drone y pos
-	 * @return null if no Drone there, or Drone if there is
-	 */
-	public Drone getDroneAt(int x, int y, int width, int height) {
-		
-		for (Drone d : manyDrones) {
-			if (d.isHere(x, y, width, height)) return d;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public Environment getObstacleAt(int xPos, int yPos, int width, int height) {
-		
-		for (Environment e : environment) {
-			if (e.isHere(xPos, yPos, width, height)) return e;
-		}
-		
-		return null;
-		
-	}
-	
 	public void addDroneToList(int xPos, int yPos, Direction direction, 
 									MyCanvas myCanvas, String type) 
 											throws FileNotFoundException {
@@ -256,62 +270,206 @@ public class DroneArena implements Serializable {
 		}
 	}
 	
-	public void addEnvironmentToList(int xPos, int yPos, int width, 
-										int height, String type) 
-												throws FileNotFoundException {
-		if (type == "wall") {
-			environment.add(new Wall(xPos, yPos, width, height));
-		}
+	/**
+	 * Remove a drone of given id from the list
+	 * @param id - of drone to remove
+	 */
+	public void removeDroneFromList(int id) {		
+		manyDrones.remove(id);		
 	}
 	
+	/**
+	 * Clear all drones from the list
+	 */
 	public void clearDrones() {
 		manyDrones.clear();
 		Drone.droneCount = 0;
 	}
 	
+	/**
+	 * To be used after a drone is removed, matches id's to index's
+	 * and updates count
+	 */
+	public void resetDroneList() {
+		
+		// Set drone id's to match index after removals
+		for (int i = 0; i < manyDrones.size(); i++) {
+			manyDrones.get(i).setId(i);
+		}
+		
+		// Give attack drones new targets after removals
+		for (Drone dr : manyDrones) {
+			if (dr instanceof RoamDrone) {
+				((RoamDrone) dr).setIsTarget(false);
+			}					
+		}
+		
+		for (Drone dr : manyDrones) {
+			if (dr instanceof AttackDrone) {
+				((AttackDrone) dr).setTarget(this);
+			}
+		}
+		
+		setDrones(manyDrones); // Set arena list to edited list
+		Drone.droneCount = manyDrones.size();
+		getStatus();
+		
+	}
+	
+	/**
+	 * Removes all environment objects from the list
+	 */
 	public void clearEnvironment() {
 		environment.clear();
 	}
 	
-	/**	 * 
-	 * @return		this arena
+	/**
+	 * Search arrayList of drones to see if there's one at x,y
+	 * @param xPos - to check list
+	 * @param yPos - to check list 
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAtEnvironmentPlacement(int xPos, int yPos, int width, int height) {		
+		for (Drone d : manyDrones) {
+			if (d.isHereEnvironmentPlacement(xPos, yPos, width, height)) return d;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Search arrayList of drones to see if there's one at x,y
+	 * @param xPos - to check list
+	 * @param yPos - to check list
+	 * @return null if no Drone there, or Drone if there is
+	 */
+	public Drone getDroneAt(int xPos, int yPos, int width, int height) {		
+		for (Drone d : manyDrones) {
+			if (d.isHere(xPos, yPos, width, height)) return d;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Loop through all drones, returning a drone if it's at newX, newY
+	 * @param newX - xPos the drone is trying to move to
+	 * @param newY - yPos the drone is trying to move to 
+	 * @param arena - main droneArena
+	 * @return	Drone if that drone is colliding with newX, newY
+	 */
+	public Drone getDroneAt(int xPos, int yPos, int distance, int width, int height) {		
+		for (Drone d : manyDrones) {
+			if (d.isHere(xPos, yPos, distance, width, height)) return d;
+		}
+		
+		return null;		
+	}
+	
+	/**
+	 * Search list of environment object for one at given position
+	 * @param xPos - to check list for
+	 * @param yPos - to check list for
+	 * @param width - of object to check against
+	 * @param height - of object to check against
+	 * @return Environment if there is one found at position, else null
+	 */
+	public Environment getEnironmentAt(int xPos, int yPos, int width, int height) {		
+		for (Environment e : environment) {
+			if (e.isHere(xPos, yPos, width, height) && e instanceof Wall) return e;
+
+		}		
+		return null;		
+	}
+	
+	/**
+	 * Search list of environment object for one at given position, for when user
+	 * has selected an environment object to place
+	 * @param xPos - to check list for
+	 * @param yPos - to check list for
+	 * @param width - of object to check against
+	 * @param height - of object to check against
+	 * @return Environment if there is one found at position, else null
+	 */
+	public Environment getEnvironmentAtPlacement(int xPos, int yPos, int width, int height) {		
+		for (Environment e : environment) {
+			if (e.isHereEnvironmentPlacement(xPos, yPos, width, height))
+				return e;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Search list of environment objects for a hole at the given position
+	 * @param xPos - to check list for
+	 * @param yPos - to check list for
+	 * @param width - of object to check against
+	 * @param height - of object to check against
+	 * @return Environment if there is one found at position, else null
+	 */
+	public Environment getHoleAt(int xPos, int yPos, int width, int height) {	
+		for (Environment e : environment) {
+			if (e.isHere(xPos, yPos, width, height) && e instanceof BlackHole)
+				return e;
+		}
+		
+		return null;		
+	}
+	
+	/** 
+	 * @return this arena
 	 */
 	public DroneArena getArena() {		
 		return this;		
 	}
 	
 	/**
-	 * Getter for list of drones
-	 * @return		list of drones
+	 * @return	list of drones
 	 */
 	public ArrayList<Drone> getDrones() {		
 		return manyDrones;		
 	}
 	
 	/**
-	 * @param id
-	 * @return	drone of specified id
+	 * @param id - of drone to return
+	 * @return drone of specified id
 	 */
 	public Drone getDrone(int id) {
 		return manyDrones.get(id);
 	}
 	
+	/**
+	 * @return environment array list
+	 */
 	public ArrayList<Environment> getEnvironment(){
 		return environment;
 	}
 	
+	/**
+	 * @param manyDrones - to set drone array list as
+	 */
 	public void setDrones(ArrayList<Drone> manyDrones) {		
 		this.manyDrones = manyDrones;		
 	}	
 	
+	/**
+	 * @param environment - to set environment array list as
+	 */
 	public void setEnvironment(ArrayList<Environment> environment) {
 		this.environment = environment;
 	}
 	
+	/**
+	 * @return arenaWidth
+	 */
 	public int getWidth() {
 		return arenaWidth;
 	}
 	
+	/**
+	 * @return arenaHeight
+	 */
 	public int getHeight() {
 		return arenaHeight;
 	}

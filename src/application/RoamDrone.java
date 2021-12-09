@@ -2,15 +2,15 @@ package application;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
-
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.Polygon;
 
-public class RoamDrone extends Drone implements Serializable {
+/**
+ * A drone that will move away randomly when colliding
+ * @author 29020945
+ */
+public class RoamDrone extends Drone {
 
+	private static final long serialVersionUID = -6502631940948391972L;
 	protected boolean isTarget; // True if targeted by attack drone
 	
 	/**
@@ -33,8 +33,7 @@ public class RoamDrone extends Drone implements Serializable {
 		setImages();	
 		setDirection();
 		
-	}	
-	
+	}		
 	
 	/**
 	 * Try to move drone, check with canMoveHere, if cant, change direction
@@ -72,8 +71,7 @@ public class RoamDrone extends Drone implements Serializable {
 	 * @param y		y co-ord
 	 * @return		false: drone move here, true: drone can move here
 	 */
-	public boolean canMoveHere(int newX, int newY, DroneArena arena) {	
-		
+	public boolean canMoveHere(int newX, int newY, DroneArena arena) {			
 		if (newX <= 0 || newX >= arena.getWidth() - width || newY <= 0 || 
 				newY >= arena.getHeight() - height) {			
 			return false;
@@ -83,28 +81,28 @@ public class RoamDrone extends Drone implements Serializable {
 			return false;
 		}
 		
-		if (arena.getObstacleAt(newX, newY, width, height) != null) {
+		if (arena.getEnironmentAt(newX, newY, width, height) != null) {
 			return false;
 		}
 		
-		return true;
-		
+		return true;		
 	}
 	
 	@Override
-	public String toString() {
-		
+	public String toString() {		
 		String info = "";				
 		info += type + " Ship at (" + xPos + ", " + yPos + ")";	
 		
 		if (isTarget) info += " is being targeted!";
 		
-		return info;
-		
+		return info;		
 	}
 	
-	protected void setImages() throws FileNotFoundException {
-		
+	/**
+	 * Set the correct images for RoamDrone
+	 * @throws FileNotFoundException
+	 */
+	private void setImages() throws FileNotFoundException {		
 		droneN = new Image(new FileInputStream("graphics/roamShipN.png"));
 		droneNE = new Image(new FileInputStream("graphics/roamShipNE.png"));
 		droneE = new Image(new FileInputStream("graphics/roamShipE.png"));
@@ -112,8 +110,7 @@ public class RoamDrone extends Drone implements Serializable {
 		droneS = new Image(new FileInputStream("graphics/roamShipS.png"));
 		droneSW = new Image(new FileInputStream("graphics/roamShipSW.png"));
 		droneW = new Image(new FileInputStream("graphics/roamShipW.png"));
-		droneNW = new Image(new FileInputStream("graphics/roamShipNW.png"));
-		
+		droneNW = new Image(new FileInputStream("graphics/roamShipNW.png"));		
 	}
 	
 	/**
