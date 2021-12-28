@@ -6,6 +6,10 @@ This is an application that simulates different space ships in an arena which ha
 
 To use the application, simply download the SpaceSimulator zip file, and lauch the executable jar file 'droneSimulator'. The JAR file has to remain in the same folder as downloaded in order to run
 
+![gif demo](/screenshots/gifDemo.gif)
+![about](/screenshot/about.png)
+
+
 ### Features
 - 3 Drone types with different movement and collision characteristics, as described in the 'About' section.
 - User placeable barriers
