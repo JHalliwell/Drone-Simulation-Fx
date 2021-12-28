@@ -24,7 +24,7 @@ public class SoundEffects {
 		explosion = new Media(new File("sounds/explosion.mp3").toURI().toString());
 		
 		errorPlayer = new MediaPlayer(error);
-		errorPlayer.setVolume(0.7);		
+		errorPlayer.setVolume(0.9);		
 		
 	}
 	

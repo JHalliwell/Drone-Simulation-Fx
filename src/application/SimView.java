@@ -37,7 +37,7 @@ public class SimView {
 	private BorderPane simPane; // BorderPane for storing different simulation nodes
 	
 	private MyMenu simMenu;	// My menu class which inherits Menu
-		
+	
 	// Objects for displaying arena
 	private DroneArena arena;
 	private Group canvasRoot;

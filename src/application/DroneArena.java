@@ -304,6 +304,24 @@ public class DroneArena implements Serializable {
 			}					
 		}
 		
+		// Ensure there aren't more attack drone's than roam drones
+		int roamCount = 0;
+		int attackCount = 0;
+		
+		for (Drone dr : manyDrones) {			
+			if (dr instanceof RoamDrone) roamCount++;
+			if (dr instanceof AttackDrone) attackCount++;
+		}
+		
+		while(attackCount > roamCount) {
+			for (Drone dr : manyDrones) {
+				if (dr instanceof AttackDrone) {
+					manyDrones.remove(dr.getId());
+				}
+			}
+			attackCount--;
+		}
+		
 		for (Drone dr : manyDrones) {
 			if (dr instanceof AttackDrone) {
 				((AttackDrone) dr).setTarget(this);
@@ -442,7 +460,7 @@ public class DroneArena implements Serializable {
 	/**
 	 * @return environment array list
 	 */
-	public ArrayList<Environment> getEnvironment(){
+	public ArrayList<Environment> getEnvironment() {
 		return environment;
 	}
 	
